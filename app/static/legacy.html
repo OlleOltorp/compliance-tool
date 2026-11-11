@@ -1,0 +1,2698 @@
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Scanningsverktyg prototyp 1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;500;600;700&family=Source+Serif+4:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f6f6f3; --surface: #ffffff; --surface-2: #f0efea; --line: #dddcd5; --line-strong: #c4c2b9;
+  --text: #1d1f21; --muted: #5d6166; --faint: #8a8e93; --accent: #24527a; --accent-bg: #e6eef5;
+  --brist: #b42318; --brist-bg: #fdecea; --osaker: #a15c07; --osaker-bg: #fdf3e1;
+  --ok: #1f7a3f; --ok-bg: #e7f4ec; --grey: #6b7075; --grey-bg: #eceeef;
+  --rad: #0b6e86; --rad-bg: #e1f2f6; --na: #4a5f86; --na-bg: #e7ebf4; --kik: #6b6560; --kik-bg: #efece8;
+  --intyg: #6a46a8; --intyg-bg: #efe9f8; --test: #9a3f74; --test-bg: #f8e8f1;
+  --mark: #ffe58a; --shadow: 0 1px 2px rgba(0,0,0,.05), 0 4px 16px rgba(0,0,0,.06);
+  --scrim: rgba(20,22,25,.35);
+  --sans: "Source Sans 3", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --serif: "Source Serif 4", Georgia, serif;
+  --mono: ui-monospace, "Cascadia Mono", Consolas, monospace;
+  color-scheme: light dark;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #15171a; --surface: #1d2024; --surface-2: #24282d; --line: #31353b; --line-strong: #454a51;
+    --text: #e8e9ea; --muted: #a6abb1; --faint: #7d838a; --accent: #8fb8de; --accent-bg: #1f2d3a;
+    --brist: #f2877c; --brist-bg: #3a1f1d; --osaker: #e9b45a; --osaker-bg: #382c17;
+    --ok: #74c992; --ok-bg: #1b3325; --grey: #9aa0a6; --grey-bg: #2a2e33;
+    --rad: #6ccbe0; --rad-bg: #16323a; --na: #a3b4d6; --na-bg: #232a38; --kik: #b3aca5; --kik-bg: #2d2a27;
+    --intyg: #b9a0e8; --intyg-bg: #2b2340; --test: #e59ac6; --test-bg: #3a2131;
+    --mark: #6b5a12; --shadow: 0 1px 2px rgba(0,0,0,.3), 0 4px 16px rgba(0,0,0,.3);
+    --scrim: rgba(0,0,0,.5);
+  }
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--bg); color: var(--text); font: 16px/1.5 var(--sans); }
+a { color: var(--accent); }
+h1, h2, h3, h4 { line-height: 1.25; margin: 0; }
+button, input { font: inherit; color: inherit; }
+.wrap { max-width: 1040px; margin: 0 auto; padding: 0 16px; }
+.topbar { border-bottom: 1px solid var(--line); background: var(--surface); }
+.topbar .wrap { display: flex; align-items: center; justify-content: space-between; height: 52px; gap: 12px; }
+.brand { font-weight: 700; font-size: 17px; color: var(--text); text-decoration: none; letter-spacing: -.01em; }
+.brand span { color: var(--accent); }
+.toplink { font-size: 14px; color: var(--muted); text-decoration: none; }
+.toplink:hover { color: var(--text); }
+main { padding: 32px 0 64px; }
+.muted { color: var(--muted); }
+.small { font-size: 14px; }
+.btn { background: var(--accent); color: var(--surface); border: 0; border-radius: 6px; padding: 10px 18px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+.btn:hover { filter: brightness(1.08); }
+.btn:disabled { opacity: .6; cursor: default; }
+.btn-ghost { background: none; border: 1px solid var(--line-strong); color: var(--text); border-radius: 6px; padding: 6px 12px; cursor: pointer; text-decoration: none; font-size: 14px; display: inline-block; }
+.btn-ghost:hover { background: var(--surface-2); }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; }
+.error { color: var(--brist); }
+
+/* Start */
+.hero { max-width: 640px; margin: 24px auto 40px; }
+.hero h1 { font-size: 34px; letter-spacing: -.02em; }
+.hero p { font-size: 18px; color: var(--muted); margin: 8px 0 24px; }
+.urlform { display: flex; gap: 8px; }
+.urlform input { flex: 1; min-width: 0; padding: 10px 12px; border: 1px solid var(--line-strong); border-radius: 6px; background: var(--surface); }
+.urlform input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+.recent { max-width: 640px; margin: 0 auto; }
+.recent h2 { font-size: 15px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin-bottom: 10px; font-weight: 600; }
+.scanlist { list-style: none; margin: 0; padding: 0; }
+.scanlist a { display: flex; justify-content: space-between; gap: 12px; padding: 12px 16px; text-decoration: none; color: var(--text); border-bottom: 1px solid var(--line); }
+.scanlist li:last-child a { border-bottom: 0; }
+.scanlist a:hover { background: var(--surface-2); }
+.scanlist .shop { font-weight: 600; }
+.scanlist .meta { font-size: 13px; color: var(--muted); overflow-wrap: anywhere; }
+.scanlist .right { text-align: right; flex-shrink: 0; font-size: 13px; }
+.scanlist .shop { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.nowrap { white-space: nowrap; }
+
+/* Progress */
+.progress { max-width: 640px; margin: 24px auto; }
+.progress h1 { font-size: 24px; }
+.steps { display: flex; gap: 8px; margin: 20px 0; flex-wrap: wrap; }
+.step { font-size: 14px; padding: 6px 10px; border-radius: 6px; background: var(--surface-2); color: var(--muted); }
+.step.on { background: var(--accent-bg); color: var(--accent); font-weight: 600; }
+.loglines { list-style: none; margin: 0; padding: 16px; font: 14px/1.6 var(--mono); }
+.loglines li { color: var(--muted); overflow-wrap: anywhere; }
+.loglines li:last-child { color: var(--text); }
+.spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid var(--line-strong); border-top-color: var(--accent); border-radius: 50%; animation: spin .8s linear infinite; vertical-align: -2px; margin-right: 8px; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Report */
+.rhead { display: flex; justify-content: space-between; gap: 16px; align-items: flex-start; flex-wrap: wrap; margin-bottom: 20px; }
+.rhead h1 { font-size: 30px; letter-spacing: -.02em; overflow-wrap: anywhere; }
+.rhead .meta { font-size: 14px; color: var(--muted); margin-top: 4px; overflow-wrap: anywhere; }
+.summary { padding: 20px; margin-bottom: 28px; }
+.verdict { font-size: 20px; font-weight: 600; margin-bottom: 14px; }
+.bar { display: flex; gap: 2px; height: 12px; border-radius: 6px; overflow: hidden; background: var(--surface-2); }
+.bar span { display: block; height: 100%; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 20px; margin-top: 12px; font-size: 14px; }
+.legend b { font-variant-numeric: tabular-nums; }
+.dot { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 6px; vertical-align: 0; }
+.s-brist { --c: var(--brist); --cb: var(--brist-bg); }
+.s-osaker { --c: var(--osaker); --cb: var(--osaker-bg); }
+.s-ok { --c: var(--ok); --cb: var(--ok-bg); }
+.s-grey { --c: var(--grey); --cb: var(--grey-bg); }
+.s-rad { --c: var(--rad); --cb: var(--rad-bg); }
+.s-na { --c: var(--na); --cb: var(--na-bg); }
+.s-kik { --c: var(--kik); --cb: var(--kik-bg); }
+.s-intyg { --c: var(--intyg); --cb: var(--intyg-bg); }
+.s-test { --c: var(--test); --cb: var(--test-bg); }
+.fill { background: var(--c); }
+.fill.s-kik { background: repeating-linear-gradient(135deg, var(--kik) 0 3px, var(--kik-bg) 3px 6px); }
+.pill.s-kik { border: 1px dashed var(--kik); padding: 1px 7px; }
+.legend .sep { flex-basis: 100%; height: 0; }
+.legend .outside { color: var(--muted); }
+.trust { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 600; color: var(--muted); white-space: nowrap; }
+.trust::before { content: ""; width: 8px; height: 8px; border-radius: 50%; border: 2px solid currentColor; }
+.trust.t-oss { color: var(--accent); } .trust.t-oss::before { background: currentColor; }
+.trust.t-doc { color: var(--ok); } .trust.t-doc::before { background: linear-gradient(90deg, currentColor 50%, transparent 50%); }
+.trust.t-egen { color: var(--intyg); }
+.trust.t-none { color: var(--faint); } .trust.t-none::before { border-style: dashed; }
+.oldreq { display: inline-block; font-size: 12px; font-weight: 600; padding: 2px 8px; border-radius: 4px; background: var(--grey-bg); color: var(--muted); border: 1px solid var(--line-strong); white-space: nowrap; }
+.need { margin-bottom: 36px; }
+.need h3 { font-size: 15px; font-weight: 600; padding: 0 0 6px; color: var(--muted); }
+.need .rows a { grid-template-columns: 130px 56px 1fr auto; }
+.shref { font-size: 13px; color: var(--muted); margin-top: 6px; }
+.shot { display: block; margin: 8px 0; max-width: 100%; border: 1px solid var(--line); border-radius: 6px; }
+details.shotbox summary { cursor: pointer; font-size: 13px; color: var(--accent); }
+.evmeta { font-size: 13px; color: var(--muted); margin-bottom: 6px; overflow-wrap: anywhere; }
+.form label { display: block; font-weight: 600; font-size: 14px; margin: 12px 0 4px; }
+.form .q { font-size: 16px; margin: 0 0 8px; }
+.form .yn { display: flex; gap: 16px; }
+.form .yn label { font-weight: 400; margin: 0; display: flex; gap: 6px; align-items: center; font-size: 15px; }
+.form textarea { width: 100%; min-height: 72px; padding: 8px 10px; border: 1px solid var(--line-strong); border-radius: 6px; background: var(--surface); font: inherit; color: inherit; }
+.form input[type=file] { font-size: 14px; }
+.form .actions { margin-top: 14px; display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+.saved { border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; margin-bottom: 14px; font-size: 15px; }
+.saved p { margin: 0 0 6px; }
+.saved blockquote { margin: 4px 0 8px; font: italic 14px/1.5 var(--serif); padding-left: 10px; border-left: 2px solid var(--line-strong); }
+.pill { display: inline-block; font-size: 12px; font-weight: 600; padding: 2px 8px; border-radius: 999px; color: var(--c); background: var(--cb); white-space: nowrap; }
+.tabs { display: flex; gap: 4px; box-shadow: inset 0 -1px var(--line); margin-bottom: 24px; overflow-x: auto; overflow-y: hidden; scrollbar-width: none; scroll-margin-top: 8px; }
+.tabs::-webkit-scrollbar { display: none; }
+.tabs a { padding: 10px 14px; text-decoration: none; color: var(--muted); border-bottom: 2px solid transparent; white-space: nowrap; font-weight: 500; }
+.tabs a.on { color: var(--text); border-bottom-color: var(--accent); }
+.sect-title { font-size: 20px; margin: 0 0 4px; }
+.sect-sub { font-size: 14px; color: var(--muted); margin: 0 0 14px; }
+.fixes { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; margin-bottom: 36px; }
+.fix { display: block; padding: 16px; text-decoration: none; color: var(--text); border-left: 3px solid var(--brist); }
+.fix:hover { box-shadow: var(--shadow); }
+.fix .top { display: flex; gap: 8px; align-items: baseline; margin-bottom: 4px; }
+.pid { font: 600 13px var(--mono); color: var(--muted); }
+.fix h3 { font-size: 16px; }
+.fix p { margin: 4px 0 10px; font-size: 15px; }
+.fix blockquote { margin: 0; font: italic 14px/1.5 var(--serif); color: var(--muted); padding-left: 10px; border-left: 2px solid var(--line-strong); display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; overflow-wrap: anywhere; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
+.chip { border: 1px solid var(--line-strong); background: var(--surface); border-radius: 999px; padding: 4px 12px; font-size: 14px; cursor: pointer; }
+.chip[aria-pressed="true"] { background: var(--text); color: var(--bg); border-color: var(--text); }
+.chip .n { color: var(--faint); margin-left: 4px; font-variant-numeric: tabular-nums; }
+.chip[aria-pressed="true"] .n { color: inherit; opacity: .7; }
+.group { margin-bottom: 20px; }
+.group h3 { font-size: 15px; font-weight: 600; padding: 0 0 6px; color: var(--muted); }
+.group h3 b { color: var(--text); }
+.rows { list-style: none; margin: 0; padding: 0; }
+.rows a { display: grid; grid-template-columns: 170px 56px 1fr; gap: 12px; align-items: baseline; padding: 10px 16px; text-decoration: none; color: var(--text); border-bottom: 1px solid var(--line); }
+.rows li:last-child a { border-bottom: 0; }
+.rows a:hover, .rows a.cur { background: var(--surface-2); }
+.rows .lbl { font-weight: 600; }
+.rows .sum { color: var(--muted); font-size: 15px; }
+.empty { padding: 16px; color: var(--muted); }
+table.pages { width: 100%; border-collapse: collapse; font-size: 15px; }
+.pages th { text-align: left; font-size: 13px; color: var(--muted); font-weight: 600; padding: 10px 12px; border-bottom: 1px solid var(--line); }
+.pages td { padding: 10px 12px; border-bottom: 1px solid var(--line); vertical-align: top; overflow-wrap: anywhere; }
+.pages tr:last-child td { border-bottom: 0; }
+.kind { font: 13px var(--mono); color: var(--muted); }
+.badge { display: inline-block; font-size: 11px; font-weight: 600; padding: 1px 6px; border-radius: 4px; background: var(--grey-bg); color: var(--grey); margin-left: 4px; }
+.about { max-width: 720px; }
+.about h2 { font-size: 20px; margin: 28px 0 8px; }
+.about h2:first-child { margin-top: 0; }
+.about p { margin: 0 0 12px; }
+.groups { list-style: none; margin: 0; padding: 0; }
+.groups li { padding: 12px 16px; border-bottom: 1px solid var(--line); display: grid; grid-template-columns: 1fr auto; gap: 4px 12px; }
+.groups li:last-child { border-bottom: 0; }
+.groups .n { font-variant-numeric: tabular-nums; color: var(--muted); font-size: 14px; }
+.groups .d { grid-column: 1 / -1; color: var(--muted); font-size: 15px; }
+
+/* Panel */
+.scrim { position: fixed; inset: 0; background: var(--scrim); z-index: 10; }
+.panel { position: fixed; top: 0; right: 0; bottom: 0; width: min(560px, 100%); background: var(--surface); z-index: 11; overflow-y: auto; box-shadow: var(--shadow); border-left: 1px solid var(--line); }
+.panel[hidden], .scrim[hidden] { display: none; }
+.phead { position: sticky; top: 0; background: var(--surface); border-bottom: 1px solid var(--line); padding: 14px 20px; display: flex; gap: 12px; align-items: flex-start; justify-content: space-between; z-index: 1; }
+.phead h2 { font-size: 20px; overflow-wrap: anywhere; }
+.phead .sub { margin-top: 4px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.close { background: none; border: 0; font-size: 24px; line-height: 1; cursor: pointer; color: var(--muted); padding: 2px 6px; }
+.close:hover { color: var(--text); }
+.close:focus { outline: none; }
+.close:focus-visible { outline: 2px solid var(--accent); border-radius: 4px; }
+.pbody { padding: 20px; }
+.pbody section { margin-bottom: 24px; }
+.pbody h3 { font-size: 13px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); font-weight: 600; margin-bottom: 8px; }
+.sh { margin: 0; font: italic 17px/1.55 var(--serif); padding: 12px 16px; border-left: 3px solid var(--accent); background: var(--accent-bg); border-radius: 0 6px 6px 0; }
+.sh::before { content: "\201D"; } .sh::after { content: "\201D"; }
+.why { margin: 8px 0 0; }
+.ev { border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; margin-bottom: 10px; }
+.ev .role { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; color: var(--c); }
+.ev blockquote { margin: 6px 0 8px; font: 15px/1.55 var(--serif); white-space: pre-wrap; overflow-wrap: anywhere; }
+.ev .links { font-size: 13px; display: flex; gap: 12px; flex-wrap: wrap; align-items: baseline; }
+.ev .url { color: var(--muted); overflow-wrap: anywhere; }
+.plist { list-style: none; margin: 0; padding: 0; font-size: 15px; }
+.plist li { padding: 6px 0; border-bottom: 1px solid var(--line); overflow-wrap: anywhere; }
+.plist li:last-child { border-bottom: 0; }
+.note { background: var(--grey-bg); border-radius: 8px; padding: 12px 14px; font-size: 15px; }
+.back { display: inline-block; font-size: 14px; margin-bottom: 4px; text-decoration: none; }
+.pagetext { font: 15px/1.6 var(--serif); overflow-wrap: anywhere; }
+.pagetext p { margin: 0 0 6px; }
+.pagetext h4 { font: 600 17px/1.3 var(--sans); margin: 18px 0 6px; }
+.pagetext mark { background: var(--mark); color: inherit; padding: 1px 0; border-radius: 2px; box-shadow: 0 0 0 2px var(--mark); }
+.hit { font-size: 14px; padding: 8px 12px; border-radius: 6px; margin-bottom: 16px; }
+.hit.ok { background: var(--ok-bg); color: var(--ok); }
+.hit.miss { background: var(--osaker-bg); color: var(--osaker); }
+
+/* ---------- Black and white theme (overrides the tokens above, also in dark mode) ---------- */
+:root {
+  --bg: #ffffff; --surface: #ffffff; --surface-2: #f4f4f4; --line: #e3e3e3; --line-strong: #c8c8c8;
+  --text: #111111; --muted: #555555; --faint: #8a8a8a; --accent: #111111; --accent-bg: #f4f4f4;
+  --brist: #111111; --brist-bg: #f4f4f4; --osaker: #111111; --osaker-bg: #f4f4f4;
+  --ok: #555555; --ok-bg: #f4f4f4; --grey: #777777; --grey-bg: #f4f4f4;
+  --rad: #333333; --rad-bg: #f4f4f4; --na: #777777; --na-bg: #f4f4f4; --kik: #777777; --kik-bg: #f4f4f4;
+  --intyg: #333333; --intyg-bg: #f4f4f4; --test: #333333; --test-bg: #f4f4f4;
+  --mark: #e6e6e6; --shadow: 0 1px 2px rgba(0,0,0,.06), 0 6px 20px rgba(0,0,0,.06); --scrim: rgba(0,0,0,.25);
+  --serif: var(--sans);
+  color-scheme: light;
+}
+body { font-size: 16px; }
+a { color: var(--text); text-underline-offset: 2px; }
+.topbar { background: #fff; }
+.btn { background: #111; color: #fff; border-radius: 4px; }
+.btn-ghost { border-radius: 4px; }
+.sh { font: 16px/1.6 var(--sans); font-style: normal; background: var(--surface-2); border-left-color: #111; }
+.ev { border-color: var(--line); }
+.ev .role { color: var(--muted); }
+.ev blockquote, .saved blockquote, .pagetext { font: 16px/1.6 var(--sans); font-style: normal; }
+.pagetext mark { background: none; box-shadow: none; text-decoration: underline 2px; text-underline-offset: 3px; font-weight: 600; }
+.pill { background: none; padding: 0; color: var(--text); font-weight: 500; font-size: 13px; display: inline-flex; align-items: center; gap: 6px; border: 0 !important; }
+.pill::before { content: ""; width: 9px; height: 9px; border-radius: 50%; box-sizing: border-box; flex: none; }
+.pill.s-brist::before, .d-brist { background: #111; }
+.pill.s-osaker::before, .d-osaker { border: 1.5px solid #111; }
+.pill.s-ok::before, .d-ok { background: #c9c9c9; }
+.pill.s-na::before, .d-na { border: 1.5px solid #c9c9c9; }
+.pill.s-rad::before, .d-rad { background: #777; }
+.pill.s-kik::before, .d-kik { border: 1.5px dashed #9a9a9a; }
+.pill.s-intyg::before, .pill.s-test::before, .d-need { border: 1.5px dotted #555; }
+.d-wait { background: #ececec; transform: scale(.55); }
+.trust, .oldreq { color: var(--muted) !important; }
+
+/* ---------- Report, also while the scan runs ---------- */
+.rp { --w: 70ch; }
+.rp-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap; }
+.rp-head h1 { font-size: 30px; letter-spacing: -.02em; font-weight: 700; overflow-wrap: anywhere; }
+.rp-head .meta { font-size: 14px; color: var(--muted); margin-top: 4px; overflow-wrap: anywhere; }
+.rp-state { font-weight: 600; color: var(--text); }
+.rp-line { height: 2px; background: var(--line); margin: 18px 0 0; overflow: hidden; }
+.rp-line i { display: block; height: 100%; background: #111; width: 0; transition: width .8s ease; }
+.rp.final .rp-line i { background: var(--line); }
+.rp-keys { display: flex; flex-wrap: wrap; gap: 4px 28px; margin: 12px 0 0; font-size: 13px; color: var(--muted); }
+.rp-keys div { display: flex; align-items: baseline; gap: 6px; }
+.num { font-family: var(--mono); font-variant-numeric: tabular-nums; color: var(--text); }
+.rp-keys .num { font-size: 15px; }
+.rp-lead { font-size: 20px; line-height: 1.5; max-width: 60ch; margin: 28px 0 22px; }
+.rp-map { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 14px 22px; padding: 18px 0 20px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.rp-map h3 { font-size: 12px; font-weight: 600; color: var(--muted); margin: 0 0 6px; }
+.rp-map ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 4px 10px; }
+.rp-map a { display: inline-flex; align-items: center; gap: 5px; font: 12px var(--mono); color: var(--muted); text-decoration: none; }
+.rp-map a:hover { color: var(--text); text-decoration: underline; }
+.rp-map a.cur { color: var(--text); font-weight: 600; }
+.d { width: 9px; height: 9px; border-radius: 50%; box-sizing: border-box; display: inline-block; flex: none; transition: transform .35s cubic-bezier(.3,1.5,.5,1); }
+.rp-map .d.pop { animation: rpPop .45s cubic-bezier(.3,1.6,.5,1); }
+.rp-legend { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 13px; color: var(--muted); margin: 12px 0 0; }
+.rp-legend span { display: inline-flex; align-items: center; gap: 6px; }
+.rp-sec { margin: 44px 0 0; }
+.rp-sec > h2 { font-size: 22px; letter-spacing: -.01em; margin: 0 0 4px; }
+.rp-sec > .sub { color: var(--muted); margin: 0 0 18px; max-width: var(--w); }
+.rp-empty { color: var(--muted); }
+.bc { max-width: var(--w); padding: 22px 0 24px; border-top: 1px solid var(--line); }
+.bc:first-of-type { border-top: 0; padding-top: 6px; }
+.bc-verdict { font-size: 19px; line-height: 1.45; margin: 0 0 14px; }
+.bc p { margin: 0 0 10px; font-size: 16.5px; line-height: 1.6; }
+.bc .k { display: block; font-size: 13px; font-weight: 600; color: var(--muted); margin-bottom: 2px; }
+.bc-quote { margin: 0 0 12px; font-size: 16.5px; line-height: 1.6; padding-left: 14px; border-left: 2px solid #111; }
+.bc-quote u { text-decoration-thickness: 1.5px; text-underline-offset: 3px; }
+.bc-foot { font-size: 14px !important; color: var(--muted); display: flex; gap: 6px 16px; flex-wrap: wrap; }
+.pidl { font-size: 13px; color: var(--faint); }
+.rl { list-style: none; margin: 0; padding: 0; max-width: var(--w); }
+.rl li { border-top: 1px solid var(--line); }
+.rl li:first-child { border-top: 0; }
+.rl a { display: block; padding: 12px 0; text-decoration: none; color: var(--text); }
+.rl a:hover .t, .rl a.cur .t { text-decoration: underline; }
+.rl .t { display: block; font-size: 16.5px; line-height: 1.5; }
+.rl .m { display: block; font-size: 13px; color: var(--muted); margin-top: 2px; }
+details.rp-fold { max-width: var(--w); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+details.rp-fold + details.rp-fold { border-top: 0; }
+details.rp-fold > summary { cursor: pointer; padding: 14px 0; font-size: 18px; font-weight: 600; list-style: none; display: flex; justify-content: space-between; gap: 12px; }
+details.rp-fold > summary::-webkit-details-marker { display: none; }
+details.rp-fold > summary::after { content: "Visa"; font-size: 14px; font-weight: 400; color: var(--muted); }
+details.rp-fold[open] > summary::after { content: "Dölj"; }
+details.rp-fold > .in { padding: 0 0 14px; }
+details.rp-fold .sub { color: var(--muted); margin: 0 0 8px; }
+.enter { animation: rpIn .45s cubic-bezier(.2,.8,.2,1) both; }
+
+/* summary line, step list and process graph */
+.rp-sum { margin: 12px 0 0; font-size: 14px; color: var(--muted); line-height: 1.7; }
+.rp-sum .num { font-size: 14px; }
+.rp-sum .ok { color: var(--text); font-weight: 600; }
+.lv2 { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 32px; margin-top: 22px; align-items: start; overflow: hidden;
+  transition: height .6s ease, opacity .6s ease; }
+.lv2.settle { opacity: 0; }
+.steps2 { list-style: none; margin: 0; padding: 0; counter-reset: st; }
+.st { border-top: 1px solid var(--line); }
+.st:last-child { border-bottom: 1px solid var(--line); }
+.st.enter { animation: rpIn .4s cubic-bezier(.2,.8,.2,1) both; }
+.st-h { width: 100%; display: grid; grid-template-columns: 22px minmax(0, 1fr) auto; grid-template-areas: "i t time" ". n n"; gap: 2px 10px;
+  align-items: baseline; padding: 11px 0 10px; background: none; border: 0; text-align: left; cursor: pointer; color: var(--text); }
+.st-h:focus-visible { outline: 2px solid #111; outline-offset: 2px; }
+.st-i { grid-area: i; width: 16px; height: 16px; border-radius: 50%; border: 1.5px solid var(--line-strong); display: inline-flex;
+  align-items: center; justify-content: center; font-size: 11px; line-height: 1; align-self: center; box-sizing: border-box; }
+.st-done .st-i { background: #111; border-color: #111; color: #fff; }
+.st-skipped .st-i, .st-failed .st-i { border-color: #999; color: #555; }
+.st-running .st-i { border-color: var(--line); border-top-color: #111; animation: spin .9s linear infinite; }
+.st-t { grid-area: t; font-weight: 600; font-size: 15.5px; }
+.st-waiting .st-t { color: var(--faint); font-weight: 500; }
+.st-n { grid-area: n; font-size: 14px; color: var(--muted); }
+.st-n .num { font-size: 14px; }
+.st-time { grid-area: time; font-size: 13px; color: var(--muted); }
+.st-d { padding: 0 0 0 32px; }
+.st-d:empty { display: none; }
+.st-sub { font-size: 13px; color: var(--muted); margin: -4px 0 8px; display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: center; }
+.st-sub .d { margin-right: 4px; }
+.st-lines { list-style: none; margin: 0 0 10px; padding: 0; font-size: 13px; }
+.st-lines li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px; padding: 2px 0; animation: rpIn .3s both; }
+.st-lines .a { font-family: var(--mono); font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.st-lines .b { color: var(--muted); text-align: right; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 22ch; }
+.st-lines li.sk { color: var(--faint); }
+.st-lines li.sk .a { text-decoration: line-through; text-decoration-color: #bbb; }
+.st[data-key="regler"] .st-lines li, .st[data-key="kassa"] .st-lines li { grid-template-columns: auto minmax(0, 1fr); }
+.st[data-key="regler"] .st-lines .b, .st[data-key="kassa"] .st-lines .b { max-width: none; text-align: left; }
+.st-more { font-size: 12px; color: var(--faint); margin: -4px 0 10px; }
+.st-shots { display: flex; gap: 8px; margin: 0 0 10px; overflow-x: auto; }
+.st-shots figure { margin: 0; flex: 0 0 104px; animation: rpIn .4s both; }
+.st-shots img { width: 104px; height: 66px; object-fit: cover; object-position: top; border: 1px solid var(--line); border-radius: 3px; display: block; filter: grayscale(1); }
+.st-shots figcaption { font-size: 11px; color: var(--muted); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.st-log { font: 12px var(--mono); color: var(--faint); margin: 10px 0 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.gr { position: relative; margin: 0; }
+.gr svg.pg { width: 100%; height: auto; display: block; overflow: visible; }
+.rp-fig .gr { max-width: 760px; }
+.g-col { font: 600 10px var(--sans); fill: #8a8a8a; letter-spacing: .02em; }
+.g-lbl { font: 10px var(--mono); fill: #333; paint-order: stroke; stroke: #fff; stroke-width: 3px; stroke-linejoin: round; }
+.g-ptl { fill: #777; font-size: 9px; }
+.g-grp { font: 600 9.5px var(--sans); fill: #8a8a8a; text-anchor: end; }
+.g-e { fill: none; stroke: #d6d6d6; stroke-width: 1; }
+.g-h { fill: none; stroke: #111; stroke-width: .8; opacity: .28; stroke-dasharray: 400; stroke-dashoffset: 0; transition: stroke-dashoffset .9s ease, opacity .3s; }
+.g-h.new { stroke-dashoffset: 400; }
+.g-start { fill: #111; }
+.g-start.pend { fill: #fff; stroke: #111; }
+.g-src { fill: #fff; stroke: #111; stroke-width: 1.2; }
+.g-pg { transition: opacity .4s; cursor: pointer; }
+.g-pg.new { opacity: 0; }
+.g-pg circle { fill: #111; }
+.g-pg.pend circle { fill: #fff; stroke: #111; stroke-width: 1.2; }
+.g-pg .g-ring { fill: none; stroke: #111; stroke-width: 1; opacity: 0; transform-box: fill-box; transform-origin: center; }
+.g-pg.active .g-ring { animation: gPulse 1.6s ease-out infinite; }
+.g-pg .g-hit { fill: transparent; }
+.g-pt { stroke-width: 1.3; transition: fill .4s, stroke .4s; }
+.g-pt.d-wait { fill: #ececec; stroke: none; }
+.g-pt.d-brist { fill: #111; stroke: #111; }
+.g-pt.d-osaker { fill: #fff; stroke: #111; }
+.g-pt.d-ok { fill: #c9c9c9; stroke: #c9c9c9; }
+.g-pt.d-na { fill: #fff; stroke: #c9c9c9; }
+.g-pt.d-rad { fill: #777; stroke: #777; }
+.g-pt.d-kik { fill: #fff; stroke: #9a9a9a; stroke-dasharray: 1.5 1.5; }
+.g-pt.d-need { fill: #fff; stroke: #555; stroke-dasharray: 1 1.5; }
+.g-labels text, .g-nodes > * { transition: opacity .4s; }
+.g-labels text.new, .g-nodes > .new { opacity: 0; }
+svg.focus .g-h { opacity: .08; }
+svg.focus .g-h.on { opacity: .9; stroke-width: 1.2; }
+.g-pg.on circle { r: 4.5; }
+.gtip { position: absolute; z-index: 3; width: 260px; background: #fff; border: 1px solid #111; border-radius: 4px; padding: 8px 10px;
+  font-size: 13px; line-height: 1.45; box-shadow: var(--shadow); pointer-events: none; }
+.gtip .u { font: 11.5px var(--mono); color: var(--muted); overflow-wrap: anywhere; margin: 2px 0 4px; }
+.gtip .pts { margin-top: 4px; display: flex; flex-wrap: wrap; gap: 2px 8px; align-items: center; font: 12px var(--mono); }
+.gtip .pts .d { margin-right: 3px; }
+@keyframes gPulse { 0% { opacity: .7; transform: scale(1); } 100% { opacity: 0; transform: scale(3); } }
+@media (max-width: 860px) {
+  .lv2 { grid-template-columns: minmax(0, 1fr); gap: 20px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .st.enter, .st-lines li, .st-shots figure { animation: none !important; }
+  .st-running .st-i { animation: none; border-color: #111; border-style: dotted; }
+  .g-pg.active .g-ring { animation: none; }
+  .g-h, .g-pg, .lv2 { transition: none !important; }
+}
+
+/* "Vad vi kontrollerar" */
+.topnav { display: flex; gap: 20px; }
+.toplink.on { color: var(--text); text-decoration: underline; text-underline-offset: 4px; }
+.teaser { max-width: 640px; margin: 0 auto 40px; padding: 18px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.teaser h2 { font-size: 17px; margin: 0 0 4px; }
+.teaser p { margin: 0 0 6px; color: var(--muted); }
+.teaser .kv-sum { margin: 8px 0; }
+.kv-head { max-width: 760px; }
+.kv-head h1 { font-size: 30px; letter-spacing: -.02em; }
+.kv-lead { font-size: 17px; line-height: 1.6; margin: 10px 0 14px; }
+.kv-sum { display: flex; flex-wrap: wrap; gap: 6px 22px; font-size: 14px; color: var(--muted); margin: 0 0 16px; }
+.kv-sum > span { display: inline-flex; align-items: center; gap: 6px; }
+.kv-sum .num { color: var(--text); font-size: 15px; }
+.kv-filter { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 26px; }
+.kv-filter .chip { border-radius: 4px; }
+.kv-filter .chip[aria-pressed="true"] { background: #111; color: #fff; border-color: #111; }
+.kv-cols { display: grid; grid-template-columns: minmax(0, 1fr) 72px minmax(0, 1fr); border-bottom: 1px solid #111; padding-bottom: 6px; }
+.kv-cols h2 { font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin: 0; }
+.kv-grid { position: relative; }
+.kv-row { display: grid; grid-template-columns: minmax(0, 1fr) 72px minmax(0, 1fr); align-items: start; margin-bottom: 10px; }
+.kv-row > .kr { grid-column: 1; }
+.kv-pts { grid-column: 3; }
+.kv-lines { position: absolute; left: 0; top: 0; width: 100%; pointer-events: none; overflow: visible; }
+.kv-sec { font-size: 15px; margin: 22px 0 8px; }
+.kr, .kp { padding: 10px 12px; margin: 0 0 8px; border: 1px solid var(--line); border-radius: 4px; background: #fff;
+  transition: opacity .25s, border-color .25s; }
+.kr { cursor: pointer; }
+.kr:focus-visible { outline: 2px solid #111; outline-offset: 1px; }
+.kr-h { display: flex; justify-content: space-between; gap: 10px; margin-bottom: 4px; }
+.kr-h .num { font-weight: 600; }
+.kr-t { margin: 0 0 6px; font-size: 15px; line-height: 1.55; }
+.kr-t:last-child { margin-bottom: 0; }
+.kr-pts { display: none; }
+.kp-h { display: flex; gap: 8px; align-items: baseline; }
+.kp-h b { font-size: 15px; }
+.kp-w { margin: 4px 0 6px; font-size: 14.5px; line-height: 1.5; }
+.kp-d { margin: 0; font-size: 13px; display: grid; gap: 2px; }
+.kp-d div { display: grid; grid-template-columns: 66px minmax(0, 1fr); gap: 8px; }
+.kp-d dt { color: var(--muted); }
+.kp-d dd { margin: 0; display: flex; align-items: baseline; gap: 6px; flex-wrap: wrap; }
+.kp-d .d { align-self: center; }
+.kv-lines path { fill: none; stroke: #111; stroke-width: 1; opacity: .25; transition: opacity .25s, stroke-width .25s; }
+.kv-lines path.off { opacity: .05; }
+.kv-lines circle { fill: #111; opacity: .35; }
+.kv-grid.filtered .kp:not(.match), .kv-grid.filtered .kr:not(.match) { opacity: .3; }
+.kv-grid.focus .kr:not(.hi), .kv-grid.focus .kv-pts .kp:not(.hi) { opacity: .35; }
+.kv-grid.focus .kv-lines path { opacity: .05; }
+.kv-grid.focus .kv-lines path.hi { opacity: 1; stroke-width: 1.6; }
+.kr.hi, .kp.hi { border-color: #111; }
+.kv-src { margin-top: 30px; max-width: 760px; }
+@media (max-width: 860px) {
+  .kv-cols { display: none; }
+  .kv-grid { display: block; }
+  .kv-row { display: block; }
+  .kv-lines, .kv-pts { display: none; }
+  .kr { cursor: default; }
+  .kr-pts { display: block; margin-top: 8px; }
+  .kp.nested { border: 0; border-left: 2px solid #111; border-radius: 0; padding: 6px 0 6px 12px; margin: 8px 0 0; }
+  .kv-head h1 { font-size: 26px; }
+}
+@media (max-width: 420px) {
+  .topnav { gap: 12px; }
+  .toplink { font-size: 13px; }
+  .brand { font-size: 16px; }
+}
+
+/* preliminary banner and review mode */
+.prelim { display: flex; justify-content: space-between; align-items: center; gap: 12px 24px; flex-wrap: wrap; border: 1.5px solid #111;
+  border-radius: 4px; padding: 14px 16px; margin: 18px 0 0; font-size: 15px; line-height: 1.5; }
+.prelim.done { border-style: solid; background: var(--surface-2); }
+.prelim > div:first-child { flex: 1 1 360px; }
+.prelim-a { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.prelim .btn, .prelim .btn-ghost { text-decoration: none; }
+.d-open { border: 1.5px solid #c8c8c8; }
+.d-need { border: 1.5px dotted #555; }
+.rv-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 12px 24px; flex-wrap: wrap; margin-bottom: 18px; }
+.rv-head h1 { font-size: 26px; letter-spacing: -.02em; overflow-wrap: anywhere; }
+.rv-prog { flex: 0 1 340px; font-size: 14px; color: var(--muted); }
+.rv-bar { height: 4px; background: var(--line); border-radius: 2px; overflow: hidden; margin-bottom: 6px; }
+.rv-bar i { display: block; height: 100%; background: #111; transition: width .4s ease; }
+main .wrap:has(.rv) { max-width: 1320px; }
+.rv-grid { display: grid; grid-template-columns: 230px minmax(0, 1fr) 330px; gap: 28px; align-items: start; margin-top: 18px; }
+.rv-side { position: sticky; top: 12px; max-height: calc(100vh - 24px); overflow-y: auto; scrollbar-width: thin; }
+.rv-listbox > summary { cursor: pointer; font-weight: 600; font-size: 14px; padding: 4px 0 8px; }
+.rv-filters { display: grid; gap: 4px; font-size: 13px; color: var(--muted); margin-bottom: 8px; }
+.rv-filters label { display: flex; gap: 6px; align-items: center; }
+.rv-list { list-style: none; margin: 0; padding: 0; font-size: 13px; }
+.rv-list .rv-sec { font-size: 11.5px; font-weight: 600; color: var(--muted); margin: 10px 0 2px; }
+.rv-list a { display: grid; grid-template-columns: 12px 40px minmax(0, 1fr) auto; gap: 6px; align-items: center; padding: 3px 6px;
+  border-radius: 3px; text-decoration: none; color: var(--text); }
+.rv-list a:hover { background: var(--surface-2); }
+.rv-list a.cur { background: #111; color: #fff; }
+.rv-list a.cur .pidl { color: #ccc; }
+.rv-list a.cur .d-brist { background: #fff; } .rv-list a.cur .d-osaker, .rv-list a.cur .d-open { border-color: #fff; }
+.rv-list .l { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rv-list .ch { font-size: 10.5px; color: var(--muted); border: 1px solid var(--line-strong); border-radius: 3px; padding: 0 4px; }
+.rv-list a.cur .ch { color: #fff; border-color: #888; }
+.rv-ev section { margin: 0 0 22px; }
+.rv-ev h3 { font-size: 13px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); font-weight: 600; margin: 0 0 8px; }
+.rv-ph { margin-bottom: 16px; }
+.rv-ph h2 { font-size: 24px; letter-spacing: -.01em; margin-top: 2px; }
+.rv-sugg { font-size: 16px; margin: 0 0 6px; display: flex; gap: 6px; align-items: baseline; flex-wrap: wrap; }
+.rv-sugg .d { align-self: center; }
+.rv-why { margin: 0 0 6px; max-width: 70ch; line-height: 1.6; }
+.rv-q { border: 1px solid var(--line); border-radius: 4px; margin-bottom: 14px; }
+.rv-qh { font-size: 13px; color: var(--muted); padding: 8px 12px; border-bottom: 1px solid var(--line); overflow-wrap: anywhere; }
+.rv-qh b { color: var(--text); }
+.rv-text { max-height: 300px; overflow-y: auto; padding: 10px 14px; font-size: 15px; position: relative; }
+.rv-text mark { background: none; box-shadow: none; text-decoration: underline 2px; text-underline-offset: 3px; font-weight: 600; }
+.rv-shot { display: block; max-width: 100%; max-height: 260px; object-fit: cover; object-position: top; border-top: 1px solid var(--line); }
+.rv-dec { position: sticky; top: 12px; border: 1px solid var(--line); border-radius: 4px; padding: 14px 16px; background: #fff; }
+.rv-who { display: grid; gap: 4px; margin-bottom: 12px; font-size: 13px; color: var(--muted); }
+.rv-who input, .rv-own input, .rv-dec textarea { width: 100%; padding: 7px 9px; border: 1px solid var(--line-strong); border-radius: 4px; background: #fff; font: inherit; font-size: 15px; color: var(--text); }
+.rv-dec textarea { resize: vertical; line-height: 1.5; }
+.rv-choices { border: 0; margin: 0 0 12px; padding: 0; display: grid; gap: 6px; }
+.rv-choices legend { font-size: 13px; color: var(--muted); margin-bottom: 4px; padding: 0; }
+.rv-c { display: grid; grid-template-columns: 14px 1fr auto; grid-template-areas: "d l k" ". e e"; gap: 0 10px; align-items: center;
+  text-align: left; padding: 9px 12px; border: 1px solid var(--line-strong); border-radius: 4px; background: #fff; cursor: pointer; font-size: 15.5px; color: var(--text); }
+.rv-c .d { grid-area: d; }
+.rv-c span { grid-area: l; }
+.rv-c kbd, .rv-nav kbd { grid-area: k; font: 11px var(--mono); color: var(--muted); border: 1px solid var(--line-strong); border-radius: 3px; padding: 0 5px; }
+.rv-c em { grid-area: e; font-style: normal; font-size: 12px; color: var(--muted); }
+.rv-c:hover { border-color: #111; }
+.rv-c.on { background: #111; color: #fff; border-color: #111; }
+.rv-c.on em, .rv-c.on kbd { color: #ccc; border-color: #666; }
+.rv-c.on .d-brist { background: #fff; } .rv-c.on .d-osaker, .rv-c.on .d-na, .rv-c.on .d-need { border-color: #fff; }
+.rv-lbl { display: block; font-size: 13px; color: var(--muted); margin: 10px 0 4px; }
+.rv-need { margin: 10px 0 0; font-size: 14.5px; padding: 8px 10px; background: var(--surface-2); border-radius: 4px; }
+.rv-intyg section h3 { font-size: 13px; color: var(--muted); margin: 12px 0 4px; font-weight: 600; }
+.rv-own { margin-top: 12px; border-top: 1px solid var(--line); padding-top: 8px; }
+.rv-own summary { cursor: pointer; font-size: 14px; font-weight: 600; }
+.rv-evl { list-style: none; margin: 8px 0 0; padding: 0; font-size: 13.5px; }
+.rv-evl li { display: flex; justify-content: space-between; gap: 8px; padding: 6px 0; border-top: 1px solid var(--line); }
+.rv-evl p { margin: 0 0 2px; }
+.rv-evl a { overflow-wrap: anywhere; }
+.linkbtn { background: none; border: 0; padding: 0; color: var(--muted); text-decoration: underline; cursor: pointer; font-size: 13px; white-space: nowrap; }
+.rv-nav { display: flex; justify-content: space-between; gap: 8px; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--line); }
+.rv-nav .btn kbd { color: #ccc; border-color: #666; margin-left: 6px; }
+.rv-msg { min-height: 1.5em; margin: 8px 0 0; }
+.rv-keys { margin: 4px 0 0; }
+#rv-done .prelim { margin: 0 0 6px; }
+@media (max-width: 1100px) {
+  .rv-grid { grid-template-columns: minmax(0, 1fr) 320px; }
+  .rv-side { grid-column: 1 / -1; position: static; max-height: none; }
+  .rv-listbox:not([open]) { border-bottom: 1px solid var(--line); }
+}
+@media (max-width: 860px) {
+  .rv-grid { grid-template-columns: minmax(0, 1fr); gap: 18px; }
+  .rv-dec { position: static; }
+  .rv-head h1 { font-size: 22px; }
+  .rv-prog { flex: 1 1 100%; }
+  .rv-keys { display: none; }
+  .rv-text { max-height: 240px; }
+}
+
+/* numbers */
+.facts { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 0 28px; margin: 0 0 8px; }
+.facts dl { margin: 0; padding: 12px 0; border-top: 1px solid var(--line); }
+.facts dt { font-size: 12px; font-weight: 600; color: var(--muted); margin-bottom: 4px; }
+.facts dd { margin: 0; display: flex; justify-content: space-between; gap: 10px; font-size: 14px; line-height: 1.7; }
+.facts dd span:first-child { color: var(--muted); }
+.ftables { align-items: start; display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 8px 28px; margin-top: 16px; }
+table.ft { width: 100%; border-collapse: collapse; font-size: 14px; }
+.ft caption { text-align: left; font-size: 12px; font-weight: 600; color: var(--muted); padding: 0 0 6px; }
+.ft td, .ft th { padding: 5px 0; border-top: 1px solid var(--line); vertical-align: top; text-align: left; font-weight: 400; }
+.ft td.r, .ft th.r { text-align: right; font-family: var(--mono); font-variant-numeric: tabular-nums; padding-left: 10px; white-space: nowrap; }
+.ft .ids { font: 12px var(--mono); color: var(--muted); }
+.ft a { color: var(--text); }
+@keyframes rpIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+@keyframes rpPop { from { transform: scale(.2); } to { transform: scale(1); } }
+@media (max-width: 720px) {
+  .rp-head h1 { font-size: 24px; }
+  .rp-lead { font-size: 18px; margin-top: 20px; }
+  .rp-keys { gap: 4px 18px; }
+  .rp-map { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 14px; }
+  .pcs { grid-template-columns: minmax(0, 1fr); max-height: 70vh; }
+  .bc-verdict { font-size: 18px; }
+  .rp-sec { margin-top: 36px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .enter, .pc, .rp-map .d.pop { animation: none !important; }
+  .rp-line i, .pc-in, .pc-in .hl, .rp-live { transition: none !important; }
+}
+
+@media (max-width: 720px) {
+  main { padding-top: 20px; }
+  .hero h1 { font-size: 28px; }
+  .urlform { flex-direction: column; }
+  .rhead h1 { font-size: 24px; }
+  .tabs a { padding: 10px 10px; font-size: 15px; }
+  .scanlist a { flex-direction: column; gap: 6px; }
+  .scanlist .right { text-align: left; }
+  .rows a, .need .rows a { grid-template-columns: auto 1fr; gap: 2px 10px; }
+  .rows .pillcell { grid-column: 1 / -1; }
+  .rows .sum { grid-column: 1 / -1; }
+  .fixes { grid-template-columns: 1fr; }
+  .panel { width: 100%; border-left: 0; }
+  table.pages thead { display: none; }
+  table.pages, .pages tbody, .pages tr, .pages td { display: block; }
+  .pages tr { padding: 10px 12px; border-bottom: 1px solid var(--line); }
+  .pages td { padding: 2px 0; border: 0; }
+}
+@media (prefers-reduced-motion: reduce) { .spinner { animation: none; } }
+</style>
+</head>
+<body>
+<header class="topbar"><div class="wrap">
+  <a class="brand" href="#/">Villkors<span>kollen</span></a>
+  <nav class="topnav"><a class="toplink" href="#/krav" id="nav-krav">Vad vi kontrollerar</a><a class="toplink" href="#/">Ny granskning</a></nav>
+</div></header>
+<main><div class="wrap" id="app"></div></main>
+<div class="scrim" id="scrim" hidden></div>
+<aside class="panel" id="panel" hidden aria-label="Detaljer"></aside>
+
+<script>
+"use strict";
+
+/* ---------- constants ---------- */
+
+/* Judged points go in the bar; "kunde inte kontrolleras" and the two "kräver" states stay outside it. */
+const JUDGED = ["brist", "osäker", "råd", "uppfyllt", "ej tillämplig"];
+const KIK = "kunde inte kontrolleras";
+const NEEDS = ["kräver intyg", "kräver testköp"];
+const STATES = JUDGED.concat([KIK], NEEDS);
+const STATE_CLASS = { "brist": "s-brist", "osäker": "s-osaker", "råd": "s-rad", "uppfyllt": "s-ok",
+                      "ej tillämplig": "s-na", "kunde inte kontrolleras": "s-kik",
+                      "kräver intyg": "s-intyg", "kräver testköp": "s-test" };
+const STATE_PLURAL = { "brist": "Brister", "osäker": "Osäkra", "råd": "Råd", "uppfyllt": "Uppfyllda",
+                       "ej tillämplig": "Ej tillämpliga", "kunde inte kontrolleras": "Kunde inte kontrolleras",
+                       "kräver intyg": "Kräver intyg", "kräver testköp": "Kräver testköp" };
+/* Internal points: only the shop can show them. Short question per point, from Svensk Handels kravtext. */
+const INTYG = {
+  "2b": "Har ni en organisation för kundservice som tar emot och besvarar kundernas frågor och klagomål?",
+  "6.1b": "Har ni rutiner för att informera kunden när en leverans blir försenad?",
+  "6.2b": "Är era rutiner vid leveransförseningar sådana att kundens rättigheter inte inskränks?",
+  "8.1": "Har ni en organisation och rutin för att hantera reklamationsärenden?",
+  "9c": "Har ni rutiner som säkerställer att återbetalningar och annan ersättning betalas ut?",
+  "11a": "Har ni rutiner för hur avtal med minderåriga hanteras?",
+  "11c": "Har ni rutiner för att marknadsföring som riktas mot minderåriga är ansvarsfull och följer god sed?",
+  "14b": "Har ni rutiner för förfrågningar från kunder som vill utöva sina rättigheter om personuppgifter?",
+  "14c": "Har ni rutiner för att personuppgifter hanteras enligt dataskyddslagstiftningen?",
+};
+/* Points that need a real order or contact with the shop's consent. */
+const TESTKOP = {
+  "2a": "Kräver en testfråga till kundtjänst, med butikens samtycke, för att mäta svarstiden.",
+  "3.3": "Kräver ett testköp för att se om och när orderbekräftelsen kommer.",
+  "6.3": "Kräver ett testköp för att se vilken information som följer med leveransen.",
+};
+/* Page in Svensk Handels "Krav för certifieringen Trygg E-handel" where each point's text stands. */
+const SH_DOC = "Krav för certifieringen Trygg E-handel";
+const SH_PAGE = {"1":1,"2a":1,"2b":1,"3.1":1,"3.2a":1,"3.2b":1,"3.2c":2,"3.3":2,"4a":2,"4b":2,"5a":2,"5b":2,
+  "6.1a":2,"6.1b":2,"6.2":2,"6.2b":2,"6.3":2,"7.1a":3,"7.1b":3,"7.1c":3,"7.1d":3,"7.1e":3,"7.1f":3,"7.2":3,
+  "8.1":3,"8.2":3,"8.3":3,"9a":4,"9b":4,"9c":4,"10a":4,"10b":4,"10c":4,"11a":4,"11b":4,"11c":4,"12a":4,"12b":4,
+  "12c":4,"13a":4,"13b":4,"13c":5,"14a":5,"14b":5,"14c":5};
+const OUTDATED = { "10b": "EU:s plattform för tvistlösning online (ODR) stängdes 2025-07-20 (Konsumentverket). Svensk Handel har inte ändrat kravet, så punkten ger aldrig brist." };
+const TRUST = { oss: ["Kontrollerat av oss", "t-oss"], doc: ["Kontrollerat i butikens underlag", "t-doc"],
+                egen: ["Butikens egen uppgift", "t-egen"], none: ["Inget underlag än", "t-none"] };
+const SECTIONS = { 1: "Företagsuppgifter", 2: "Kundservice", 3: "Produkt och pris", 4: "Erbjudanden",
+  5: "Köpknapp och villkor", 6: "Leverans", 7: "Ångerrätt", 8: "Reklamation och garanti", 9: "Återbetalning",
+  10: "Tvistlösning", 11: "Minderåriga", 12: "Betalning", 13: "Prenumerationer", 14: "Dataskydd" };
+const GROUPS = {
+  1: ["Text på webbplatsen", "Kontrolleras automatiskt: vi läser villkor, policysidor och kontaktsidor och jämför texten med Svensk Handels krav."],
+  2: ["Produktsida och kassa", "Kräver att man går igenom produktsidor och kassan fram till betalning. Ingår inte i den här versionen."],
+  3: ["Över tid", "Kräver att butiken följs under en period, till exempel hur länge en rea pågår."],
+  4: ["Testköp", "Kräver ett riktigt köp, till exempel orderbekräftelse och kundtjänstens svarstid."],
+  5: ["Interna rutiner", "Syns inte utifrån. Butiken behöver själv visa sina rutiner."],
+};
+const ROLE = { "brist": ["Brist", "s-brist"], "stöd": ["Stöd", "s-ok"], "motsägelse": ["Motsägelse", "s-osaker"] };
+const KIND = { start: "Startsida", villkor: "Köpvillkor", retur: "Retur/ånger", reklamation: "Reklamation",
+  integritet: "Integritet", leverans: "Leverans", betalning: "Betalning", kontakt: "Kontakt", faq: "Frågor och svar",
+  om: "Om oss", pdf: "PDF" };
+const POLL_MS = 1500;
+
+/* ---------- small helpers ---------- */
+
+const $ = (sel) => document.querySelector(sel);
+
+/** Escape text for use in HTML. Everything from the API goes through this. */
+function esc(s) {
+  return String(s == null ? "" : s).replace(/[&<>"']/g, (c) =>
+    ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+}
+
+/** Only http(s) links are allowed out of the page. */
+function safeUrl(u) {
+  return /^https?:\/\//i.test(String(u || "")) ? esc(u) : "#";
+}
+
+function stateClass(s) { return STATE_CLASS[s] || "s-grey"; }
+function pill(s) { return `<span class="pill ${stateClass(s)}">${esc(s)}</span>`; }
+
+/** State shown for a result. Internal and test-purchase points that the engine left as
+ *  "kunde inte kontrolleras" are shown as "kräver intyg" / "kräver testköp". */
+function stateOf(r) {
+  const s = r.state || KIK;
+  if (s === KIK && INTYG[r.id]) return "kräver intyg";
+  if (s === KIK && TESTKOP[r.id]) return "kräver testköp";
+  return s;
+}
+function isNeed(r) { return NEEDS.includes(stateOf(r)); }
+
+/** Trust level: who checked what the point rests on. */
+function trustOf(r, rec) {
+  const map = { "Kontrollerat av oss": "oss", "Kontrollerat i butikens underlag": "doc", "Butikens egen uppgift": "egen" };
+  if (r.trust && map[r.trust]) return map[r.trust];
+  if (isNeed(r)) return rec && map[rec.trust] ? map[rec.trust] : (stateOf(r) === "kräver intyg" ? "none" : null);
+  if (JUDGED.includes(stateOf(r)) && r.method !== "ej automatiserad") return "oss";
+  return null;
+}
+function trustTag(t) { return t ? `<span class="trust ${TRUST[t][1]}">${esc(TRUST[t][0])}</span>` : ""; }
+function oldTag(id) { return OUTDATED[id] ? `<span class="oldreq">Svensk Handels krav föråldrat</span>` : ""; }
+
+/** Short page title for the panel: the part of the <title> that is not the shop name. */
+function shortTitle(p, shop) {
+  const full = String(p.title || "").trim();
+  if (!full) return KIND[p.kind] || hostOf(p.final_url || p.url) || "Sida";
+  const host = hostOf(p.final_url || p.url).split(".")[0].toLowerCase();
+  const shopL = String(shop || "").toLowerCase();
+  let parts = full.split(/\s[|–—\-:·»]\s/).map((s) => s.trim()).filter(Boolean);
+  const rest = parts.filter((s) => { const l = s.toLowerCase().replace(/[^a-z0-9åäö]/g, ""); return l && !l.includes(host) && l !== shopL.replace(/[^a-z0-9åäö]/g, ""); });
+  let t = (rest[0] || parts[0] || full);
+  return t.length > 60 ? t.slice(0, 57).trimEnd() + "…" : t;
+}
+
+/** URL for a screenshot path from the engine: "out/…" or relative to the scan's snapshot folder. */
+function screenUrl(rep, path) {
+  const s = String(path || "");
+  if (!s || /(^|\/)\.\.(\/|$)/.test(s) || /^[a-z]+:/i.test(s)) return null;
+  if (s.startsWith("/files/")) return s;
+  if (s.startsWith("out/")) return "/files/" + s.slice(4).split("/").map(encodeURIComponent).join("/");
+  if (rep.snapshot && String(rep.snapshot).startsWith("out/"))
+    return "/files/" + (rep.snapshot.slice(4) + "/" + s).split("/").map(encodeURIComponent).join("/");
+  return null;
+}
+
+function sectionOf(id) {
+  const m = String(id).match(/^\d+/);
+  return m ? Number(m[0]) : 0;
+}
+
+function fmtDate(v) {
+  if (v == null || v === "") return "";
+  const d = new Date(typeof v === "number" && v < 1e12 ? v * 1000 : v);
+  return isNaN(d) ? String(v) : d.toLocaleString("sv-SE", { dateStyle: "medium", timeStyle: "short" });
+}
+
+function hostOf(u) {
+  try { return new URL(u).host.replace(/^www\./, ""); } catch (e) { return u || ""; }
+}
+
+function countsOf(report) {
+  const c = {};
+  STATES.forEach((s) => (c[s] = 0));
+  if (!(report.results || []).length && report.counts) return Object.assign(c, report.counts);
+  (report.results || []).forEach((r) => { const s = stateOf(r); c[s] = (c[s] || 0) + 1; });
+  return c;
+}
+
+async function api(path, opts) {
+  const res = await fetch(path, opts);
+  if (!res.ok) {
+    let msg = `Fel ${res.status}`;
+    try { const j = await res.json(); if (j.detail) msg = typeof j.detail === "string" ? j.detail : msg; } catch (e) {}
+    throw new Error(msg);
+  }
+  return res.json();
+}
+
+/* ---------- state ---------- */
+
+const store = { reports: {}, pages: {}, screens: {}, intyg: {}, stats: {}, open: {}, review: {}, filter: null, tab: "punkter", rendered: null,
+                pollTimer: null, lastFocus: null, depth: 0 };
+
+/** Hash base for a scan: "#/demo" for the demo, "#/scan/<id>" otherwise. */
+function base(id) { return id === "demo" ? "#/demo" : `#/scan/${encodeURIComponent(id)}`; }
+
+function parseRoute() {
+  const h = location.hash.replace(/^#\/?/, "");
+  const parts = h.split("/").filter(Boolean).map(decodeURIComponent);
+  let id = null, rest = [];
+  if (parts[0] === "demo") { id = "demo"; rest = parts.slice(1); }
+  else if (parts[0] === "scan" && parts[1]) { id = parts[1]; rest = parts.slice(2); }
+  if (parts[0] === "krav") return { name: "krav" };
+  if (!id) return { name: "start" };
+  const r = { name: "scan", id };
+  if (rest[0] === "point" && rest[1]) {
+    r.point = rest[1];
+    if (rest[2] === "ev" && rest[3] != null) r.ev = Number(rest[3]);
+  } else if (rest[0] === "page" && rest[1] != null) {
+    r.page = Number(rest[1]);
+  } else if (rest[0] === "replay" && id !== "demo") {
+    r.replay = true;
+  } else if (rest[0] === "granska" && id !== "demo") {
+    r.review = true;
+    r.rpid = rest[1] || null;
+  }
+  return r;
+}
+
+/* ---------- router ---------- */
+
+window.addEventListener("hashchange", route);
+window.addEventListener("DOMContentLoaded", route);
+document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !$("#panel").hidden) closePanel(); });
+$("#scrim").addEventListener("click", closePanel);
+
+/** Closing the panel never adds a history step: go back to the report entry the panel was opened
+ *  from, or replace the current entry when the panel was opened directly from a link. */
+function closePanel() {
+  const r = parseRoute();
+  if (!r.id) return;
+  const depth = (history.state && history.state.depth) || 0;
+  if (depth > 0) { history.go(-depth); return; }
+  history.replaceState({ depth: 0 }, "", base(r.id));
+  route();
+}
+
+/** Remember on each history entry how many panel steps lie above the report view. */
+function stampHistory(r) {
+  const panel = !!(r.point || r.page != null);
+  if (history.state && typeof history.state.depth === "number") { store.depth = history.state.depth; return; }
+  const prev = store.lastRoute;
+  const depth = !panel ? 0 : (prev && prev.id === r.id ? (prev.panel ? (store.depth ? store.depth + 1 : 0) : 1) : 0);
+  history.replaceState({ depth }, "", location.hash || "#/");
+  store.depth = depth;
+}
+
+async function route() {
+  clearTimeout(store.pollTimer);
+  store.rvKeys = null;
+  const r = parseRoute();
+  stampHistory(r);
+  store.lastRoute = { id: r.id, panel: !!(r.point || r.page != null) };
+  const nav = document.getElementById("nav-krav");
+  if (nav) nav.classList.toggle("on", r.name === "krav");
+  if (r.name === "start") { stopLive(); hidePanel(); store.rendered = null; return renderStart(); }
+  if (r.name === "krav") { stopLive(); hidePanel(); store.rendered = null; window.scrollTo(0, 0); return renderKrav(); }
+  if (r.replay) { hidePanel(); store.rendered = null; return startLive(r.id, "replay"); }
+  if (LV && LV.id === r.id && LV.mode === "live") return;  // the live view follows the scan and opens the report itself
+  stopLive();
+
+  let report = store.reports[r.id];
+  if (!report || report.status === "running") {
+    if (r.id === "demo") report = store.reports.demo = demoReport();
+    else {
+      try { report = store.reports[r.id] = await api(`/api/scans/${encodeURIComponent(r.id)}`); }
+      catch (e) { hidePanel(); store.rendered = null; return renderMissing(r.id, e); }
+    }
+  }
+  if (report.status === "running") { hidePanel(); store.rendered = null; return startLive(r.id, "live"); }
+  if (report.status === "failed") { hidePanel(); store.rendered = null; return renderFailed(report); }
+  if (r.review) { hidePanel(); store.rendered = null; await loadExtras(report); return renderReview(report, r.rpid); }
+  store.rvKeys = null;
+
+  if (store.rendered !== r.id) {
+    await loadExtras(report);
+    renderReport(report);
+    store.rendered = r.id;
+    window.scrollTo(0, 0);
+  }
+  markCurrent(r.point);
+  if (r.point && r.ev != null) renderEvidencePage(report, r.point, r.ev);
+  else if (r.point) renderPoint(report, r.point);
+  else if (r.page != null) renderPage(report, r.page, null, null);
+  else hidePanel();
+}
+
+/** Screenshots per page and the shop's saved answers for internal points. Failures leave them empty. */
+async function loadExtras(rep, haveStats) {
+  if (rep.id === "demo") { store.screens.demo = {}; store.intyg.demo = store.intyg.demo || {}; return; }
+  const id = encodeURIComponent(rep.id);
+  const want = !haveStats && !store.stats[rep.id];
+  const [s, i, ev, rev] = await Promise.all([api(`/api/scans/${id}/screens`).catch(() => ({})),
+                                        api(`/api/scans/${id}/intyg`).catch(() => ({})),
+                                        want ? api(`/api/scans/${id}/events?since=0`).catch(() => null) : null,
+                                        api(`/api/scans/${id}/review`).catch(() => null)]);
+  if (rev) store.review[rep.id] = rev;
+  store.screens[rep.id] = s || {};
+  store.intyg[rep.id] = i || {};
+  if (ev && ev.events) {
+    const S = newStats();
+    S.synthetic = !!ev.synthetic;
+    ev.events.forEach((e) => reduceStats(S, e));
+    store.stats[rep.id] = S;
+  }
+}
+
+function schedulePoll(id) {
+  store.pollTimer = setTimeout(async () => {
+    const r = parseRoute();
+    if (r.id !== id) return;
+    try { store.reports[id] = await api(`/api/scans/${encodeURIComponent(id)}`); } catch (e) {}
+    route();
+  }, POLL_MS);
+}
+
+/* ---------- start ---------- */
+
+function renderStart() {
+  document.title = "Scanningsverktyg prototyp 1";
+  $("#app").innerHTML = `
+    <section class="hero">
+      <h1>Scanningsverktyg prototyp 1</h1>
+      <p>Kontrollera en webbutik mot Svensk Handels krav för Trygg E-handel.</p>
+      <form class="urlform" id="urlform" novalidate>
+        <input id="url" type="text" inputmode="url" autocomplete="url" placeholder="Webbutikens adress, t.ex. exempelbutiken.example" aria-label="Webbutikens adress" required>
+        <button class="btn" type="submit" id="go">Granska</button>
+      </form>
+      <p class="small error" id="formerr" role="alert"></p>
+    </section>
+    <section class="teaser" aria-label="Vad vi kontrollerar">
+      <h2>Vad vi kontrollerar</h2>
+      <p>Svensk Handels krav för Trygg E-handel och våra 45 punkter, sida vid sida: vad vi letar efter, var, och om vi kan visa en brist automatiskt eller bara flaggar för granskning.</p>
+      <p class="kv-sum" id="teaser-sum"></p>
+      <p style="margin:0"><a href="#/krav">Se kraven och hur vi kontrollerar dem</a></p>
+    </section>
+    <section class="recent">
+      <h2>Tidigare granskningar</h2>
+      <div class="card" id="recent"><p class="empty">Hämtar…</p></div>
+      <p class="small muted" style="margin-top:12px">Vill du se hur en rapport ser ut? <a href="#/demo">Öppna en exempelrapport</a>.</p>
+    </section>`;
+  $("#url").focus();
+  $("#urlform").addEventListener("submit", startScan);
+  (store.method ? Promise.resolve(store.method) : api("/api/method")).then((m) => {
+    store.method = m;
+    const box = document.getElementById("teaser-sum");
+    if (!box) return;
+    box.innerHTML = BUCKETS.map(([k, label, os]) => `<span>${dot(OUTCOME_DOT[os[0]])}<span class="num">${m.points.filter((p) => os.includes(p.outcome)).length}</span> ${label}</span>`).join("");
+  }).catch(() => {});
+  loadRecent();
+}
+
+async function startScan(e) {
+  e.preventDefault();
+  const url = $("#url").value.trim();
+  const err = $("#formerr");
+  err.textContent = "";
+  if (!url) { err.textContent = "Skriv in en adress till en webbutik."; return; }
+  $("#go").disabled = true;
+  try {
+    const { id } = await api("/api/scans", { method: "POST", headers: { "Content-Type": "application/json" },
+                                             body: JSON.stringify({ url }) });
+    delete store.reports[id];
+    location.hash = base(id);
+  } catch (ex) {
+    err.textContent = `Granskningen kunde inte startas: ${ex.message}`;
+    $("#go").disabled = false;
+  }
+}
+
+async function loadRecent() {
+  const box = $("#recent");
+  let scans;
+  try { scans = await api("/api/scans"); }
+  catch (e) { box.innerHTML = `<p class="empty">Kunde inte hämta tidigare granskningar.</p>`; return; }
+  if (!box.isConnected) return;
+  if (!scans || !scans.length) { box.innerHTML = `<p class="empty">Inga granskningar än.</p>`; return; }
+  const seen = new Set();
+  scans = scans.filter((s) => { const k = hostOf(s.url) || s.id; return seen.has(k) ? false : seen.add(k); }).slice(0, 12);
+  box.innerHTML = `<ul class="scanlist">${scans.map((s) => {
+    const c = s.counts || {};
+    let right = "";
+    if (s.status === "running") right = `<span class="muted">Pågår…</span>`;
+    else if (s.status === "failed") right = `<span class="error">Misslyckades</span>`;
+    else {
+      const b = c["brist"] || 0, o = c["osäker"] || 0;
+      right = `<span class="pill ${b ? "s-brist" : "s-grey"}">${b} ${b === 1 ? "brist" : "brister"}</span> `
+            + `<span class="pill ${o ? "s-osaker" : "s-grey"}">${o} ${o === 1 ? "osäker" : "osäkra"}</span>`;
+    }
+    return `<li><a href="${base(s.id)}">
+      <div><div class="shop">${esc(s.shop || hostOf(s.url))}</div>
+      <div class="meta">${esc(s.url)}${s.finished ? " · " + esc(fmtDate(s.finished)) : ""}</div></div>
+      <div class="right">${right}</div></a></li>`;
+  }).join("")}</ul>`;
+}
+
+/* ---------- progress, failure ---------- */
+
+function renderProgress(rep) {
+  document.title = "Granskar… – Scanningsverktyg prototyp 1";
+  const lines = rep.progress || [];
+  const last = (lines[lines.length - 1] || "").toLowerCase();
+  const stage = /kontroll|regel|regl|punkt/.test(last) ? 2 : lines.length > 1 ? 1 : 0;
+  const steps = ["Hittar sidor", "Läser villkor och policyer", "Kontrollerar 45 punkter"];
+  $("#app").innerHTML = `
+    <section class="progress">
+      <h1><span class="spinner" aria-hidden="true"></span>Granskar ${esc(rep.shop || hostOf(rep.url || rep.input))}</h1>
+      <p class="muted small" style="overflow-wrap:anywhere">${esc(rep.url || rep.input)}</p>
+      <div class="steps">${steps.map((s, i) => `<span class="step${i === stage ? " on" : ""}">${i + 1}. ${s}</span>`).join("")}</div>
+      <p class="small muted">Vi letar upp butikens köpvillkor, retur-, integritets- och kontaktsidor, läser texten
+        och jämför den med Svensk Handels krav. Det tar oftast under en minut.</p>
+      <div class="card"><ul class="loglines" aria-live="polite">${lines.map((l) => `<li>${esc(l)}</li>`).join("") || "<li>Startar…</li>"}</ul></div>
+    </section>`;
+}
+
+function renderFailed(rep) {
+  document.title = "Granskningen misslyckades – Scanningsverktyg prototyp 1";
+  $("#app").innerHTML = `
+    <section class="progress">
+      <h1>Granskningen misslyckades</h1>
+      <p class="muted" style="overflow-wrap:anywhere">${esc(rep.url || rep.input)}</p>
+      <p class="error">${esc(rep.error || "Okänt fel.")}</p>
+      ${(rep.progress || []).length ? `<div class="card"><ul class="loglines">${rep.progress.map((l) => `<li>${esc(l)}</li>`).join("")}</ul></div>` : ""}
+      <p style="margin-top:20px"><a class="btn-ghost" href="#/">Försök med en annan adress</a></p>
+    </section>`;
+}
+
+function renderMissing(id, e) {
+  $("#app").innerHTML = `
+    <section class="progress">
+      <h1>Granskningen hittades inte</h1>
+      <p class="muted">${esc(e.message)}</p>
+      <p><a class="btn-ghost" href="#/">Till startsidan</a></p>
+    </section>`;
+}
+
+/* ---------- report ---------- */
+
+function pagesTab(rep) {
+  const b = base(rep.id);
+  const pages = rep.pages || [];
+  if (!pages.length) return `<p class="empty">Inga sidor lästes.</p>`;
+  return `<p class="sect-sub">Sidorna vi hittade och läste, i den ordning vi hittade dem. Sidor med villkor för företag används inte som underlag för konsumentpunkter.</p>
+    <div class="card"><table class="pages">
+      <thead><tr><th>Typ</th><th>Titel</th><th>Hur vi hittade den</th><th>Länk</th></tr></thead>
+      <tbody>${pages.map((p, n) => `<tr>
+        <td><span class="kind">${esc(KIND[p.kind] || p.kind || "")}</span>${p.is_pdf ? '<span class="badge">PDF</span>' : ""}${p.business ? '<span class="badge">Företag</span>' : ""}</td>
+        <td><a href="${b}/page/${n}">${esc(p.title || hostOf(p.url))}</a>${p.n_chars != null ? `<div class="small muted">${esc(Number(p.n_chars).toLocaleString("sv-SE"))} tecken</div>` : ""}</td>
+        <td class="small">${esc(p.how || "")}</td>
+        <td class="small"><a href="${safeUrl(p.final_url || p.url)}" target="_blank" rel="noopener noreferrer">${esc(hostOf(p.final_url || p.url))}${esc(pathOf(p.final_url || p.url))}<span class="nowrap">&nbsp;↗</span></a></td>
+      </tr>`).join("")}</tbody></table></div>`;
+}
+
+function pathOf(u) { try { const x = new URL(u); return x.pathname === "/" ? "" : x.pathname; } catch (e) { return ""; } }
+
+function aboutTab(rep) {
+  const n = {};
+  (rep.results || []).forEach((r) => (n[r.group] = (n[r.group] || 0) + 1));
+  return `<div class="about">
+    <h2>Vad granskningen gör</h2>
+    <p>Vi hämtar butikens startsida, letar upp köpvillkor, retur-, reklamations-, integritets-, leverans- och kontaktsidor
+      och läser texten. Varje punkt i Svensk Handels krav för Trygg E-handel jämförs sedan med det som står där.</p>
+    <h2>Vad som kontrolleras automatiskt</h2>
+    <p>Svensk Handels 45 punkter går att kontrollera på olika sätt. Punkter som bara butiken själv kan visa, som interna rutiner,
+      och punkter som kräver ett testköp visas för sig under <em>Kräver underlag från butiken</em>.</p>
+    <ul class="groups card">${[1, 2, 3, 4, 5].map((g) => `<li>
+      <b>${g}. ${esc(GROUPS[g][0])}</b><span class="n">${n[g] || 0} punkter</span>
+      <span class="d">${esc(GROUPS[g][1])}</span></li>`).join("")}</ul>
+    <h2>Vad tillstånden betyder</h2>
+    <p>${pill("brist")} Butikens text säger emot Svensk Handels formulering, till exempel ett villkor som inskränker ångerrätten.</p>
+    <p>${pill("osäker")} Vi hittade något som kan vara ett problem, eller hittade inte det vi letade efter, men mönstret är för svagt för att säga brist.</p>
+    <p>${pill("uppfyllt")} Texten innehåller det Svensk Handel kräver.</p>
+    <p>${pill("råd")} Inget fel mot kravet, men något butiken kan förbättra. Räknas inte som brist.</p>
+    <p>${pill("ej tillämplig")} Punkten gäller inte butiken, till exempel prenumerationer när butiken inte säljer sådana.</p>
+    <p>${pill("kunde inte kontrolleras")} Kontrollen gick inte att göra, till exempel för att sidan inte gick att läsa eller kassan inte nåddes. Ingen bedömning.</p>
+    <p>${pill("kräver intyg")} ${pill("kräver testköp")} Syns inte på webbplatsen. Butiken behöver visa sina rutiner, eller så krävs ett riktigt köp.</p>
+    <h2>Vem som har kontrollerat</h2>
+    <p>${trustTag("oss")} Vi har läst det på butikens webbplats.</p>
+    <p>${trustTag("doc")} Vi har läst det i ett dokument som butiken laddat upp.</p>
+    <p>${trustTag("egen")} Butiken har själv svarat; ingen har kontrollerat svaret.</p>
+    <h2>Hur resultatet ska läsas</h2>
+    <p>Resultaten är underlag för en människa, inte juridiska bedömningar. Varje punkt visar Svensk Handels text, vad vi letade efter
+      och citat från butikens sidor så att du själv kan kontrollera. Vi bedömer bara mot Svensk Handels text, inte mot annan lagstiftning.</p>
+  </div>`;
+}
+
+/* ---------- panel ---------- */
+
+function showPanel(html) {
+  const p = $("#panel");
+  const wasHidden = p.hidden;
+  if (wasHidden) store.lastFocus = document.activeElement;
+  p.innerHTML = html;
+  p.hidden = false; $("#scrim").hidden = false;
+  document.body.style.overflow = window.innerWidth <= 720 ? "hidden" : "";
+  p.scrollTop = 0;
+  p.querySelector(".close").addEventListener("click", closePanel);
+  p.querySelector(".close").focus({ preventScroll: true });
+}
+
+function hidePanel() {
+  const p = $("#panel");
+  if (p.hidden) return;
+  p.hidden = true; $("#scrim").hidden = true; p.innerHTML = "";
+  document.body.style.overflow = "";
+  if (store.lastFocus && store.lastFocus.isConnected) store.lastFocus.focus({ preventScroll: true });
+}
+
+function findResult(rep, pid) { return (rep.results || []).find((r) => String(r.id) === pid); }
+
+function pageName(rep, n) {
+  const p = (rep.pages || [])[n];
+  return p ? shortTitle(p, rep.shop) : `Sida ${n}`;
+}
+
+function renderPoint(rep, pid) {
+  const r = findResult(rep, pid);
+  const b = base(rep.id);
+  if (!r) return showPanel(`<div class="phead"><h2>Punkten finns inte</h2><button class="close" aria-label="Stäng">×</button></div>`);
+  const st = stateOf(r);
+  const ev = r.evidence || [];
+  const manual = r.method === "ej automatiserad";
+  const need = isNeed(r);
+  const g = GROUPS[r.group];
+  const rec = (store.intyg[rep.id] || {})[r.id];
+  const shPage = r.sh_page || SH_PAGE[r.id];
+  const screens = store.screens[rep.id] || {};
+  const scanned = fmtDate(rep.finished || rep.started);
+  const pages = rep.pages || [];
+  const why = need ? (st === "kräver intyg"
+      ? "Punkten gäller butikens interna rutiner och syns inte på webbplatsen. Den bedöms inte här; butiken kan svara och bifoga underlag nedan."
+      : "Punkten kräver ett riktigt köp eller kontakt med kundtjänst, vilket bara görs med butikens samtycke. Den bedöms inte här.")
+    : (r.why || r.summary);
+  showPanel(`
+    <div class="phead">
+      <div><h2><span class="pid">${esc(r.id)}</span> ${esc(r.label)}</h2>
+        <div class="sub">${pill(st)} ${oldTag(r.id)} ${trustTag(trustOf(r, rec))}<span class="small muted">${esc(SECTIONS[sectionOf(r.id)] || "")}</span></div></div>
+      <button class="close" aria-label="Stäng">×</button>
+    </div>
+    <div class="pbody">
+      <section><h3>Svensk Handels krav</h3><blockquote class="sh">${esc(r.sh)}</blockquote>
+        <div class="shref">Svensk Handel, ${esc(SH_DOC)}${shPage ? `, s. ${esc(shPage)}` : ""}. Ordagrant; … markerar utelämnad text.</div></section>
+      ${OUTDATED[r.id] ? `<section><h3>Svensk Handels krav föråldrat</h3><div class="note">${esc(OUTDATED[r.id])}</div></section>` : ""}
+      <section><h3>${st === "brist" ? "Varför det är en brist" : "Vår bedömning"}</h3><p class="why" style="margin:0">${esc(why)}</p>
+        ${st === "osäker" ? `<p class="small muted" style="margin:8px 0 0">Osäker är ingen brist. En människa behöver titta på punkten.</p>` : ""}</section>
+      ${st === "kräver intyg" ? intygForm(rep, r, rec) : ""}
+      ${manual && !need ? `<section><h3>Varför den inte kontrolleras automatiskt</h3>
+        <div class="note">${g ? `<b>${esc(g[0])}.</b> ${esc(g[1])}` : "Den här punkten kontrolleras inte automatiskt."}</div></section>` : ""}
+      ${r.looked_for && !need ? `<section><h3>Vad vi letade efter</h3><p style="margin:0">${esc(r.looked_for)}</p></section>` : ""}
+      ${ev.length ? `<section><h3>Citat från butikens sidor</h3>${ev.map((e, k) => {
+        const [rl, cls] = ROLE[e.role] || [e.role || "Citat", "s-grey"];
+        const pg = pages[e.page] || {};
+        const shot = e.screen ? screenUrl(rep, e.screen) : null;
+        const pshot = !shot && screens[String(e.page)];
+        return `<div class="ev ${cls}"><div class="role">${esc(rl)}</div>
+          <div class="evmeta">${esc(shortTitle(pg, rep.shop))}${e.heading ? " · " + esc(e.heading) : ""} · Hämtad ${esc(scanned)}</div>
+          <blockquote>${esc(e.quote)}</blockquote>
+          ${shot ? `<a href="${esc(shot)}" target="_blank" rel="noopener"><img class="shot" src="${esc(shot)}" alt="Skärmbild: ${esc(rl)} ${esc(r.id)}" loading="lazy"></a>` : ""}
+          ${pshot ? `<details class="shotbox"><summary>Skärmbild av sidan</summary><a href="${esc(pshot)}" target="_blank" rel="noopener"><img class="shot" src="${esc(pshot)}" alt="Skärmbild av ${esc(shortTitle(pg, rep.shop))}" loading="lazy"></a></details>` : ""}
+          <div class="links"><a href="${b}/point/${encodeURIComponent(r.id)}/ev/${k}">Visa i sammanhang</a>
+          <a class="url" href="${safeUrl(e.url)}" target="_blank" rel="noopener noreferrer">${esc(e.url)}</a></div></div>`;
+      }).join("")}</section>` : ""}
+      ${st === "brist" && !ev.length ? `<section><h3>Citat från butikens sidor</h3><p class="muted" style="margin:0">Inget citat: bristen är att uppgiften saknas. Vi sökte i sidorna nedan, hämtade ${esc(scanned)}.</p></section>` : ""}
+      ${need ? "" : (r.pages_read || []).length ? `<section><h3>Sidor vi läste för den här punkten (${r.pages_read.length})</h3><ul class="plist">${r.pages_read.map((n) => {
+        const p = pages[n] || {};
+        return `<li><a href="${b}/page/${encodeURIComponent(n)}">${esc(shortTitle(p, rep.shop))}</a> <span class="kind">${esc(KIND[p.kind] || p.kind || "")}</span>${p.n_chars != null ? `<span class="small muted"> · ${esc(Number(p.n_chars).toLocaleString("sv-SE"))} tecken</span>` : ""}</li>`;
+      }).join("")}</ul></section>`
+        : (!manual ? `<section><h3>Sidor vi läste för den här punkten</h3><p class="muted" style="margin:0">Inga.</p></section>` : "")}
+      ${need || manual ? "" : unreadSection(rep)}
+    </div>`);
+  const f = $("#intygform");
+  if (f) f.addEventListener("submit", (e) => submitIntyg(e, rep, r));
+}
+
+/** Pages that were found but gave little or no text, plus any the engine lists as not read. */
+function unreadPages(rep) {
+  const out = [];
+  (rep.pages || []).forEach((p, n) => {
+    if (p.n_chars != null && p.n_chars < 200)
+      out.push({ n, title: shortTitle(p, rep.shop), url: p.final_url || p.url, reason: `${p.n_chars} tecken text` });
+  });
+  [].concat(rep.not_read || [], rep.unread || []).forEach((u) => {
+    if (typeof u === "string") out.push({ url: u, title: hostOf(u) + pathOf(u), reason: "" });
+    else if (u && u.url) out.push({ url: u.url, title: u.title || hostOf(u.url) + pathOf(u.url), reason: u.reason || u.error || "" });
+  });
+  return out;
+}
+
+function unreadSection(rep) {
+  const b = base(rep.id);
+  const list = unreadPages(rep);
+  return `<section><h3>Sidor som inte gick att läsa</h3>${list.length ? `<ul class="plist">${list.map((u) => `<li>${u.n != null
+    ? `<a href="${b}/page/${u.n}">${esc(u.title)}</a>` : `<a href="${safeUrl(u.url)}" target="_blank" rel="noopener noreferrer">${esc(u.title)}</a>`}${u.reason ? `<span class="small muted"> · ${esc(u.reason)}</span>` : ""}</li>`).join("")}</ul>`
+    : `<p class="muted" style="margin:0">Alla ${(rep.pages || []).length} sidor vi hittade gav läsbar text.${(rep.pages || []).some((p) => ["produkt", "kampanj", "kassa"].includes(p.kind)) ? "" : " Produktsidor och kassan ingår inte i den här granskningen."}</p>`}</section>`;
+}
+
+function intygForm(rep, r, rec) {
+  const checked = (rec && rec.checked) || [];
+  const saved = rec ? `<div class="saved">
+      <p><b>Butikens svar:</b> ${rec.answer ? esc(rec.answer === "ja" ? "Ja" : "Nej") : "inget ja eller nej"}${rec.saved ? ` <span class="small muted">· sparat ${esc(fmtDate(rec.saved))}</span>` : ""}</p>
+      ${rec.comment ? `<p>${esc(rec.comment)}</p>` : ""}
+      ${rec.file ? `<p>Underlag: ${rec.file.path ? `<a href="${esc(rec.file.path)}" target="_blank" rel="noopener">${esc(rec.file.name)}</a>` : esc(rec.file.name)}
+        ${rec.file.chars != null ? `<span class="small muted">· ${esc(Number(rec.file.chars).toLocaleString("sv-SE"))} tecken text</span>` : `<span class="small muted">· ingen text att läsa</span>`}</p>` : ""}
+      ${checked.length ? `<p class="small muted">Underlaget lästes med regeln för ${esc(checked.map((c) => c.id).join(" och "))}:</p>` : ""}
+      ${checked.map((c) => `<p>${pill(c.state)} <span class="pid">${esc(c.id)}</span> ${esc(c.label)}: ${esc(c.summary)}</p>
+        ${(c.quotes || []).map((q) => `<blockquote>${esc(q)}</blockquote>`).join("")}`).join("")}
+      ${rec.file && !checked.length ? `<p class="small muted">Ingen regel kan läsa underlaget för den här punkten, så svaret är butikens egen uppgift.</p>` : ""}
+      ${checked.length && rec.trust !== "Kontrollerat i butikens underlag" ? `<p class="small muted">Reglerna hittade inte det punkten kräver i underlaget, så svaret är butikens egen uppgift.</p>` : ""}
+    </div>` : "";
+  return `<section><h3>Butikens intyg</h3>${saved}
+    <form class="form" id="intygform">
+      <p class="q">${esc(INTYG[r.id] || "Har butiken en rutin för det här?")}</p>
+      <div class="yn">
+        <label><input type="radio" name="answer" value="ja"${rec && rec.answer === "ja" ? " checked" : ""}> Ja</label>
+        <label><input type="radio" name="answer" value="nej"${rec && rec.answer === "nej" ? " checked" : ""}> Nej</label>
+      </div>
+      <label for="ic">Kommentar</label>
+      <textarea id="ic" name="comment" placeholder="Beskriv rutinen kort">${esc((rec && rec.comment) || "")}</textarea>
+      <label for="if">Underlag (valfritt)</label>
+      <input id="if" name="file" type="file" accept=".pdf,.txt,.md,.png,.jpg,.jpeg,.webp">
+      <div class="small muted" style="margin-top:4px">En PDF eller textfil läses med samma regler som webbplatsen när det finns en regel för punkten. Högst 10 MB.</div>
+      <div class="actions"><button class="btn" type="submit">${rec ? "Uppdatera" : "Spara"}</button><span class="small" id="intygmsg" role="status"></span></div>
+    </form></section>`;
+}
+
+function readBase64(file) {
+  return new Promise((ok, fail) => {
+    const fr = new FileReader();
+    fr.onload = () => ok(String(fr.result).replace(/^data:[^,]*,/, ""));
+    fr.onerror = () => fail(new Error("Filen kunde inte läsas."));
+    fr.readAsDataURL(file);
+  });
+}
+
+async function submitIntyg(e, rep, r) {
+  e.preventDefault();
+  const f = e.target, msg = $("#intygmsg"), btn = f.querySelector("button[type=submit]");
+  const body = { answer: (f.querySelector("input[name=answer]:checked") || {}).value || null,
+                 comment: f.comment.value.trim() };
+  const file = f.file.files[0];
+  const fail = (t) => { msg.className = "small error"; msg.textContent = t; };
+  if (!body.answer && !body.comment && !file) return fail("Svara ja eller nej, skriv en kommentar eller bifoga underlag.");
+  if (file && file.size > 10 * 1024 * 1024) return fail("Filen är större än 10 MB.");
+  btn.disabled = true; msg.className = "small muted"; msg.textContent = file ? "Laddar upp och läser underlaget…" : "Sparar…";
+  try {
+    if (file) { body.file_name = file.name; body.file_data = await readBase64(file); }
+    let rec;
+    if (rep.id === "demo") rec = Object.assign({ pid: r.id, saved: new Date().toISOString(), checked: [],
+      file: file ? { name: file.name, path: null, chars: null } : null }, body, { trust: "Butikens egen uppgift" });
+    else rec = await api(`/api/scans/${encodeURIComponent(rep.id)}/intyg/${encodeURIComponent(r.id)}`,
+      { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+    (store.intyg[rep.id] = store.intyg[rep.id] || {})[r.id] = rec;
+    if ($("#rp-sections")) $("#rp-sections").innerHTML = sectionsHtml(rep, null, null);
+    if (parseRoute().review) { renderDecision(rep, r); return; }
+    renderPoint(rep, r.id);
+    const m2 = $("#intygmsg"); if (m2) { m2.className = "small muted"; m2.textContent = "Sparat."; }
+  } catch (ex) {
+    btn.disabled = false; fail(`Kunde inte spara: ${ex.message}`);
+  }
+}
+
+async function getPage(rep, n) {
+  const key = `${rep.id}/${n}`;
+  if (store.pages[key]) return store.pages[key];
+  if (rep.id === "demo") return (store.pages[key] = rep.pages[n]);
+  return (store.pages[key] = await api(`/api/scans/${encodeURIComponent(rep.id)}/pages/${n}`));
+}
+
+function renderEvidencePage(rep, pid, k) {
+  const r = findResult(rep, pid);
+  const e = r && (r.evidence || [])[k];
+  if (!e) return renderPoint(rep, pid);
+  renderPage(rep, e.page, e.quote, r);
+}
+
+async function renderPage(rep, n, quote, fromPoint) {
+  const b = base(rep.id);
+  const back = fromPoint ? `<a class="back" href="${b}/point/${encodeURIComponent(fromPoint.id)}">← ${esc(fromPoint.id)} ${esc(fromPoint.label)}</a>` : "";
+  const meta = (rep.pages || [])[n] || {};
+  const head = (p) => `
+    <div class="phead">
+      <div>${back}<h2 title="${esc(p.title || "")}">${esc(shortTitle(p, rep.shop))}</h2>
+        <div class="sub small muted"><span class="kind">${esc(KIND[p.kind] || p.kind || "")}</span>${p.how ? " · " + esc(p.how) : ""} · Hämtad ${esc(fmtDate(rep.finished || rep.started))}</div>
+        <div class="small" style="margin-top:4px"><a href="${safeUrl(p.final_url || p.url)}" target="_blank" rel="noopener noreferrer">Öppna sidan i butiken ↗</a></div>
+      </div>
+      <button class="close" aria-label="Stäng">×</button>
+    </div>`;
+  showPanel(`${head(meta)}<div class="pbody"><p class="muted">Hämtar sidans text…</p></div>`);
+  let page;
+  try { page = await getPage(rep, n); }
+  catch (ex) { return showPanel(`${head(meta)}<div class="pbody"><p class="error">Kunde inte hämta sidan: ${esc(ex.message)}</p></div>`); }
+  const cur = parseRoute();
+  if (cur.id !== rep.id || (cur.page !== n && !(cur.point && cur.ev != null))) return;
+  const text = page.text || "";
+  const span = quote ? locate(text, quote) : null;
+  const status = !quote ? "" : span
+    ? `<div class="hit ok">Citatet är markerat i texten nedan.</div>`
+    : `<div class="hit miss">Citatet kunde inte hittas exakt i sidans text.</div>`;
+  showPanel(`${head(Object.assign({}, meta, page))}<div class="pbody">${status}
+    ${page.business ? `<div class="note" style="margin-bottom:16px">Sidan gäller företagskunder och används inte som underlag för konsumentpunkter.</div>` : ""}
+    ${(store.screens[rep.id] || {})[String(n)] ? `<details class="shotbox" style="margin-bottom:16px"><summary>Skärmbild av sidan</summary><img class="shot" src="${esc(store.screens[rep.id][String(n)])}" alt="Skärmbild av sidan" loading="lazy"></details>` : ""}
+    <div class="pagetext">${renderText(text, span)}</div></div>`);
+  const m = $("#panel mark");
+  if (m) requestAnimationFrame(() => {
+    const p = $("#panel");
+    p.scrollTop += m.getBoundingClientRect().top - p.clientHeight / 2;
+  });
+}
+
+/** Find quote in text: exact first, then ignoring whitespace and case. Returns [start, end] or null. */
+function locate(text, quote) {
+  const i = text.indexOf(quote);
+  if (i >= 0) return [i, i + quote.length];
+  const map = [];
+  let norm = "";
+  for (let j = 0; j < text.length; j++) {
+    if (/\s/.test(text[j])) { if (norm && norm[norm.length - 1] !== " ") { norm += " "; map.push(j); } }
+    else { norm += text[j].toLowerCase(); map.push(j); }
+  }
+  const q = quote.replace(/\s+/g, " ").trim().toLowerCase();
+  if (!q) return null;
+  const k = norm.indexOf(q);
+  if (k < 0) return null;
+  return [map[k], map[k + q.length - 1] + 1];
+}
+
+/** Render page text line by line; "## " lines become headings; span [start,end) is wrapped in <mark>. */
+function renderText(text, span) {
+  let out = "", pos = 0;
+  for (const line of text.split("\n")) {
+    const start = pos, end = pos + line.length;
+    pos = end + 1;
+    if (!line.trim()) continue;
+    const isHead = line.startsWith("## ");
+    const off = isHead ? 3 : 0;
+    let body = esc(line.slice(off));
+    if (span && span[0] < end && span[1] > start + off) {
+      const a = Math.max(span[0], start + off) - start, z = Math.min(span[1], end) - start;
+      body = esc(line.slice(off, a)) + "<mark>" + esc(line.slice(a, z)) + "</mark>" + esc(line.slice(z));
+    }
+    out += isHead ? `<h4>${body}</h4>` : `<p>${body}</p>`;
+  }
+  return out || `<p class="muted">Sidan innehöll ingen text.</p>`;
+}
+
+/* ---------- report: the same screen while the scan runs, during a replay and when it is done ---------- */
+
+const RM = !!(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches);
+const SKIP_NAME = { produkt: "Produkt- och kategorilänkar", dubblett: "Dubbletter", tak: "Över taket per sidtyp",
+  "läsfel": "Gick inte att läsa", tom: "Tomma sidor", "språk": "Annat språk eller land",
+  gammal: "Äldre villkorsversioner", manual: "Manualer, produktblad och kataloger (PDF)" };
+const SKIP_ONE = { produkt: "produktlänk", dubblett: "dubblett", tak: "över taket för sidtypen", "läsfel": "gick inte att läsa",
+  tom: "tom sida", "språk": "annat språk eller land", gammal: "äldre villkorsversion", manual: "manual eller produktblad (PDF)" };
+const KIND_NAME = Object.assign({}, KIND, { produkt: "Produktsida", kampanj: "Kampanjsida", kassa: "Kassan" });
+const KIND_ORDER = ["villkor", "retur", "reklamation", "leverans", "betalning", "integritet", "kontakt", "faq", "om", "pdf",
+                    "produkt", "kampanj", "kassa"];
+const LIVE_DELAY = { log: 60, phase: 250, page_found: 60, page_read: 260, skip: 15, checkout_step: 380, checkout: 100,
+                     rule_hit: 170, point: 70, done: 400, failed: 0 };
+const STOP = new Set(("eller under efter andra annan annat samt inte detta denna dessa sådan sådana gäller konsumenten konsument " +
+  "kunden kunder företaget företag trygg handlaren handlare handel svensk information enligt kunna skall måste finns också " +
+  "vilket mellan genom innan sådant vilka varje deras alltid").split(" "));
+
+function dotClass(s) {
+  return { "brist": "d-brist", "osäker": "d-osaker", "uppfyllt": "d-ok", "ej tillämplig": "d-na", "råd": "d-rad",
+           "kunde inte kontrolleras": "d-kik", "kräver intyg": "d-need", "kräver testköp": "d-need", "kräver underlag": "d-need" }[s] || "d-wait";
+}
+function dot(s) { return `<i class="d ${dotClass(s)}" aria-hidden="true"></i>`; }
+function nf(n) { return n == null ? "–" : Number(n).toLocaleString("sv-SE"); }
+function secs(s) {
+  if (s == null || isNaN(s)) return "–";
+  s = Math.max(0, Math.round(s));
+  return s < 60 ? `${s} s` : `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
+}
+function plural(n, one, many) { return `${n} ${n === 1 ? one : many}`; }
+function shortPath(u) { const p = pathOf(u); return p || hostOf(u) || String(u || ""); }
+
+/* ---------- what the scan did, from its events ---------- */
+
+function newStats() {
+  return { pages: {}, skips: {}, skipList: [], steps: [], reached: null, why: null, checks: 0, hits: 0, points: {}, ev: {},
+           hitList: [], phases: [], t: 0, tDone: null, log: "", synthetic: false, failed: null,
+           links: null, homeT: null, sitemap: null, sitemapT: null, firstPointT: null, kassaFailed: false, last: null };
+}
+
+function reduceStats(S, e) {
+  if (typeof e.t === "number") S.t = Math.max(S.t, e.t);
+  switch (e.type) {
+    case "log": {
+      S.log = e.msg;
+      let m = /^Startsidan hämtad \((\d+) länkar\)/.exec(e.msg);
+      if (m) S.links = Number(m[1]);
+      m = /^Sitemap läst \((\d+) adresser, (\d+) relevanta\)/.exec(e.msg);
+      if (m) { S.sitemap = { total: Number(m[1]), picked: Number(m[2]) }; S.sitemapT = e.t; }
+      if (/^Kassan kunde inte gås igenom/.test(e.msg)) S.kassaFailed = true;
+      break;
+    }
+    case "phase":
+      // scans since the parallel crawl send phase_end (ends: true); sidor, produkter and kassa then overlap
+      if (e.ends) { if (!S.phases.some((p) => p.name === e.name)) S.phases.push({ name: e.name, t: e.t || 0, ends: true, end: null }); }
+      else if (!S.phases.length || S.phases[S.phases.length - 1].name !== e.name) S.phases.push({ name: e.name, t: e.t || 0 });
+      break;
+    case "phase_end": {
+      const p = S.phases.find((x) => x.name === e.name);
+      if (p) { p.end = e.t || 0; p.count = e.count; }
+      break;
+    }
+    case "page_found": S.pages[e.n] = Object.assign({}, S.pages[e.n] || {}, { n: e.n, url: e.url, kind: e.kind, how: e.how, found: true }); S.last = e.n; break;
+    case "page_read":
+      S.pages[e.n] = Object.assign({}, S.pages[e.n] || {}, e, { read: true });
+      if (e.n === 0 && S.homeT == null) S.homeT = e.t;
+      S.last = e.n;
+      break;
+    case "skip":
+      S.skips[e.reason] = (S.skips[e.reason] || 0) + (e.n || 1);
+      if (e.url) S.skipList.push({ reason: e.reason, url: e.url });
+      if (e.reason === "sitemap" && !S.sitemap) S.sitemap = { total: null, picked: null, unused: e.n };
+      break;
+    case "checkout_step": S.steps.push(e); break;
+    case "checkout": S.reached = e.reached; S.why = e.why; break;
+    case "rule_hit":
+      S.hits++;
+      (S.ev[e.point] = S.ev[e.point] || []).push({ quote: e.quote, page: e.page, url: e.url, role: e.role });
+      S.hitList.push(e);
+      S.last = e.page;
+      break;
+    case "point":
+      if (!S.points[e.point]) S.checks += e.checks || 0;
+      if (S.firstPointT == null) S.firstPointT = e.t;
+      S.points[e.point] = e;
+      break;
+    case "done":
+      S.tDone = e.t;
+      // a page reported live but left out of the final list (a sampled page the crawl had too)
+      if (typeof e.pages === "number") Object.keys(S.pages).forEach((n) => { if (Number(n) >= e.pages) delete S.pages[n]; });
+      break;
+    case "failed": S.failed = e.error || "Granskningen misslyckades."; break;
+  }
+  return S;
+}
+
+function pagesRead(S) { return Object.values(S.pages).filter((p) => p.read); }
+
+/** Totals over the pages read. From the events when there are any, else from the report's pages. */
+function pageTotals(rep, S) {
+  const t = { read: 0, chars: 0, pdf: 0, js: 0, help: 0, product: 0, kassa: 0, kinds: {} };
+  const list = S && Object.keys(S.pages).length ? pagesRead(S)
+    : (rep.pages || []).map((p) => ({ kind: p.kind, chars: p.n_chars || 0, pdf: p.is_pdf, rendered: p.rendered, help: p.help }));
+  list.forEach((p) => {
+    t.read++; t.chars += p.chars || 0;
+    if (p.pdf) t.pdf++;
+    if (p.rendered) t.js++;
+    if (p.help) t.help++;
+    if (p.kind === "produkt" || p.kind === "kampanj") t.product++;
+    if (p.kind === "kassa") t.kassa++;
+    const k = t.kinds[p.kind] = t.kinds[p.kind] || { n: 0, chars: 0 };
+    k.n++; k.chars += p.chars || 0;
+  });
+  return t;
+}
+
+function phaseT(S, name) { const p = S.phases.find((x) => x.name === name); return p ? p.t : null; }
+function nextPhaseT(S, name) {
+  const i = S.phases.findIndex((x) => x.name === name);
+  return i >= 0 && i + 1 < S.phases.length ? S.phases[i + 1].t : null;
+}
+/** When a phase ended: its phase_end (overlapping phases), else `fallback` (older, one-after-another events). */
+function phaseEnd(S, name, fallback) {
+  const p = S.phases.find((x) => x.name === name);
+  return p && p.ends ? p.end : fallback;
+}
+
+/** The pipeline steps: status, key numbers, detail lines and time. `now` is the scan clock (seconds). */
+function stepsOf(S, now, final) {
+  const end = S.tDone != null ? S.tDone : null;
+  const st = (start, stop) => start == null ? "waiting" : stop != null || final ? "done" : "running";
+  const tm = (start, stop) => start == null ? null : (stop != null ? stop : (final ? start : now)) - start;
+  const read = pagesRead(S);
+  const policy = read.filter((p) => p.n > 0 && !["produkt", "kampanj", "kassa"].includes(p.kind));
+  const prods = read.filter((p) => p.kind === "produkt" || p.kind === "kampanj");
+  const t0 = phaseT(S, "start") != null ? phaseT(S, "start") : phaseT(S, "sidor") != null ? phaseT(S, "sidor") : 0;
+  const tProd = phaseT(S, "produkter"), tKassa = phaseT(S, "kassa"), tRules = phaseT(S, "regler");
+  const after = (...ts) => ts.find((x) => x != null);
+  const steps = [];
+
+  // 1. start page
+  const home = S.pages[0];
+  steps.push({ key: "start", title: "Startsidan hämtad", status: st(t0, S.homeT), time: tm(t0, S.homeT),
+    nums: S.links != null ? `<span class="num">${nf(S.links)}</span> länkar` : "",
+    lines: home ? [[shortPath(home.url), home.rendered ? "läst i webbläsare" : ""]] : [] });
+
+  // 2. robots.txt and sitemap
+  const s2start = S.homeT, s2end = S.sitemapT != null ? S.sitemapT : (policy.length || tProd != null ? after(policy[0] && policy[0].t, phaseEnd(S, "sidor", tProd)) : null);
+  const sm = S.sitemap;
+  steps.push({ key: "sitemap", title: "robots.txt och webbplatskarta lästa", status: S.synthetic && !sm ? (final ? "skipped" : "waiting") : st(s2start, s2end),
+    time: tm(s2start, s2end),
+    nums: sm && sm.total != null ? `<span class="num">${nf(sm.total)}</span> adresser, <span class="num">${nf(sm.picked)}</span> valda` : "",
+    lines: sm && sm.total != null ? [["Webbplatskarta", `${nf(sm.total)} adresser (inte lästa)`], ["Valda för läsning", `${nf(sm.picked)} som ser ut som villkor, retur, leverans …`]] : [] });
+
+  // 3. policy pages
+  const s3start = after(S.sitemapT, S.homeT), s3end = phaseEnd(S, "sidor", after(tProd, tKassa, tRules, end));
+  const kinds = {};
+  policy.forEach((p) => (kinds[p.kind] = (kinds[p.kind] || 0) + 1));
+  const kindTxt = KIND_ORDER.filter((k) => kinds[k]).map((k) => `${(KIND_NAME[k] || k).toLowerCase()} ${kinds[k]}`).join(" · ");
+  const extra = [["PDF", policy.filter((p) => p.pdf).length], ["JavaScript", policy.filter((p) => p.rendered).length],
+                 ["hjälpcenter", policy.filter((p) => p.help).length]].filter((x) => x[1]).map(([l, n]) => `${l} ${n}`).join(" · ");
+  const skipped = S.skipList.filter((x) => x.reason !== "produkt");
+  steps.push({ key: "policy", title: "Policysidor hittade och lästa", status: st(s3start, s3end), time: tm(s3start, s3end),
+    nums: policy.length ? `<span class="num">${policy.length}</span> sidor${skipped.length ? `, <span class="num">${skipped.length}</span> hoppade över` : ""}` : "",
+    sub: [kindTxt, extra].filter(Boolean).join(" · "),
+    lines: policy.map((p) => [shortPath(p.url), [KIND_NAME[p.kind] || p.kind, p.rendered && "JavaScript", p.help && "hjälpcenter", p.pdf && "PDF"].filter(Boolean).join(" · "), p.n])
+      .concat(skipped.map((x) => [shortPath(x.url), "hoppade över: " + (SKIP_ONE[x.reason] || x.reason), null, true])) });
+
+  // 4. product and campaign pages
+  const s4end = phaseEnd(S, "produkter", after(tKassa, tRules, end));
+  const s4 = tProd == null ? (s4end != null || final ? "skipped" : "waiting") : st(tProd, s4end);
+  steps.push({ key: "produkt", title: "Produkt- och kampanjsidor", status: s4, time: tm(tProd, s4end),
+    nums: prods.length ? `<span class="num">${prods.length}</span> ${prods.length === 1 ? "sida" : "sidor"} i stickprov` : (s4 === "skipped" ? "hoppades över" : ""),
+    lines: prods.map((p) => [shortPath(p.url), KIND_NAME[p.kind] || p.kind, p.n]) });
+
+  // 5. checkout
+  const s5end = phaseEnd(S, "kassa", after(tRules, end));
+  let s5 = tKassa == null ? (s5end != null || final ? "skipped" : "waiting") : st(tKassa, s5end);
+  if (S.kassaFailed) s5 = "failed";
+  const chain = S.steps.map((x) => x.name).filter(Boolean).join(" → ");
+  steps.push({ key: "kassa", title: "Kassan", status: s5, time: tm(tKassa, s5end),
+    nums: chain ? esc(chain) : (s5 === "skipped" ? "hoppades över" : s5 === "failed" ? "kunde inte gås igenom" : ""),
+    shots: S.steps.filter((x) => x.screen).map((x) => ({ src: screenUrl({ snapshot: null }, x.screen), name: x.name, step: x.step })),
+    lines: (S.why ? [["Stannade", S.why]] : []).concat(S.steps.map((x) => [`Steg ${x.step}: ${x.name || ""}`, x.total != null ? `${nf(x.total)} kr` : ""])) });
+
+  // 6. rules
+  const s6end = end != null ? end : null;
+  steps.push({ key: "regler", title: "Regler körda", status: st(tRules, s6end), time: tm(tRules, s6end),
+    nums: tRules != null ? `<span class="num">${nf(S.checks)}</span> kontroller, <span class="num">${nf(S.hits)}</span> träffar` : "",
+    lines: S.hitList.slice().reverse().map((h) => [`${h.point} ← ${shortPath(h.url)}`, `”${String(h.quote).slice(0, 90)}${String(h.quote).length > 90 ? "…" : ""}”`]) });
+
+  // 7. points
+  const c = {};
+  Object.values(S.points).forEach((p) => { const s = stateOf({ id: p.point, state: p.state }); c[s] = (c[s] || 0) + 1; });
+  const decided = Object.keys(S.points).length;
+  steps.push({ key: "punkter", title: "45 punkter bedömda", status: st(S.firstPointT, end), time: tm(S.firstPointT, end),
+    nums: decided ? `<span class="num">${decided}</span>/45` : "",
+    sub: ["brist", "osäker", "uppfyllt", "ej tillämplig", KIK, "kräver intyg", "kräver testköp"].filter((s) => c[s])
+      .map((s) => `${dot(s)}${esc(s)} <span class="num">${c[s]}</span>`).join(" "),
+    lines: [] });
+  return steps;
+}
+
+const STEP_ICON = { waiting: "", running: "", done: "✓", skipped: "–", failed: "×" };
+const STEP_STATUS = { waiting: "väntar", running: "pågår", done: "klar", skipped: "hoppades över", failed: "misslyckades" };
+
+function stepBody(s, open) {
+  const lines = s.lines || [];
+  const show = open ? lines : (s.status === "running" ? lines.slice(-4) : []);
+  return (s.sub ? `<div class="st-sub">${s.sub}</div>` : "")
+    + (s.shots && s.shots.length ? `<div class="st-shots">${s.shots.map((x) => x.src ? `<figure><img src="${esc(x.src)}" alt="Skärmbild av kassan, steg ${esc(x.step)}" loading="lazy"><figcaption>${esc(x.step)}. ${esc(x.name || "")}</figcaption></figure>` : "").join("")}</div>` : "")
+    + (show.length ? `<ul class="st-lines">${show.map(([a, b, n, skip]) => `<li class="${skip ? "sk" : ""}"${n != null ? ` data-n="${n}"` : ""}><span class="a">${esc(a)}</span><span class="b">${esc(b || "")}</span></li>`).join("")}</ul>` : "")
+    + (!open && lines.length > show.length ? `<div class="st-more">${plural(lines.length, "rad", "rader")} – klicka för att visa</div>` : "");
+}
+
+/** Update the step list in place, so spinners and open steps keep their state. */
+function renderSteps(box, steps, openSet) {
+  if (!box) return;
+  steps.forEach((s, i) => {
+    let li = box.children[i];
+    if (!li) {
+      li = document.createElement("li");
+      li.className = "st";
+      li.dataset.key = s.key;
+      li.innerHTML = `<button type="button" class="st-h" aria-expanded="false"><span class="st-i" aria-hidden="true"></span>
+        <span class="st-t"></span><span class="st-n"></span><span class="st-time num"></span></button><div class="st-d"></div>`;
+      li.querySelector(".st-h").addEventListener("click", () => {
+        if (openSet.has(s.key)) openSet.delete(s.key); else openSet.add(s.key);
+        li._html = null;
+        if (box._refresh) box._refresh();
+      });
+      box.appendChild(li);
+    }
+    if (li._status !== s.status) {
+      li.className = `st st-${s.status}${li._status && li._status !== "waiting" ? "" : " enter"}`;
+      li.querySelector(".st-i").textContent = STEP_ICON[s.status];
+      li.querySelector(".st-i").title = STEP_STATUS[s.status];
+      li._status = s.status;
+    }
+    const open = openSet.has(s.key);
+    li.querySelector(".st-h").setAttribute("aria-expanded", String(open));
+    li.querySelector(".st-t").textContent = s.title;
+    const n = s.nums || (s.status === "waiting" ? "väntar" : "");
+    if (li._nums !== n) { li.querySelector(".st-n").innerHTML = n; li._nums = n; }
+    li.querySelector(".st-time").textContent = s.status === "waiting" || s.status === "skipped" ? "" : secs(s.time);
+    const html = stepBody(s, open);
+    if (li._html !== html) { li.querySelector(".st-d").innerHTML = html; li._html = html; }
+  });
+}
+
+function summaryLine(rep, S) {
+  const t = pageTotals(rep, S);
+  const parts = [`<span class="num">${nf(t.read)}</span> sidor lästa`];
+  if (S && S.sitemap && S.sitemap.total != null) parts.push(`webbplatskarta <span class="num">${nf(S.sitemap.total)}</span> adresser (inte lästa)`);
+  const reached = S && S.reached != null ? S.reached : (rep.checkout || {}).reached;
+  const chain = S && S.steps.length ? S.steps.map((x) => x.name).join(" → ") : null;
+  if (chain || reached) parts.push(`kassan: ${esc(chain || reached)}`);
+  const rs = resultsOf(rep);
+  const checks = rs.reduce((k, r) => k + (r.pages_read || []).length, 0) || (S ? S.checks : 0);
+  const hits = S ? S.hits : rs.reduce((k, r) => k + (r.evidence || []).filter((e) => e.quote).length, 0);
+  parts.push(`<span class="num">${nf(checks)}</span> kontroller`, `<span class="num">${nf(hits)}</span> träffar`,
+             `<span class="num">${rs.length}</span>/45 punkter`, `<span class="num">${secs(totalTime(rep, S))}</span>`);
+  return `<span class="ok">✓</span> ` + parts.join(" · ");
+}
+
+/** Seconds per phase: from the events' clock, or (reports without events) the report's own timing. */
+function phaseTimes(rep, S) {
+  if (S && !S.synthetic && S.phases.length) {
+    const end = S.tDone != null ? S.tDone : S.t;
+    const name = { start: "Startsidan", sidor: "Sidor", produkter: "Produktsidor", kassa: "Kassan", regler: "Regler" };
+    return S.phases.map((p, i) => [name[p.name] || p.name,
+      (p.ends ? (p.end != null ? p.end : end) : i + 1 < S.phases.length ? S.phases[i + 1].t : end) - p.t]);
+  }
+  const tm = rep.timing || {};
+  const total = rep.finished && rep.started ? (new Date(rep.finished) - new Date(rep.started)) / 1000 : null;
+  const rows = [["Sidor", tm.sidor], ["Produktsidor", tm.produkter], ["Kassan", tm.kassa]].filter((r) => r[1] != null);
+  const used = rows.reduce((n, r) => n + r[1], 0);
+  if (total != null && total - used > 0) rows.push(["Regler och sparande", total - used]);
+  return rows;
+}
+
+function totalTime(rep, S) {
+  if (S && !S.synthetic && S.tDone != null) return S.tDone;
+  if (rep.finished && rep.started) return (new Date(rep.finished) - new Date(rep.started)) / 1000;
+  return S ? S.t : null;
+}
+
+/* ---------- process graph: start → sources → pages → points, laid out in fixed columns ---------- */
+
+const SOURCES = [["links", "Länkar"], ["sitemap", "Webbplatskarta"], ["fixed", "Kända adresser"], ["help", "Hjälpcenter"],
+                 ["sample", "Stickprov"], ["kassa", "Kassaskript"]];
+
+function sourceOf(p) {
+  const how = String(p.how || "");
+  if (p.kind === "kassa") return "kassa";
+  if (p.kind === "produkt" || p.kind === "kampanj") return "sample";
+  if (p.help) return "help";
+  if (/^Sitemap/.test(how)) return "sitemap";
+  if (/fasta adress/i.test(how)) return "fixed";
+  return "links";
+}
+
+function graphModel(S, points, compact) {
+  const W = compact ? 360 : 680;
+  const X = compact ? { start: 8, src: 60, page: 178, pt: 300 } : { start: 10, src: 104, page: 300, pt: 604 };
+  const ROW = compact ? 11 : 13, HEAD = compact ? 13 : 16, TOP = 22;
+  const pages = pagesRead(S).filter((p) => p.n > 0).concat(Object.values(S.pages).filter((p) => !p.read && p.n > 0));
+  const byKind = {};
+  pages.forEach((p) => (byKind[p.kind] = byKind[p.kind] || []).push(p));
+  const kinds = KIND_ORDER.filter((k) => byKind[k]).concat(Object.keys(byKind).filter((k) => !KIND_ORDER.includes(k)));
+  const nodes = [], groups = [];
+  let y = TOP;
+  kinds.forEach((k) => {
+    groups.push({ kind: k, y: y + HEAD * 0.6 });
+    y += HEAD;
+    byKind[k].sort((a, z) => a.n - z.n).forEach((p) => { nodes.push({ p, y, src: sourceOf(p) }); y += ROW; });
+    y += 4;
+  });
+  const pagesH = y;
+  // points column, grouped by section
+  const pts = [];
+  let py = TOP, sec = null;
+  const PROW = compact ? 10.5 : 11.5;
+  points.forEach((q) => {
+    const s = sectionOf(q.id);
+    if (sec !== null && s !== sec) py += compact ? 4 : 5;
+    sec = s;
+    pts.push({ id: q.id, label: q.label, y: py });
+    py += PROW;
+  });
+  // sources: at the mean height of their pages, kept apart
+  const srcs = [];
+  SOURCES.forEach(([key, label]) => {
+    const own = nodes.filter((n) => n.src === key);
+    if (!own.length && !(key === "sitemap" && S.sitemap && S.sitemap.total)) return;
+    const mean = own.length ? own.reduce((a, n) => a + n.y, 0) / own.length : TOP + 30;
+    srcs.push({ key, label, n: own.length, y: mean });
+  });
+  srcs.sort((a, z) => a.y - z.y);
+  const gap = compact ? 22 : 26;
+  for (let i = 1; i < srcs.length; i++) srcs[i].y = Math.max(srcs[i].y, srcs[i - 1].y + gap);
+  const H = Math.max(pagesH, py, (srcs.length ? srcs[srcs.length - 1].y : 0) + 20, 160) + 10;
+  const start = { y: srcs.length ? (srcs[0].y + srcs[srcs.length - 1].y) / 2 : TOP + 30 };
+  return { W, H, X, nodes, groups, pts, srcs, start, compact };
+}
+
+/** Draws and updates the graph in an <svg>. Nodes are keyed, so new ones fade in and moved ones glide. */
+class ProcessGraph {
+  constructor(svg, tip, opts) {
+    this.svg = svg; this.tip = tip; this.opts = opts || {};
+    this.els = {}; this.pinned = null;
+    svg.addEventListener("mouseover", (e) => { const g = e.target.closest("[data-n]"); if (g) this.show(Number(g.dataset.n)); });
+    svg.addEventListener("mouseout", (e) => { const g = e.target.closest("[data-n]"); if (g && this.pinned == null) this.hide(); });
+    svg.addEventListener("click", (e) => {
+      const g = e.target.closest("[data-n]");
+      if (!g) { this.pinned = null; this.hide(); return; }
+      const n = Number(g.dataset.n);
+      this.pinned = this.pinned === n ? null : n;
+      if (this.pinned == null) this.hide(); else this.show(n);
+    });
+  }
+  el(key, tag, parent, attrs) {
+    let e = this.els[key];
+    if (!e) {
+      e = document.createElementNS("http://www.w3.org/2000/svg", tag);
+      e.classList.add("new");
+      (parent || this.svg).appendChild(e);
+      this.els[key] = e;
+      setTimeout(() => e.classList.remove("new"), 30);
+    }
+    for (const k in attrs || {}) if (e.getAttribute(k) !== String(attrs[k])) e.setAttribute(k, attrs[k]);
+    return e;
+  }
+  update(S, points, results) {
+    this.S = S; this.results = results || {};
+    const compact = (this.svg.parentNode.clientWidth || 700) < 520;
+    if (this.compact !== compact) { this.compact = compact; this.svg.innerHTML = ""; this.els = {}; }
+    const M = this.M = graphModel(S, points, compact);
+    const fs = compact ? 8.5 : 10;
+    this.svg.setAttribute("viewBox", `0 0 ${M.W} ${M.H}`);
+    if (!this.layers) this.layers = {};
+    ["edges", "hits", "nodes", "labels"].forEach((k) => {
+      if (!this.layers[k] || !this.layers[k].isConnected) {
+        this.layers[k] = document.createElementNS("http://www.w3.org/2000/svg", "g");
+        this.layers[k].setAttribute("class", "g-" + k);
+        this.svg.appendChild(this.layers[k]);
+      }
+    });
+    const L = this.layers;
+    // column titles
+    const titles = compact ? [["Start", M.X.start], ["Källor", M.X.src], ["Sidor", M.X.page], ["Punkter", M.X.pt]]
+                           : [["Start", M.X.start], ["Källor", M.X.src], ["Sidor", M.X.page], ["Svensk Handels punkter", M.X.pt]];
+    titles.forEach(([t, x], i) => { const e = this.el("title" + i, "text", L.labels, { x, y: 10, class: "g-col" }); e.textContent = t; });
+    // start node
+    const home = S.pages[0];
+    this.el("start", "circle", L.nodes, { cx: M.X.start + 4, cy: M.start.y, r: 5, class: "g-start" + (home && home.read ? "" : " pend") });
+    const sl = this.el("start-l", "text", L.labels, { x: M.X.start, y: M.start.y + 16, class: "g-lbl" });
+    sl.textContent = compact ? "" : (hostOf(home ? home.url : "") || "startsida");
+    // sources
+    M.srcs.forEach((s) => {
+      this.el("e-src-" + s.key, "path", L.edges, { d: curve(M.X.start + 9, M.start.y, M.X.src - 4, s.y), class: "g-e" });
+      this.el("src-" + s.key, "rect", L.nodes, { x: M.X.src - 4, y: s.y - 4, width: 8, height: 8, class: "g-src" });
+      const t = this.el("src-l-" + s.key, "text", L.labels, { x: M.X.src + 8, y: s.y + 3.5, class: "g-lbl" });
+      t.textContent = s.key === "sitemap" && S.sitemap && S.sitemap.total && !compact ? `${s.label} (${nf(S.sitemap.total)})` : `${compact && s.key === "sitemap" ? "Karta" : s.label} ${s.n || ""}`;
+    });
+    // kind headings
+    Object.keys(this.els).filter((k) => k.startsWith("grp-")).forEach((k) => { if (!M.groups.some((g) => "grp-" + g.kind === k)) { this.els[k].remove(); delete this.els[k]; } });
+    M.groups.forEach((g) => {
+      const t = this.el("grp-" + g.kind, "text", L.labels, { x: M.X.page - 4, y: g.y, class: "g-grp" });
+      t.textContent = (KIND_NAME[g.kind] || g.kind).toLowerCase();
+    });
+    // pages
+    const active = S.last;
+    M.nodes.forEach(({ p, y, src }) => {
+      const s = M.srcs.find((x) => x.key === src);
+      this.el("e-pg-" + p.n, "path", L.edges, { d: curve(M.X.src + 4, s ? s.y : y, M.X.page - 4, y), class: "g-e" });
+      const g = this.el("pg-" + p.n, "g", L.nodes, { "data-n": p.n, class: "g-pg" + (p.read ? "" : " pend") + (p.n === active && !S.tDone ? " active" : "") });
+      g.style.transform = `translate(${M.X.page}px, ${y}px)`;
+      if (!g.firstChild) g.innerHTML = `<circle class="g-ring" r="3.5"></circle><circle r="3.5"></circle><rect class="g-hit" x="-6" y="-6" width="${compact ? 14 : 150}" height="12"></rect>`;
+      if (!compact) {
+        const t = this.el("pg-l-" + p.n, "text", L.labels, { x: M.X.page + 8, y: y + 3.5, class: "g-lbl g-pl", "data-n": p.n });
+        const label = shortPath(p.url);
+        t.textContent = label.length > 26 ? label.slice(0, 25) + "…" : label;
+      }
+    });
+    // points
+    M.pts.forEach((q) => {
+      const r = this.results[q.id];
+      this.el("pt-" + q.id, "circle", L.nodes, { cx: M.X.pt, cy: q.y, r: 3.6, class: "g-pt " + (r ? dotClass(stateOf(r)) : "d-wait") });
+      const t = this.el("pt-l-" + q.id, "text", L.labels, { x: M.X.pt + 7, y: q.y + 3.2, class: "g-lbl g-ptl" });
+      t.textContent = q.id;
+    });
+    // page → point edges, one per page and point
+    const seen = new Set();
+    S.hitList.forEach((h) => {
+      const node = M.nodes.find((n) => n.p.n === h.page), q = M.pts.find((x) => x.id === h.point);
+      const k = h.page + ">" + h.point;
+      if (!node || !q || seen.has(k)) return;
+      seen.add(k);
+      const x0 = compact ? M.X.page + 5 : M.X.page + 148;
+      this.el("h-" + k, "path", L.hits, { d: curve(x0, node.y, M.X.pt - 5, q.y), class: "g-h", "data-n": h.page, "data-pt": h.point });
+    });
+    if (this.pinned != null) this.show(this.pinned);
+  }
+  show(n) {
+    const S = this.S, p = S && S.pages[n];
+    if (!p || !this.tip) return;
+    const pts = [...new Set(S.hitList.filter((h) => h.page === n).map((h) => h.point))];
+    this.svg.classList.add("focus");
+    this.svg.querySelectorAll(".g-h").forEach((e) => e.classList.toggle("on", Number(e.dataset.n) === n));
+    this.svg.querySelectorAll(".g-pg").forEach((e) => e.classList.toggle("on", Number(e.dataset.n) === n));
+    this.tip.innerHTML = `<b>${esc(p.title ? String(p.title).split(/\s[|–—\-:·»]\s/)[0] : KIND_NAME[p.kind] || "Sida")}</b>
+      <div class="u">${esc(p.url)}</div>
+      <div>${esc(KIND_NAME[p.kind] || p.kind || "")}${p.chars ? ` · ${nf(p.chars)} tecken` : ""}${p.rendered ? " · JavaScript" : ""}</div>
+      <div class="pts">${pts.length ? "Underlag för " + pts.map((id) => `${dot(this.results[id] ? stateOf(this.results[id]) : null)}${esc(id)}`).join(" ") : "Inget citat från sidan än."}</div>`;
+    const node = this.M && this.M.nodes.find((x) => x.p.n === n);
+    if (node) {
+      const box = this.svg.getBoundingClientRect(), k = box.width / this.M.W;
+      const fig = this.svg.parentNode.getBoundingClientRect();
+      let left = box.left - fig.left + (this.M.X.page + 10) * k, top = box.top - fig.top + node.y * k + 10;
+      left = Math.max(4, Math.min(left, fig.width - 270));
+      this.tip.style.left = left + "px"; this.tip.style.top = top + "px";
+    }
+    this.tip.hidden = false;
+  }
+  hide() {
+    if (!this.tip) return;
+    this.tip.hidden = true;
+    this.svg.classList.remove("focus");
+    this.svg.querySelectorAll(".g-h.on, .g-pg.on").forEach((e) => e.classList.remove("on"));
+  }
+}
+
+function curve(x0, y0, x1, y1) {
+  const m = (x0 + x1) / 2;
+  return `M${x0.toFixed(1)},${y0.toFixed(1)} C${m.toFixed(1)},${y0.toFixed(1)} ${m.toFixed(1)},${y1.toFixed(1)} ${x1.toFixed(1)},${y1.toFixed(1)}`;
+}
+
+/* ---------- pieces of the report ---------- */
+
+function resultsOf(rep) { return rep.results || []; }
+
+function countStates(results) {
+  const c = {};
+  results.forEach((r) => { const s = stateOf(r); c[s] = (c[s] || 0) + 1; });
+  return c;
+}
+
+function leadText(rep) {
+  const c = countStates(resultsOf(rep));
+  const b = c["brist"] || 0, o = (c["osäker"] || 0) + (c["råd"] || 0), u = c["uppfyllt"] || 0;
+  const need = (c["kräver intyg"] || 0) + (c["kräver testköp"] || 0), other = (c["ej tillämplig"] || 0) + (c[KIK] || 0);
+  const first = b ? `Vi hittade ${plural(b, "brist", "brister")} mot Svensk Handels krav` : "Vi hittade inga brister mot Svensk Handels krav i det vi läste";
+  const second = o ? ` och ${plural(o, "punkt", "punkter")} som behöver granskas av en människa.` : ".";
+  const rest = [u && `${plural(u, "punkt är uppfylld", "punkter är uppfyllda")}`,
+                need && `${need} kräver underlag från butiken`,
+                other && `${other} gick inte att bedöma eller gäller inte butiken`].filter(Boolean);
+  return first + second + (rest.length ? " " + rest.join(", ").replace(/^./, (m) => m.toUpperCase()) + "." : "");
+}
+
+function mapHtml(rep, points) {
+  const by = {};
+  resultsOf(rep).forEach((r) => (by[r.id] = r));
+  const sec = {};
+  points.forEach((p) => (sec[sectionOf(p.id)] = sec[sectionOf(p.id)] || []).push(p));
+  const b = base(rep.id);
+  return Object.keys(sec).map(Number).sort((a, z) => a - z).map((k) => `<div><h3>${k}. ${esc(SECTIONS[k] || "Övrigt")}</h3><ul>${sec[k].map((p) => {
+    const r = by[p.id];
+    const s = r ? stateOf(r) : null;
+    return `<li><a href="${b}/point/${encodeURIComponent(p.id)}" data-pid="${esc(p.id)}" title="${esc(p.id + " " + p.label + (s ? " · " + s : ""))}">`
+         + `<i class="d ${s ? dotClass(s) : "d-wait"}" aria-hidden="true"></i>${esc(p.id)}</a></li>`;
+  }).join("")}</ul></div>`).join("");
+}
+
+function legendHtml(rep) {
+  const c = countStates(resultsOf(rep));
+  const need = (c["kräver intyg"] || 0) + (c["kräver testköp"] || 0);
+  const items = [["brist", "Brist", c["brist"]], ["osäker", "Att granska", (c["osäker"] || 0) + (c["råd"] || 0)], ["uppfyllt", "Uppfyllt", c["uppfyllt"]],
+    ["ej tillämplig", "Ej tillämplig", c["ej tillämplig"]], [KIK, "Kunde inte kontrolleras", c[KIK]], ["kräver intyg", "Kräver underlag", need]];
+  return items.filter((x) => x[2] || ["brist", "osäker", "uppfyllt"].includes(x[0])).map(([s, l, n]) =>
+    `<span>${dot(s)}${l} <span class="num">${n || 0}</span></span>`).join("");
+}
+
+/** Short line from Svensk Handel's requirement: its first clause, cut at a word. */
+function shortReq(sh) {
+  let s = String(sh || "").trim().replace(/\s+/g, " ");
+  const m = s.match(/^(.{50,170}?)[.;:](\s|$)/);
+  if (m) s = m[1];
+  else if (s.length > 170) s = s.slice(0, 170).replace(/\s+\S*$/, "") + " …";
+  return s.charAt(0).toUpperCase() + s.slice(1);
+}
+
+/** Quote with the words it shares with the requirement underlined. */
+function underlineKeys(quote, ref) {
+  const stems = [...new Set((String(ref).toLowerCase().match(/[a-zåäöéü]{5,}/g) || []).filter((w) => !STOP.has(w)).map((w) => w.slice(0, 6)))];
+  const words = String(quote).match(/[A-Za-zÅÄÖåäöÉéÜü]+/g) || [];
+  const hit = (w) => w.length >= 5 && !STOP.has(w.toLowerCase()) && stems.some((s) => w.toLowerCase().includes(s));
+  if (!stems.length || words.filter(hit).length > words.length * 0.4) return esc(quote);
+  return String(quote).split(/([A-Za-zÅÄÖåäöÉéÜü]+)/).map((part, i) => i % 2 && hit(part) ? `<u>${esc(part)}</u>` : esc(part)).join("");
+}
+
+function bristCard(rep, r) {
+  const b = base(rep.id);
+  const ev = r.evidence || [];
+  let k = ev.findIndex((e) => e.role === "brist" && e.quote);
+  if (k < 0) k = ev.findIndex((e) => e.quote);
+  const e = ev[k];
+  return `<article class="bc" data-pid="${esc(r.id)}">
+    <p class="bc-verdict">${esc(r.summary || r.label)}</p>
+    <p><span class="k">Svensk Handel kräver:</span>${esc(shortReq(r.sh))}</p>
+    ${e ? `<p class="k" style="margin:0">Butiken skriver:</p><blockquote class="bc-quote">${underlineKeys(e.quote, (r.sh || "") + " " + (r.label || ""))}</blockquote>` : ""}
+    <p class="bc-foot">${e ? `<a href="${b}/point/${encodeURIComponent(r.id)}/ev/${k}">Visa på sidan</a>` : ""}
+      <a href="${b}/point/${encodeURIComponent(r.id)}">Mer om bedömningen</a>
+      <span class="pidl">${esc(r.id)} ${esc(r.label)}</span></p>
+  </article>`;
+}
+
+function row(rep, r, text) {
+  return `<li><a href="${base(rep.id)}/point/${encodeURIComponent(r.id)}" data-pid="${esc(r.id)}">
+    <span class="t">${esc(text)}</span><span class="m">${esc(r.label)} · <span class="pidl">${esc(r.id)}</span>${OUTDATED[r.id] ? " · Svensk Handels krav föråldrat" : ""}</span></a></li>`;
+}
+
+function needText(rep, r) {
+  const rec = (store.intyg[rep.id] || {})[r.id];
+  if (stateOf(r) === "kräver intyg")
+    return rec ? `Besvarat${rec.answer ? ": " + rec.answer : ""}${rec.file ? " · underlag bifogat" : ""}` : (INTYG[r.id] || r.summary || "");
+  return TESTKOP[r.id] || r.summary || "";
+}
+
+function fold(key, title, n, sub, inner) {
+  const open = store.open && store.open[key];
+  return `<details class="rp-fold" data-fold="${key}"${open ? " open" : ""}><summary>${esc(title)} (${n})</summary>
+    <div class="in">${sub ? `<p class="sub">${sub}</p>` : ""}${inner}</div></details>`;
+}
+
+function sectionsHtml(rep) {
+  const rs = resultsOf(rep);
+  const brist = rs.filter((r) => stateOf(r) === "brist");
+  const granska = rs.filter((r) => ["osäker", "råd"].includes(stateOf(r)));
+  const ok = rs.filter((r) => stateOf(r) === "uppfyllt");
+  const other = rs.filter((r) => ["ej tillämplig", KIK].includes(stateOf(r)));
+  const need = rs.filter((r) => isNeed(r));
+  let out = `<section class="rp-sec" id="brister"><h2>Brister${brist.length ? ` (${brist.length})` : ""}</h2>
+    ${brist.length ? `<p class="sub">Här säger butikens text emot Svensk Handels krav.</p>${brist.map((r) => bristCard(rep, r)).join("")}`
+                   : `<p class="rp-empty">Inga brister hittades i texterna vi läste.</p>`}</section>`;
+  if (granska.length) out += `<section class="rp-sec" id="granska"><h2>Att granska (${granska.length})</h2>
+    <p class="sub">Osäkra punkter är inga brister. Vi hittade något som kan vara ett problem, eller hittade inte det vi letade efter; en människa behöver titta.</p>
+    <ul class="rl">${granska.map((r) => row(rep, r, r.summary || r.label)).join("")}</ul></section>`;
+  const folds = [];
+  if (ok.length) folds.push(fold("ok", "Uppfyllt", ok.length, "", `<ul class="rl">${ok.map((r) => row(rep, r, r.summary || r.label)).join("")}</ul>`));
+  if (other.length) folds.push(fold("other", "Gäller inte eller gick inte att kontrollera", other.length, "",
+    `<ul class="rl">${other.map((r) => row(rep, r, r.summary || r.label)).join("")}</ul>`));
+  if (need.length) folds.push(fold("need", "Kräver underlag från butiken", need.length,
+    "Interna rutiner och sådant som kräver ett testköp syns inte på webbplatsen. Butiken kan svara och bifoga underlag under respektive punkt.",
+    `<ul class="rl">${need.map((r) => row(rep, r, needText(rep, r))).join("")}</ul>`));
+  if (folds.length) out += `<section class="rp-sec" id="underlag">${folds.join("")}</section>`;
+  return out;
+}
+
+function factsHtml(rep, S) {
+  const t = pageTotals(rep, S);
+  const skips = S ? S.skips : {};
+  const skipped = Object.keys(skips).filter((k) => k !== "sitemap").reduce((a, k) => a + skips[k], 0);
+  const rs = resultsOf(rep);
+  const c = countStates(rs);
+  const steps = S && S.steps.length ? S.steps.length : ((rep.checkout || {}).steps || []).length;
+  const reached = S && S.reached != null ? S.reached : (rep.checkout || {}).reached;
+  const hits = S ? S.hits : rs.reduce((k, r) => k + (r.evidence || []).filter((e) => e.quote).length, 0);
+  const checks = rs.reduce((k, r) => k + (r.pages_read || []).length, 0) || (S ? S.checks : 0);
+  const dd = (label, v) => `<dd><span>${label}</span><span class="num">${v}</span></dd>`;
+  const known = S && !S.synthetic && Object.keys(skips).length > 0;
+  const sm = S && S.sitemap;
+  let html = `<div class="facts">
+    <dl><dt>Sidor</dt>${dd("Hittade adresser", known ? nf(t.read + skipped) : "–")}${dd("Lästa", nf(t.read))}${dd("Hoppade över", known ? nf(skipped) : "–")}
+      ${Object.keys(SKIP_NAME).filter((k) => skips[k]).map((k) => dd(SKIP_NAME[k], nf(skips[k]))).join("")}
+      ${sm && sm.total != null ? dd("Webbplatskarta", `${nf(sm.total)} adresser (inte lästa)`) : ""}</dl>
+    <dl><dt>Text</dt>${dd("Tecken", nf(t.chars))}${dd("PDF", nf(t.pdf))}
+      ${dd("Lästa med JavaScript", nf(t.js))}${dd("Hjälpcenter", nf(t.help))}${dd("Produktsidor (stickprov)", nf(t.product))}</dl>
+    <dl><dt>Kassan</dt>${dd("Steg", nf(steps))}${dd("Kom till", esc(reached || "–"))}</dl>
+    <dl><dt>Regler</dt>${dd("Kontroller (punkt × sida)", nf(checks))}${dd("Träffar (citat)", nf(hits))}${dd("Punkter avgjorda", `${rs.length}/45`)}
+      ${["brist", "osäker", "uppfyllt", "ej tillämplig", KIK, "kräver intyg", "kräver testköp"].filter((s) => c[s]).map((s) => dd(`${dot(s)} ${esc(s)}`, c[s])).join("")}</dl>
+  </div>`;
+  const times = phaseTimes(rep, S);
+  const kinds = Object.entries(t.kinds).sort((a, z) => z[1].n - a[1].n);
+  const onPage = {};
+  rs.forEach((r) => (r.evidence || []).forEach((e) => {
+    if (typeof e.page === "number" && e.quote) { const s = onPage[e.page] = onPage[e.page] || []; if (!s.includes(r)) s.push(r); }
+  }));
+  const pages = rep.pages || [];
+  html += `<div class="ftables">
+    <table class="ft"><caption>Tid per fas</caption><tbody>${times.map(([n, s]) => `<tr><td>${esc(n)}</td><td class="r">${secs(s)}</td></tr>`).join("")}
+      <tr><td><b>Totalt</b></td><td class="r"><b>${secs(totalTime(rep, S))}</b></td></tr></tbody></table>
+    <table class="ft"><caption>Sidor per typ</caption><thead><tr><th>Typ</th><th class="r">Sidor</th><th class="r">Tecken</th></tr></thead>
+      <tbody>${kinds.map(([k, v]) => `<tr><td>${esc(KIND_NAME[k] || k || "Övrigt")}</td><td class="r">${v.n}</td><td class="r">${nf(v.chars)}</td></tr>`).join("")}</tbody></table>
+  </div>
+  <table class="ft" style="margin-top:16px"><caption>Vilka sidor punkterna bygger på</caption>
+    <thead><tr><th>Sida</th><th>Punkter</th></tr></thead><tbody>${Object.keys(onPage).map(Number).sort((a, z) => a - z).map((n) => `<tr>
+      <td><a href="${base(rep.id)}/page/${n}">${esc(pages[n] ? shortTitle(pages[n], rep.shop) : "Sida " + n)}</a>
+        <div class="ids">${esc(pathOf((pages[n] || {}).final_url || (pages[n] || {}).url) || "/")}</div></td>
+      <td>${onPage[n].map((r) => `<a class="ids" style="text-decoration:none;margin-right:10px;white-space:nowrap" href="${base(rep.id)}/point/${encodeURIComponent(r.id)}">${dot(stateOf(r))} ${esc(r.id)}</a>`).join(" ")}</td>
+    </tr>`).join("") || `<tr><td colspan="2" class="ids">Inga citat.</td></tr>`}</tbody></table>`;
+  return html;
+}
+
+function graphFigure(id) {
+  return `<figure class="gr" id="${id}"><svg class="pg" role="img" aria-label="Granskningens steg: startsidan, källorna, sidorna som lästes och punkterna de gav underlag för"></svg>
+    <div class="gtip" hidden></div></figure>`;
+}
+
+/** The finished report. */
+function renderReport(rep) {
+  const S = store.stats[rep.id] || null;
+  const shop = rep.shop || hostOf(rep.url || rep.input);
+  const points = resultsOf(rep).map((r) => ({ id: r.id, label: r.label, group: r.group }));
+  document.title = `${shop} – Scanningsverktyg prototyp 1`;
+  $("#app").innerHTML = `<article class="rp final" id="rp">
+    <header class="rp-head"><div><h1>${esc(shop)}</h1>
+      <div class="meta"><a href="${safeUrl(rep.url)}" target="_blank" rel="noopener noreferrer">${esc(rep.url)}</a> · ${esc(fmtDate(rep.finished || rep.started))} · Regelverk ${esc(rep.ruleset || "")}</div></div>
+      ${rep.id !== "demo" ? `<a class="btn-ghost" href="${base(rep.id)}/replay" title="Spela upp granskningen steg för steg">Spela upp igen</a>` : ""}</header>
+    <div class="rp-line"><i style="width:100%"></i></div>
+    <p class="rp-sum" id="rp-sum">${summaryLine(rep, S)}</p>
+    ${prelimHtml(rep)}
+    <p class="rp-lead">${esc(leadText(rep))}</p>
+    <section class="rp-map" aria-label="Svensk Handels 45 punkter per avsnitt">${mapHtml(rep, points)}</section>
+    <div class="rp-legend">${legendHtml(rep)}</div>
+    <div id="rp-sections">${sectionsHtml(rep)}</div>
+    ${S && Object.keys(S.pages).length ? `<section class="rp-sec rp-fig"><h2>Så gick granskningen till</h2>
+      <p class="sub">Från startsidan via länkar och webbplatskartan till sidorna vi läste, och vidare till de punkter sidorna gav citat för. Peka eller klicka på en sida.</p>
+      ${graphFigure("gr-final")}</section>` : ""}
+    <section class="rp-sec" id="rp-facts"><h2>Granskningen i siffror</h2>${factsHtml(rep, S)}</section>
+    <section class="rp-sec">
+      ${fold("pages", "Alla sidor vi läste", (rep.pages || []).length, "", pagesTab(rep))}
+      ${fold("about", "Om granskningen", "45 punkter", "", aboutTab(rep))}</section>
+  </article>`;
+  const fig = document.getElementById("gr-final");
+  if (fig && S) {
+    const by = {};
+    resultsOf(rep).forEach((r) => (by[r.id] = r));
+    const g = new ProcessGraph(fig.querySelector("svg"), fig.querySelector(".gtip"));
+    g.update(Object.assign({}, S, { last: null, tDone: S.tDone != null ? S.tDone : 0 }), points, by);
+    store.graph = g;
+  }
+}
+
+document.addEventListener("toggle", (e) => {
+  const d = e.target;
+  if (d && d.dataset && d.dataset.fold) { store.open = store.open || {}; store.open[d.dataset.fold] = d.open; }
+}, true);
+
+function markCurrent(pid) {
+  document.querySelectorAll(".rl a, .rp-map a").forEach((a) => a.classList.toggle("cur", a.dataset.pid === pid));
+}
+
+/* ---------- live view: the step list and the graph while the scan runs, or a replay ---------- */
+
+let LV = null;
+
+function stopLive() {
+  if (!LV) return;
+  LV.stopped = true;
+  clearTimeout(LV.pollTimer); clearTimeout(LV.pumpTimer); clearInterval(LV.clock);
+  window.removeEventListener("resize", LV.onResize);
+  LV = null;
+}
+
+async function startLive(id, mode) {
+  if (LV && LV.id === id && LV.mode === mode && !LV.stopped) return;
+  stopLive();
+  const lv = LV = { id, mode, S: newStats(), queue: [], next: 0, status: "running", points: [], results: {},
+    busy: false, stopped: false, finished: false, speed: mode === "replay" ? 3 : 1, open: new Set() };
+  let first, final = null;
+  try {
+    first = await api(`/api/scans/${encodeURIComponent(id)}/events?since=0`);
+    if (mode === "replay") final = await api(`/api/scans/${encodeURIComponent(id)}`);
+  } catch (e) { if (LV === lv) { stopLive(); renderMissing(id, e); } return; }
+  if (LV !== lv) return;
+  lv.points = first.points || [];
+  lv.meta = {};
+  lv.points.forEach((p) => (lv.meta[p.id] = p));
+  lv.S.synthetic = !!first.synthetic;
+  lv.shop = (final && final.shop) || first.shop || hostOf(first.url);
+  lv.url = first.url;
+  lv.clockAt = performance.now(); lv.clockBase = first.elapsed || 0;
+  document.title = (mode === "replay" ? "Uppspelning: " : "Granskar ") + `${lv.shop} – Scanningsverktyg prototyp 1`;
+  $("#app").innerHTML = `<article class="rp live" id="rp">
+    <header class="rp-head"><div><h1>${esc(lv.shop)}</h1>
+      <div class="meta"><span class="rp-state" id="rp-state">${mode === "replay" ? "Uppspelning" : "Granskning pågår"}</span> · <span class="num" id="rp-time">0 s</span> · ${esc(lv.url || "")}</div></div>
+      ${mode === "replay" ? `<a class="btn-ghost" href="${base(id)}">Hoppa till rapporten</a>` : ""}</header>
+    <div class="rp-line"><i id="rp-line" style="width:2%"></i></div>
+    <p class="rp-sum" id="rp-sum" hidden></p>
+    <div class="lv2" id="lv2">
+      <section class="steps-box" aria-label="Granskningens steg"><ol class="steps2" id="steps" aria-live="polite"></ol>
+        <p class="st-log" id="st-log"></p></section>
+      <section class="gr-box" aria-label="Processen som graf">${graphFigure("gr-live")}</section>
+    </div>
+  </article>`;
+  window.scrollTo(0, 0);
+  const fig = document.getElementById("gr-live");
+  lv.graph = new ProcessGraph(fig.querySelector("svg"), fig.querySelector(".gtip"));
+  const stepsBox = document.getElementById("steps");
+  stepsBox._refresh = () => draw(lv, true);
+  lv.onResize = () => draw(lv, true);
+  window.addEventListener("resize", lv.onResize);
+  ingest(lv, first);
+  draw(lv, true);
+  lv.clock = setInterval(() => draw(lv, false), 1000);
+  if (mode === "live" && lv.status === "running") poll(lv);
+  pump(lv);
+}
+
+function ingest(lv, res) {
+  lv.queue.push(...res.events);
+  lv.next = res.next;
+  lv.status = res.status;
+  lv.error = res.error;
+  if (res.elapsed != null) { lv.clockBase = res.elapsed; lv.clockAt = performance.now(); }
+}
+
+function poll(lv) {
+  lv.pollTimer = setTimeout(async () => {
+    if (lv.stopped) return;
+    try { ingest(lv, await api(`/api/scans/${encodeURIComponent(lv.id)}/events?since=${lv.next}`)); } catch (e) {}
+    if (lv.stopped) return;
+    if (lv.status === "running") poll(lv);
+    pump(lv);
+  }, 800);
+}
+
+function liveNow(lv) {
+  if (lv.mode === "replay" || lv.S.synthetic) return lv.S.t;
+  return Math.max(lv.S.t, lv.clockBase + (performance.now() - lv.clockAt) / 1000);
+}
+
+/** Redraw the step list, numbers and (when `graph`) the graph from the stats. */
+function draw(lv, graph) {
+  if (lv.stopped) return;
+  const now = lv.finished ? (lv.S.tDone != null ? lv.S.tDone : lv.S.t) : liveNow(lv);
+  renderSteps(document.getElementById("steps"), stepsOf(lv.S, now, lv.finished), lv.open);
+  const t = document.getElementById("rp-time");
+  if (t) t.textContent = secs(now);
+  const log = document.getElementById("st-log");
+  if (log && !lv.finished) log.textContent = lv.S.log;
+  const line = document.getElementById("rp-line");
+  if (line) {
+    const open = lv.S.phases.filter((p) => !(p.ends && p.end != null));  // overlapping phases: the earliest still running
+    const ph = (open[0] || lv.S.phases[lv.S.phases.length - 1] || {}).name;
+    const at = { sidor: 4 + Math.min(36, Object.keys(lv.S.pages).length * 1.2), produkter: 45, kassa: 60,
+                 regler: 75 + 25 * Object.keys(lv.S.points).length / (lv.points.length || 45) }[ph] || 2;
+    line.style.width = (lv.S.tDone != null ? 100 : at) + "%";
+  }
+  if (graph && lv.graph) lv.graph.update(lv.S, lv.points, lv.results);
+}
+
+function pump(lv) {
+  if (lv.busy || lv.stopped) return;
+  if (!lv.queue.length) {
+    if (lv.status !== "running" || lv.mode === "replay") finishLive(lv);
+    return;
+  }
+  lv.busy = true;
+  const e = lv.queue.shift();
+  let d = (LIVE_DELAY[e.type] != null ? LIVE_DELAY[e.type] : 60) / lv.speed;
+  if (lv.mode === "live") d *= Math.max(0.15, Math.min(1, 12 / (lv.queue.length + 12)));
+  if (RM) d = Math.min(d, 25);
+  try {
+    reduceStats(lv.S, e);
+    if (e.type === "point") {
+      const p = lv.meta[e.point] || {};
+      lv.results[e.point] = { id: e.point, label: e.label || p.label, state: e.state };
+    }
+    draw(lv, e.type !== "log" && e.type !== "skip");
+  } catch (err) { console.warn("live view:", err); }
+  lv.pumpTimer = setTimeout(() => { lv.busy = false; pump(lv); }, d);
+}
+
+/** Done: the step list folds into one summary line and the finished report is built around it. */
+async function finishLive(lv) {
+  if (lv.finished || lv.stopped) return;
+  lv.finished = true;
+  clearInterval(lv.clock);
+  let final = null;
+  try { final = await api(`/api/scans/${encodeURIComponent(lv.id)}`); } catch (e) {}
+  if (LV !== lv) return;
+  if (!final || final.status === "failed" || lv.S.failed) { stopLive(); store.rendered = null; return renderFailed(final || { error: lv.S.failed }); }
+  store.reports[lv.id] = final;
+  await loadExtras(final, true);
+  if (LV !== lv) return;
+  if (!lv.S.synthetic || !store.stats[lv.id]) store.stats[lv.id] = lv.S;
+  draw(lv, true);
+  const st = document.getElementById("rp-state");
+  if (st) st.textContent = "Klar";
+  await new Promise((r) => setTimeout(r, RM ? 0 : 1100));
+  if (LV !== lv) return;
+  const box = document.getElementById("lv2"), sum = document.getElementById("rp-sum");
+  if (sum) { sum.innerHTML = summaryLine(final, lv.S); sum.hidden = false; sum.classList.add("enter"); }
+  if (box && !RM) {
+    box.style.height = box.offsetHeight + "px";
+    void box.offsetHeight;
+    box.classList.add("settle");
+    box.style.height = "0px";
+    await new Promise((r) => setTimeout(r, 650));
+  }
+  if (LV !== lv) return;
+  stopLive();
+  renderReport(final);
+  window.scrollTo(0, 0);
+  store.rendered = lv.id;
+  if (lv.mode === "replay") history.replaceState({ depth: 0 }, "", base(lv.id));
+  markCurrent(parseRoute().point);
+}
+
+/* ---------- "Vad vi kontrollerar": Svensk Handels krav to the left, our 45 points to the right ---------- */
+
+const OUTCOME_DOT = { brist: "brist", osaker: "osäker", info: "ej tillämplig", testkop: "kräver testköp", intyg: "kräver intyg" };
+const BUCKETS = [["brist", "kan visa brist automatiskt", ["brist"]], ["flag", "bara flaggar osäker", ["osaker", "info"]],
+                 ["intyg", "kräver butikens intyg", ["intyg"]], ["testkop", "kräver testköp", ["testkop"]]];
+
+/** SH's numbered requirement a point belongs to: 3.2a → 3.2, 7.1f → 7.1, 2a → 2, 6.2b → 6.2. */
+function reqOf(id) { return String(id).replace(/[a-f]$/, ""); }
+
+async function renderKrav() {
+  document.title = "Vad vi kontrollerar – Scanningsverktyg prototyp 1";
+  $("#app").innerHTML = `<article class="kv"><p class="muted">Hämtar…</p></article>`;
+  let data;
+  try { data = store.method = store.method || await api("/api/method"); }
+  catch (e) { $("#app").innerHTML = `<article class="kv"><h1>Vad vi kontrollerar</h1><p class="error">${esc(e.message)}</p></article>`; return; }
+  if (parseRoute().name !== "krav") return;
+  const pts = data.points;
+  const reqs = [];
+  pts.forEach((p) => {
+    const k = reqOf(p.id);
+    let r = reqs.find((x) => x.id === k);
+    if (!r) reqs.push(r = { id: k, sec: sectionOf(p.id), points: [] });
+    r.points.push(p);
+  });
+  const methods = data.methods || {};
+  const count = (f) => pts.filter(f).length;
+  const filter = store.kravFilter || null;
+  const pageOf = (r) => {
+    const ps = [...new Set(r.points.map((p) => SH_PAGE[p.id]).filter(Boolean))];
+    return ps.length ? `s. ${ps.join("–")}` : "";
+  };
+  const outcomeTxt = (p) => (data.outcomes || {})[p.outcome] || p.outcome || "";
+  const card = (p, nested) => `<div class="kp${nested ? " nested" : ""}" data-pid="${esc(p.id)}" data-req="${esc(reqOf(p.id))}" data-method="${esc(p.method || "")}">
+      <div class="kp-h"><span class="pidl">${esc(p.id)}</span> <b>${esc(p.label)}</b></div>
+      <p class="kp-w">${esc(p.what || "")}</p>
+      <dl class="kp-d">
+        <div><dt>Metod</dt><dd>${esc(methods[p.method] || p.method || "–")}${p.how && p.how !== "–" ? ` <span class="muted">· ${esc(p.how)}</span>` : ""}</dd></div>
+        <div><dt>Underlag</dt><dd>${esc(p.source || "–")}</dd></div>
+        <div><dt>Utfall</dt><dd>${dot(OUTCOME_DOT[p.outcome])}${esc(outcomeTxt(p))}${OUTDATED[p.id] ? ` <span class="muted">· Svensk Handels krav föråldrat</span>` : ""}</dd></div>
+      </dl></div>`;
+  const bySec = (list, key) => {
+    const g = {};
+    list.forEach((x) => (g[key(x)] = g[key(x)] || []).push(x));
+    return Object.keys(g).map(Number).sort((a, z) => a - z).map((s) => [s, g[s]]);
+  };
+  $("#app").innerHTML = `<article class="kv">
+    <header class="kv-head">
+      <h1>Vad vi kontrollerar</h1>
+      <p class="kv-lead">Till vänster Svensk Handels krav för certifieringen Trygg E-handel, ordagrant ur
+        <em>${esc(data.requirements_doc || SH_DOC)}</em>. Till höger våra 45 punkter: vad vi letar efter, hur och var.
+        Linjerna visar vilken punkt som täcker vilket krav.</p>
+      <p class="kv-sum">${BUCKETS.map(([k, label, os]) => `<span>${dot(OUTCOME_DOT[os[0]])}<span class="num">${count((p) => os.includes(p.outcome))}</span> ${label}</span>`).join("")}</p>
+      <div class="kv-filter" role="group" aria-label="Filtrera på metod">
+        <button type="button" class="chip" data-m="" aria-pressed="${!filter}">Alla<span class="n">${pts.length}</span></button>
+        ${Object.keys(methods).filter((m) => count((p) => p.method === m)).map((m) =>
+          `<button type="button" class="chip" data-m="${esc(m)}" aria-pressed="${filter === m}">${esc(methods[m])}<span class="n">${count((p) => p.method === m)}</span></button>`).join("")}
+      </div>
+    </header>
+    <div class="kv-cols"><h2>Svensk Handels krav</h2><span></span><h2>Våra punkter</h2></div>
+    <div class="kv-grid${filter ? " filtered" : ""}" id="kv-grid">
+      <svg class="kv-lines" id="kv-lines" aria-hidden="true"></svg>
+      ${bySec(reqs, (r) => r.sec).map(([s, rs]) => `
+        <h3 class="kv-sec">${s}. ${esc(SECTIONS[s] || "")}</h3>
+        ${rs.map((r) => `<div class="kv-row">
+          <div class="kr" data-req="${esc(r.id)}" tabindex="0">
+            <div class="kr-h"><span class="num">${esc(r.id)}</span><span class="muted small">${esc(pageOf(r))}</span></div>
+            ${[...new Set(r.points.map((p) => p.sh))].map((t) => `<p class="kr-t">”${esc(t)}”</p>`).join("")}
+            <div class="kr-pts">${r.points.map((p) => card(p, true)).join("")}</div>
+          </div>
+          <div class="kv-pts">${r.points.map((p) => card(p, false)).join("")}</div>
+        </div>`).join("")}`).join("")}
+    </div>
+    <p class="small muted kv-src">Metod och utfall per punkt: projektets kravgenomgång (matris, byggkluster och punkter som aldrig ger automatisk brist).
+      Kravtexten är Svensk Handels; sidhänvisningarna gäller ${esc(SH_DOC)}.</p>
+  </article>`;
+  applyKravFilter();
+  wireKrav();
+}
+
+function applyKravFilter() {
+  const f = store.kravFilter || null;
+  const grid = document.getElementById("kv-grid");
+  if (!grid) return;
+  grid.classList.toggle("filtered", !!f);
+  grid.querySelectorAll(".kp").forEach((el) => el.classList.toggle("match", !f || el.dataset.method === f));
+  grid.querySelectorAll(".kr").forEach((el) => el.classList.toggle("match", !f || !!el.querySelector(`.kp.nested[data-method="${CSS.escape(f)}"]`)));
+  document.querySelectorAll(".kv-filter .chip").forEach((c) => c.setAttribute("aria-pressed", String((c.dataset.m || null) === f)));
+  drawKravLines();
+}
+
+function drawKravLines() {
+  const grid = document.getElementById("kv-grid"), svg = document.getElementById("kv-lines");
+  if (!grid || !svg) return;
+  const g = grid.getBoundingClientRect();
+  const anyPts = grid.querySelector(".kv-pts");
+  if (!anyPts || getComputedStyle(svg).display === "none" || getComputedStyle(anyPts).display === "none") { svg.innerHTML = ""; return; }
+  const kr0 = grid.querySelector(".kr"), x0 = kr0.getBoundingClientRect().right - g.left + 4, x1 = anyPts.getBoundingClientRect().left - g.left - 4;
+  svg.setAttribute("viewBox", `0 0 ${g.width} ${g.height}`);
+  svg.style.height = g.height + "px";
+  const f = store.kravFilter || null;
+  let html = "";
+  grid.querySelectorAll(".kv-pts .kp").forEach((p) => {
+    const req = grid.querySelector(`.kr[data-req="${CSS.escape(p.dataset.req)}"]`);
+    if (!req) return;
+    const a = req.getBoundingClientRect(), b = p.getBoundingClientRect();
+    const y0 = a.top - g.top + 14, y1 = b.top - g.top + 14, m = (x0 + x1) / 2;
+    const on = !f || p.dataset.method === f;
+    html += `<path d="M${x0},${y0} C${m},${y0} ${m},${y1} ${x1},${y1}" data-pid="${esc(p.dataset.pid)}" data-req="${esc(p.dataset.req)}" class="${on ? "" : "off"}"></path>`
+          + `<circle cx="${x0}" cy="${y0}" r="2.2"></circle><circle cx="${x1}" cy="${y1}" r="2.2"></circle>`;
+  });
+  svg.innerHTML = html;
+}
+
+function kravFocus(req, pid) {
+  const grid = document.getElementById("kv-grid");
+  if (!grid) return;
+  if (!req && !pid) {
+    grid.classList.remove("focus");
+    grid.querySelectorAll(".hi").forEach((e) => e.classList.remove("hi"));
+    return;
+  }
+  grid.classList.add("focus");
+  const pids = pid ? [pid] : [...grid.querySelectorAll(`.kv-pts .kp[data-req="${CSS.escape(req)}"]`)].map((e) => e.dataset.pid);
+  const r = req || reqOf(pid);
+  grid.querySelectorAll(".kr, .kv-pts .kp, .kv-lines path").forEach((e) => {
+    const hit = e.classList.contains("kr") ? e.dataset.req === r : pids.includes(e.dataset.pid);
+    e.classList.toggle("hi", hit);
+  });
+}
+
+function wireKrav() {
+  const grid = document.getElementById("kv-grid");
+  document.querySelectorAll(".kv-filter .chip").forEach((c) => c.addEventListener("click", () => {
+    store.kravFilter = c.dataset.m || null;
+    applyKravFilter();
+  }));
+  let pinned = null;
+  const target = (e) => {
+    const p = e.target.closest(".kv-pts .kp"), r = e.target.closest(".kr");
+    if (window.innerWidth <= 860) return null;
+    return p ? [null, p.dataset.pid] : r ? [r.dataset.req, null] : null;
+  };
+  grid.addEventListener("mouseover", (e) => { if (!pinned) { const t = target(e); if (t) kravFocus(...t); } });
+  grid.addEventListener("mouseleave", () => { if (!pinned) kravFocus(null, null); });
+  grid.addEventListener("click", (e) => {
+    const t = target(e);
+    const key = t ? t.join("|") : null;
+    pinned = key && key !== pinned ? key : null;
+    if (pinned) kravFocus(...t); else kravFocus(null, null);
+  });
+  grid.addEventListener("focusin", (e) => { const t = target(e); if (t) kravFocus(...t); });
+  if (window.ResizeObserver) {
+    const ro = new ResizeObserver(() => { if (grid.isConnected) drawKravLines(); else ro.disconnect(); });
+    ro.observe(grid);
+  }
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => drawKravLines());
+}
+
+/* ---------- review mode: decide every point with the evidence in view ---------- */
+
+const DECISIONS = [["brist", "Brist", "b"], ["uppfyllt", "Uppfyllt", "u"], ["osäker", "Osäker", "o"],
+                   ["ej tillämplig", "Ej tillämplig", "e"], ["kräver underlag", "Kräver underlag", "k"]];
+const SUGGEST = { "brist": "brist", "uppfyllt": "uppfyllt", "osäker": "osäker", "råd": "osäker", "ej tillämplig": "ej tillämplig",
+                  "kräver intyg": "kräver underlag", "kräver testköp": "kräver underlag" };
+
+function reviewOf(id) { return store.review[id] || { decisions: {}, decided: 0, total: 45, complete: false, reviewer: "" }; }
+function decisionOf(id, pid) { return ((reviewOf(id).decisions || {})[pid] || {}); }
+function reviewerName() {
+  try { return localStorage.getItem("villkorskollen.reviewer") || ""; } catch (e) { return ""; }
+}
+function rememberReviewer(n) { try { localStorage.setItem("villkorskollen.reviewer", n); } catch (e) {} }
+
+/** Banner on the report: preliminary until every point is decided, then links to the final report. */
+function prelimHtml(rep) {
+  if (rep.id === "demo") return "";
+  const rev = reviewOf(rep.id);
+  const b = base(rep.id);
+  if (rev.complete) return `<div class="prelim done"><div><b>Granskad</b> av ${esc(rev.reviewer || "–")}, ${esc(fmtDate(rev.updated))}.
+      ${rev.changed ? `Granskaren ändrade verktygets förslag på ${plural(rev.changed, "punkt", "punkter")}.` : "Granskaren behöll verktygets förslag."}</div>
+    <div class="prelim-a"><a class="btn" href="/api/scans/${encodeURIComponent(rep.id)}/report.pdf" target="_blank" rel="noopener">Slutrapport (PDF)</a>
+      <a class="btn-ghost" href="/api/scans/${encodeURIComponent(rep.id)}/report.html" target="_blank" rel="noopener">Utskriftsversion</a>
+      <a class="btn-ghost" href="${b}/granska">Ändra beslut</a></div></div>`;
+  return `<div class="prelim"><div><b>Preliminär – ej granskad.</b> ${rev.decided ? `${rev.decided} av ${rev.total} punkter granskade.` : ""}
+      Det här är verktygets förslag. En granskare går igenom varje punkt med underlaget innan slutrapporten kan skapas.</div>
+    <div class="prelim-a"><a class="btn" href="${b}/granska">${rev.decided ? "Fortsätt granskningen" : "Granska alla punkter"}</a></div></div>`;
+}
+
+function reviewOrder(rep) { return resultsOf(rep).map((r) => r.id); }
+
+function shownInList(rep, pid) {
+  const d = decisionOf(rep.id, pid);
+  if (store.rvOpen && d.decision) return false;
+  if (store.rvChanged && !d.changed) return false;
+  return true;
+}
+
+function nextPid(rep, pid, step) {
+  const order = reviewOrder(rep);
+  let i = order.indexOf(pid);
+  for (let k = 0; k < order.length; k++) {
+    i += step;
+    if (i < 0 || i >= order.length) return null;
+    if (shownInList(rep, order[i])) return order[i];
+  }
+  return null;
+}
+
+function listHtml(rep, pid) {
+  const bySec = {};
+  resultsOf(rep).forEach((r) => (bySec[sectionOf(r.id)] = bySec[sectionOf(r.id)] || []).push(r));
+  const b = base(rep.id);
+  return Object.keys(bySec).map(Number).sort((a, z) => a - z).map((s) => {
+    const rows = bySec[s].filter((r) => shownInList(rep, r.id) || r.id === pid);
+    if (!rows.length) return "";
+    return `<li class="rv-sec">${s}. ${esc(SECTIONS[s] || "")}</li>` + rows.map((r) => {
+      const d = decisionOf(rep.id, r.id);
+      return `<li><a href="${b}/granska/${encodeURIComponent(r.id)}" class="${r.id === pid ? "cur" : ""}" data-pid="${esc(r.id)}">
+        <i class="d ${d.decision ? dotClass(d.decision) : "d-open"}" aria-hidden="true"></i><span class="pidl">${esc(r.id)}</span>
+        <span class="l">${esc(r.label)}</span>${d.changed ? `<span class="ch" title="Granskaren ändrade verktygets förslag">ändrad</span>` : ""}</a></li>`;
+    }).join("");
+  }).join("") || `<li class="rv-sec">Inga punkter att visa.</li>`;
+}
+
+function progressHtml(rep) {
+  const rev = reviewOf(rep.id);
+  const n = rev.total || resultsOf(rep).length || 45;
+  return `<div class="rv-bar"><i style="width:${(100 * (rev.decided || 0) / n).toFixed(1)}%"></i></div>
+    <span><span class="num">${rev.decided || 0}</span> av <span class="num">${n}</span> granskade${rev.changed ? ` · <span class="num">${rev.changed}</span> ändrade förslag` : ""}</span>`;
+}
+
+function decisionHtml(rep, r) {
+  const d = decisionOf(rep.id, r.id);
+  const sugg = SUGGEST[stateOf(r)] || null;
+  const m = ((store.method || {}).points || []).find((p) => p.id === r.id) || {};
+  const atgard = d.atgard || m.fix || "";
+  const rec = (store.intyg[rep.id] || {})[r.id];
+  const ev = d.evidence || [];
+  const rev = reviewOf(rep.id);
+  return `<div class="rv-who"><label for="rv-name">Granskare</label>
+      <input id="rv-name" type="text" autocomplete="name" placeholder="Ditt namn" value="${esc(rev.reviewer || reviewerName())}"></div>
+    <fieldset class="rv-choices"><legend>Beslut</legend>
+      ${DECISIONS.map(([v, l, k]) => `<button type="button" class="rv-c${d.decision === v ? " on" : ""}" data-v="${esc(v)}" aria-pressed="${d.decision === v}">
+        <i class="d ${dotClass(v)}" aria-hidden="true"></i><span>${l}</span><kbd>${k.toUpperCase()}</kbd>
+        ${sugg === v ? `<em>verktygets förslag</em>` : ""}</button>`).join("")}
+    </fieldset>
+    ${!sugg ? `<p class="small muted" style="margin:-4px 0 10px">Verktyget kunde inte kontrollera punkten och ger inget förslag.</p>` : ""}
+    <label class="rv-lbl" for="rv-comment">Kommentar</label>
+    <textarea id="rv-comment" rows="3" placeholder="Varför du bedömer så (syns i slutrapporten)">${esc(d.comment || "")}</textarea>
+    <div id="rv-atgard-box"${d.decision === "brist" ? "" : " hidden"}>
+      <label class="rv-lbl" for="rv-atgard">Åtgärd</label>
+      <textarea id="rv-atgard" rows="4">${esc(atgard)}</textarea>
+      <p class="small muted" style="margin:2px 0 0">Förslag på åtgärd i klarspråk. Ändra fritt; texten står i åtgärdslistan.</p>
+    </div>
+    <div id="rv-need-box"${d.decision === "kräver underlag" ? "" : " hidden"}>
+      ${INTYG[r.id] ? `<div class="rv-intyg">${intygForm(rep, r, rec)}</div>`
+        : `<p class="rv-need">${esc(TESTKOP[r.id] || m.need || "Butiken behöver visa underlag för punkten.")}</p>`}
+    </div>
+    <details class="rv-own"${ev.length ? " open" : ""}><summary>Eget underlag (${ev.length})</summary>
+      <ul class="rv-evl">${ev.map((x, i) => `<li><div>${x.quote ? `<p>”${esc(x.quote)}”</p>` : ""}<a href="${safeUrl(x.url)}" target="_blank" rel="noopener noreferrer">${esc(x.url)}</a></div>
+        <button type="button" class="linkbtn" data-rm="${i}">Ta bort</button></li>`).join("")}</ul>
+      <label class="rv-lbl" for="rv-url">Adress</label><input id="rv-url" type="url" placeholder="https://butiken.se/kopvillkor">
+      <label class="rv-lbl" for="rv-quote">Citat</label><textarea id="rv-quote" rows="2" placeholder="Klistra in meningen från sidan"></textarea>
+      <button type="button" class="btn-ghost" id="rv-add" style="margin-top:8px">Lägg till underlag</button>
+    </details>
+    <div class="rv-nav">
+      <button type="button" class="btn-ghost" id="rv-prev">← Föregående</button>
+      <button type="button" class="btn" id="rv-next">Spara och nästa <kbd>Enter</kbd></button>
+    </div>
+    <p class="small muted rv-msg" id="rv-msg" role="status">${d.saved ? `Sparat ${esc(fmtDate(d.saved))}` : ""}</p>
+    <p class="small muted rv-keys">Tangenter: B U O E K väljer beslut, Enter sparar och går vidare, ← → bläddrar.</p>`;
+}
+
+function evidenceHtml(rep, r) {
+  const m = ((store.method || {}).points || []).find((p) => p.id === r.id) || {};
+  const shPage = m.sh_page || SH_PAGE[r.id];
+  const st = stateOf(r);
+  const ev = (r.evidence || []).filter((e) => e.quote);
+  const pages = rep.pages || [];
+  const rec = (store.intyg[rep.id] || {})[r.id];
+  return `<header class="rv-ph"><span class="pidl">${esc(r.id)} · ${esc(SECTIONS[sectionOf(r.id)] || "")}</span><h2>${esc(r.label)}</h2></header>
+    <section><h3>Svensk Handel kräver</h3><blockquote class="sh">${esc(r.sh)}</blockquote>
+      <div class="shref">${esc(SH_DOC)}${shPage ? `, s. ${esc(shPage)}` : ""}. Ordagrant; … markerar utelämnad text.</div>
+      ${OUTDATED[r.id] ? `<div class="note" style="margin-top:8px">${esc(OUTDATED[r.id])}</div>` : ""}</section>
+    <section><h3>Verktygets förslag</h3><p class="rv-sugg">${dot(st)}<b>${esc(st)}</b> · ${esc(r.summary || "")}</p>
+      ${r.why && r.why !== r.summary ? `<p class="rv-why">${esc(r.why)}</p>` : ""}
+      <p class="small muted">Metod: ${esc(((store.method || {}).methods || {})[m.method] || "–")}${m.how && m.how !== "–" ? " · " + esc(m.how) : ""}</p></section>
+    ${ev.length ? `<section><h3>Citat från butikens sidor (${ev.length})</h3>${ev.map((e) => {
+      const p = pages[e.page] || {};
+      const shot = e.screen ? screenUrl(rep, e.screen)
+        : (["kassa", "produkt", "kampanj"].includes(p.kind) && (store.screens[rep.id] || {})[String(e.page)]) || null;
+      const k = (r.evidence || []).indexOf(e);
+      return `<article class="rv-q"><div class="rv-qh"><b>${esc((ROLE[e.role] || [e.role || "Citat"])[0])}</b> · ${esc(shortTitle(p, rep.shop))}
+          · <a href="${safeUrl(e.url || p.final_url || p.url)}" target="_blank" rel="noopener noreferrer">${esc(pathOf(e.url || p.final_url || p.url) || hostOf(e.url || p.url))} ↗</a></div>
+        <div class="rv-text pagetext" data-page="${esc(e.page)}" data-k="${k}"><p class="muted">Hämtar sidans text…</p></div>
+        ${shot ? `<a href="${esc(shot)}" target="_blank" rel="noopener"><img class="rv-shot" src="${esc(shot)}" alt="Skärmbild: ${esc(shortTitle(p, rep.shop))}" loading="lazy"></a>` : ""}
+      </article>`;
+    }).join("")}</section>`
+    : `<section><h3>Inget citat</h3>
+      ${r.looked_for ? `<p><b>Verktyget letade efter:</b> ${esc(r.looked_for)}</p>` : ""}
+      ${(r.pages_read || []).length ? `<p class="small muted">Sidor som lästes för punkten (${r.pages_read.length}):</p><ul class="plist">${r.pages_read.map((n) => {
+        const p = pages[n] || {};
+        return `<li>${esc(shortTitle(p, rep.shop))} <span class="kind">${esc(KIND[p.kind] || p.kind || "")}</span>
+          · <a href="${safeUrl(p.final_url || p.url)}" target="_blank" rel="noopener noreferrer">${esc(pathOf(p.final_url || p.url) || hostOf(p.url))} ↗</a></li>`;
+      }).join("")}</ul>` : `<p class="muted">Punkten kan inte kontrolleras på webbplatsen.</p>`}</section>`}
+    ${rec ? `<section><h3>Butikens intyg</h3><p>${rec.answer ? `Svar: ${esc(rec.answer)}` : ""}${rec.comment ? ` · ${esc(rec.comment)}` : ""}${rec.file ? ` · underlag: ${esc(rec.file.name)}` : ""}</p></section>` : ""}`;
+}
+
+/** Fill each quote's page text, with the quote marked and scrolled into the middle of its box. */
+async function fillQuotes(rep, r) {
+  for (const box of document.querySelectorAll(".rv-text")) {
+    const e = (r.evidence || [])[Number(box.dataset.k)];
+    let page;
+    try { page = await getPage(rep, Number(box.dataset.page)); } catch (err) { box.innerHTML = `<p class="error">Kunde inte hämta sidan.</p>`; continue; }
+    if (!box.isConnected) return;
+    const text = page.text || "";
+    const span = locate(text, e.quote);
+    box.innerHTML = span ? renderText(text, span) : `<p><mark>${esc(e.quote)}</mark></p><p class="small muted">Citatet kunde inte hittas exakt i sidans text.</p>`;
+    const mk = box.querySelector("mark");
+    if (mk) box.scrollTop = mk.offsetTop - box.clientHeight / 2 + mk.offsetHeight / 2;
+  }
+}
+
+async function renderReview(rep, pid) {
+  if (!store.method) { try { store.method = await api("/api/method"); } catch (e) { store.method = { points: [], methods: {} }; } }
+  const order = reviewOrder(rep);
+  if (!pid || !order.includes(pid)) {
+    pid = order.find((id) => !decisionOf(rep.id, id).decision) || order[0];
+    history.replaceState({ depth: 0 }, "", `${base(rep.id)}/granska/${encodeURIComponent(pid)}`);
+  }
+  const r = findResult(rep, pid);
+  const shop = rep.shop || hostOf(rep.url);
+  document.title = `Granska ${r.id} – ${shop} – Scanningsverktyg prototyp 1`;
+  const rev = reviewOf(rep.id);
+  $("#app").innerHTML = `<article class="rv" id="rv">
+    <header class="rv-head">
+      <div><a class="back" href="${base(rep.id)}">← Preliminär rapport</a><h1>Granskning: ${esc(shop)}</h1></div>
+      <div class="rv-prog" id="rv-prog">${progressHtml(rep)}</div>
+    </header>
+    <div id="rv-done">${rev.complete ? doneHtml(rep) : ""}</div>
+    <div class="rv-grid">
+      <nav class="rv-side" aria-label="Alla punkter"><details class="rv-listbox" id="rv-listbox"><summary>Alla punkter</summary>
+        <div class="rv-filters"><label><input type="checkbox" id="rv-f-open"${store.rvOpen ? " checked" : ""}> Visa bara obeslutade</label>
+          <label><input type="checkbox" id="rv-f-ch"${store.rvChanged ? " checked" : ""}> Visa där granskaren ändrat förslaget</label></div>
+        <ul class="rv-list" id="rv-list">${listHtml(rep, pid)}</ul></details></nav>
+      <section class="rv-ev" aria-label="Underlag">${evidenceHtml(rep, r)}</section>
+      <aside class="rv-dec" aria-label="Beslut" id="rv-dec" data-pid="${esc(r.id)}">${decisionHtml(rep, r)}</aside>
+    </div></article>`;
+  const lb = document.getElementById("rv-listbox");
+  if (window.innerWidth > 860) lb.open = true;
+  const cur = document.querySelector(".rv-list a.cur");
+  if (cur && lb.open) cur.scrollIntoView({ block: "center" });
+  window.scrollTo(0, 0);
+  wireReview(rep, r);
+  fillQuotes(rep, r);
+}
+
+function doneHtml(rep) {
+  return `<div class="prelim done"><div><b>Alla punkter är granskade.</b> Slutrapporten kan skapas.</div>
+    <div class="prelim-a"><a class="btn" href="/api/scans/${encodeURIComponent(rep.id)}/report.pdf" target="_blank" rel="noopener">Slutrapport (PDF)</a>
+    <a class="btn-ghost" href="/api/scans/${encodeURIComponent(rep.id)}/report.html" target="_blank" rel="noopener">Utskriftsversion</a></div></div>`;
+}
+
+function refreshChrome(rep, pid) {
+  const p = document.getElementById("rv-prog");
+  if (p) p.innerHTML = progressHtml(rep);
+  const l = document.getElementById("rv-list");
+  if (l) l.innerHTML = listHtml(rep, pid);
+  const dn = document.getElementById("rv-done");
+  if (dn) dn.innerHTML = reviewOf(rep.id).complete ? doneHtml(rep) : "";
+}
+
+async function saveDecision(rep, r, patch) {
+  const msg = document.getElementById("rv-msg");
+  const name = (document.getElementById("rv-name") || {}).value || "";
+  if (!name.trim()) {
+    if (msg) { msg.className = "small error rv-msg"; msg.textContent = "Skriv ditt namn som granskare först."; }
+    const n = document.getElementById("rv-name");
+    if (n) n.focus();
+    return false;
+  }
+  rememberReviewer(name.trim());
+  // the form's fields belong to this point only while its panel is on screen
+  const mine = (document.getElementById("rv-dec") || {}).dataset && document.getElementById("rv-dec").dataset.pid === r.id;
+  const body = Object.assign({ reviewer: name.trim() }, mine ? { comment: document.getElementById("rv-comment").value,
+    atgard: document.getElementById("rv-atgard").value } : {}, patch);
+  try {
+    if (msg) { msg.className = "small muted rv-msg"; msg.textContent = "Sparar…"; }
+    store.review[rep.id] = await api(`/api/scans/${encodeURIComponent(rep.id)}/review/${encodeURIComponent(r.id)}`,
+      { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+    if (msg && document.getElementById("rv-msg") === msg) msg.textContent = `Sparat ${fmtDate(decisionOf(rep.id, r.id).saved)}`;
+    refreshChrome(rep, r.id);
+    return true;
+  } catch (e) {
+    if (msg) { msg.className = "small error rv-msg"; msg.textContent = `Kunde inte spara: ${e.message}`; }
+    return false;
+  }
+}
+
+function setChoice(rep, r, v) {
+  document.querySelectorAll(".rv-c").forEach((b) => { const on = b.dataset.v === v; b.classList.toggle("on", on); b.setAttribute("aria-pressed", String(on)); });
+  document.getElementById("rv-atgard-box").hidden = v !== "brist";
+  document.getElementById("rv-need-box").hidden = v !== "kräver underlag";
+  return saveDecision(rep, r, { decision: v });
+}
+
+function go(rep, pid) { if (pid) location.hash = `${base(rep.id)}/granska/${encodeURIComponent(pid)}`; }
+
+function wireReview(rep, r) {
+  document.querySelectorAll(".rv-c").forEach((b) => b.addEventListener("click", () => setChoice(rep, r, b.dataset.v)));
+  clearTimeout(store.rvTimer);
+  const later = () => { clearTimeout(store.rvTimer); store.rvTimer = setTimeout(() => { if (decisionOf(rep.id, r.id).decision) saveDecision(rep, r, {}); }, 800); };
+  ["rv-comment", "rv-atgard"].forEach((id) => document.getElementById(id).addEventListener("input", later));
+  document.getElementById("rv-name").addEventListener("change", (e) => rememberReviewer(e.target.value.trim()));
+  document.getElementById("rv-prev").addEventListener("click", () => go(rep, nextPid(rep, r.id, -1)));
+  const next = async () => {
+    clearTimeout(store.rvTimer);
+    if (!decisionOf(rep.id, r.id).decision) {
+      const msg = document.getElementById("rv-msg");
+      msg.className = "small error rv-msg"; msg.textContent = "Välj ett beslut först.";
+      return;
+    }
+    if (!(await saveDecision(rep, r, {}))) return;
+    const n = nextPid(rep, r.id, 1) || reviewOrder(rep).find((id) => !decisionOf(rep.id, id).decision);
+    if (n && n !== r.id) go(rep, n);
+    else document.getElementById("rv-done").scrollIntoView({ behavior: RM ? "auto" : "smooth" });
+  };
+  document.getElementById("rv-next").addEventListener("click", next);
+  const own = () => (decisionOf(rep.id, r.id).evidence || []).slice();
+  document.getElementById("rv-add").addEventListener("click", async () => {
+    const url = document.getElementById("rv-url").value.trim(), quote = document.getElementById("rv-quote").value.trim();
+    const msg = document.getElementById("rv-msg");
+    if (!/^https?:\/\//i.test(url)) { msg.className = "small error rv-msg"; msg.textContent = "Ange en adress som börjar med https://."; return; }
+    if (await saveDecision(rep, r, { evidence: own().concat([{ url, quote }]) })) renderDecision(rep, r);
+  });
+  document.querySelectorAll("[data-rm]").forEach((b) => b.addEventListener("click", async () => {
+    const ev = own(); ev.splice(Number(b.dataset.rm), 1);
+    if (await saveDecision(rep, r, { evidence: ev })) renderDecision(rep, r);
+  }));
+  const f = document.getElementById("intygform");
+  if (f) f.addEventListener("submit", (e) => submitIntyg(e, rep, r));
+  ["rv-f-open", "rv-f-ch"].forEach((id) => document.getElementById(id).addEventListener("change", (e) => {
+    if (id === "rv-f-open") store.rvOpen = e.target.checked; else store.rvChanged = e.target.checked;
+    document.getElementById("rv-list").innerHTML = listHtml(rep, r.id);
+  }));
+  store.rvKeys = (e) => {
+    if (parseRoute().review !== true || e.ctrlKey || e.metaKey || e.altKey) return;
+    const dec = document.getElementById("rv-dec");
+    if (!dec || dec.dataset.pid !== r.id) return;  // the next point is still loading
+    const tag = (e.target.tagName || "").toLowerCase();
+    const typing = tag === "textarea" || tag === "input" || tag === "select" || e.target.isContentEditable;
+    if (typing) return;
+    const k = e.key.toLowerCase();
+    const hit = DECISIONS.find((d) => d[2] === k);
+    if (hit) { e.preventDefault(); setChoice(rep, r, hit[0]); }
+    else if (e.key === "Enter" && !(tag === "button" || tag === "a")) { e.preventDefault(); next(); }
+    else if (e.key === "ArrowRight") { e.preventDefault(); go(rep, nextPid(rep, r.id, 1)); }
+    else if (e.key === "ArrowLeft") { e.preventDefault(); go(rep, nextPid(rep, r.id, -1)); }
+  };
+}
+
+function renderDecision(rep, r) {
+  const box = document.getElementById("rv-dec");
+  if (!box) return;
+  box.innerHTML = decisionHtml(rep, r);
+  wireReview(rep, r);
+}
+
+document.addEventListener("keydown", (e) => { if (store.rvKeys) store.rvKeys(e); });
+
+/* ---------- demo (only for #/demo) ---------- */
+
+function demoReport() {
+  const pages = [
+    { url: "https://exempelbutiken.example/", final_url: "https://exempelbutiken.example/", title: "Exempelbutiken – kläder och skor", kind: "start", how: "Startsidan", business: false, is_pdf: false,
+      text: "## Välkommen till Exempelbutiken\nFri frakt över 499 kr\nNyheter i lager varje vecka\n## Kundservice\nKöpvillkor\nRetur och byten\nIntegritetspolicy\nExempelbutiken AB, org.nr 556000-0000\nkundservice@exempelbutiken.example · 08-123 45 67" },
+    { url: "https://exempelbutiken.example/kopvillkor", final_url: "https://exempelbutiken.example/kopvillkor", title: "Köpvillkor", kind: "villkor", how: "Startsidan > länk ”Köpvillkor”", business: false, is_pdf: false,
+      text: "## Köpvillkor\nDessa villkor gäller för köp hos Exempelbutiken AB (org.nr 556000-0000).\n## Leverans\nVi levererar normalt inom 2–5 arbetsdagar. Exempelbutiken ansvarar inte för förseningar som orsakas av fraktbolaget.\n## Ångerrätt\nDu har 14 dagars ångerrätt från den dag du tagit emot varan. Ångerrätten gäller inte för reavaror.\nMeddela oss via e-post innan du skickar tillbaka varan.\nKunden står för returfrakten.\n## Reklamation\nVid fel på varan kontakta kundservice.\n## Tvister\nVi följer Allmänna reklamationsnämndens rekommendationer." },
+    { url: "https://exempelbutiken.example/retur", final_url: "https://exempelbutiken.example/retur", title: "Retur och byten", kind: "retur", how: "Startsidan > länk ”Retur och byten”", business: false, is_pdf: false,
+      text: "## Retur och byten\nAnvänd returformuläret som finns i paketet.\nÅterbetalning sker inom 14 dagar från att vi mottagit returen." },
+    { url: "https://exempelbutiken.example/foretag/villkor", final_url: "https://exempelbutiken.example/foretag/villkor", title: "Villkor för företagskunder", kind: "villkor", how: "Köpvillkor > länk ”Företag”", business: true, is_pdf: false,
+      text: "## Villkor för företagskunder\nÅngerrätt gäller inte vid köp som företag." },
+  ];
+  pages.forEach((p) => (p.n_chars = p.text.length));
+  const ev = (page, quote, role) => ({ page, url: pages[page].url, quote, role });
+  const special = {
+    "1": ["uppfyllt", "Namn, org.nr och kontaktuppgifter finns på startsidan.", [ev(0, "Exempelbutiken AB, org.nr 556000-0000", "stöd")]],
+    "6.2": ["brist", "Villkoren friskriver butiken från förseningar hos fraktbolaget.", [ev(1, "Exempelbutiken ansvarar inte för förseningar som orsakas av fraktbolaget.", "brist")]],
+    "7.1a": ["uppfyllt", "Köpvillkoren anger 14 dagars ångerrätt.", [ev(1, "Du har 14 dagars ångerrätt från den dag du tagit emot varan.", "stöd")]],
+    "7.1f": ["brist", "Kunden står för returfrakten men det sägs inte vad det kostar.", [ev(1, "Kunden står för returfrakten.", "brist")]],
+    "7.2": ["brist", "Villkoren nekar ångerrätt för reavaror.", [ev(1, "Ångerrätten gäller inte för reavaror.", "brist"), ev(1, "Du har 14 dagars   ångerrätt", "motsägelse")]],
+    "7.1e": ["osäker", "Ett returformulär nämns, men inte Konsumentverkets standardformulär.", [ev(2, "Använd returformuläret som finns i paketet.", "stöd")]],
+    "8.2": ["osäker", "Reklamation nämns kort men reklamationsrätten beskrivs inte.", [ev(1, "Vid fel på varan kontakta kundservice.", "stöd")]],
+    "9a": ["uppfyllt", "Återbetalning inom 14 dagar anges.", [ev(2, "Återbetalning sker inom 14 dagar från att vi mottagit returen.", "stöd")]],
+    "10a": ["uppfyllt", "ARN nämns i köpvillkoren.", [ev(1, "Vi följer Allmänna reklamationsnämndens rekommendationer.", "stöd")]],
+    "10b": ["ej tillämplig", "EU:s plattform för tvistlösning (ODR) är stängd; punkten bedöms inte.", []],
+    "13a": ["ej tillämplig", "Butiken säljer inga prenumerationer.", []],
+    "13c": ["ej tillämplig", "Butiken säljer inga prenumerationer.", []],
+    "14a": ["osäker", "Integritetspolicyn länkas men kunde inte läsas.", []],
+  };
+  const pts = [["1","Företagsuppgifter",1],["2a","Svar inom 48 timmar",4],["2b","Fungerande kundservice",5],["3.1","Produktinformation",2],["3.2a","Totalpris",2],["3.2b","Kostnader i kassan",2],["3.2c","Minsta ordervärde, handpenning",2],["3.3","Orderbekräftelse",4],["4a","Villkor för erbjudanden",2],["4b","Reans längd",3],["5a","Köpknappen",2],["5b","Villkor vid beställningen",2],["6.1a","Leveransinformation",1],["6.1b","Rutin vid förseningar",5],["6.2","Ingen friskrivning från förseningar",1],["6.2b","Inga rutiner som inskränker rätten vid försening",5],["6.3","Bruksanvisning",4],["7.1a","Ångerrätt finns",1],["7.1b","Hur ångerrätten utövas",1],["7.1c","Ångerfristen",1],["7.1d","Returtid",1],["7.1e","Standardformulär",1],["7.1f","Returfrakt",1],["7.2","Ingen nekad ångerrätt",1],["8.1","Reklamationshantering",5],["8.2","Information om reklamationsrätten",1],["8.3","Garantier",1],["9a","Återbetalning vid ånger",1],["9b","Återbetalning vid reklamation",1],["9c","Rutiner för återbetalning",5],["10a","Information om ARN",1],["10b","Information om ODR",1],["10c","Följer ARN:s rekommendationer",3],["11a","Rutiner för minderåriga",5],["11b","Inga köpuppmaningar till barn",2],["11c","Ansvarsfull marknadsföring mot barn",5],["12a","Betalsätt med avgift",2],["12b","SSL",1],["12c","PCI DSS",5],["13a","Prenumeration: information",1],["13b","Prenumeration: ingen fälla",2],["13c","Prenumeration: uppsägning efter förlängning",1],["14a","Information om personuppgifter",1],["14b","Rutiner för rättigheter",5],["14c","Rutiner för dataskydd",5]];
+  const results = pts.map(([id, label, group]) => {
+    const s = special[id];
+    const auto = group === 1;
+    const state = s ? s[0] : auto ? "uppfyllt" : "kunde inte kontrolleras";
+    const summary = s ? s[1] : auto ? "Texten innehåller det Svensk Handel kräver." : "Kan inte bedömas utifrån webbplatsens text.";
+    return { id, label, group, state, summary,
+      sh: "Exempeltext. Här visas Svensk Handels formulering för punkten ordagrant.",
+      why: auto ? `${summary} Det här är en exempelrapport; motiveringen beskriver vad som hittades och varför det ger tillståndet ${state}.`
+                : `Punkten kräver ${GROUPS[group][0].toLowerCase()}, vilket inte ingår i den här versionen.`,
+      looked_for: auto ? "Formuleringar i köpvillkor och policysidor som rör punkten." : "",
+      evidence: s ? s[2] : [], pages_read: auto ? [0, 1, 2] : [], method: auto ? "regel" : "ej automatiserad" };
+  });
+  const rep = { id: "demo", input: "exempelbutiken.example", url: "https://exempelbutiken.example/", shop: "Exempelbutiken",
+    started: "2026-10-06T10:00:00", finished: "2026-10-06T10:00:42", status: "done", error: null,
+    progress: ["Startsidan hämtad (84 länkar)", "4 sidor lästa", "45 punkter kontrollerade"],
+    pages, results, ruleset: "proto1-2026-10-06 (exempel)" };
+  rep.counts = countsOf(Object.assign({}, rep, { counts: null }));
+  return rep;
+}
+</script>
+</body>
+</html>

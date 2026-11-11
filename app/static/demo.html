@@ -1,0 +1,711 @@
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Scanningsverktyg · Granskningsdemo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap">
+<style>
+/* Light only: white page, hairline borders, small grey labels, calm numbers, no shadows. One accent; state colours
+   carry meaning only: red = possible flaw, amber = waiting, green = ok/closed. */
+:root{
+  --bg:#ffffff; --panel:#ffffff; --panel2:#fafafa; --line:#efefef; --line2:#e4e4e4;
+  --fg:#111111; --muted:#6b6b6b; --dim:#8f8f8f;
+  --accent:#3b6cf6; --accent-t:rgba(59,108,246,.08);
+  --red:#e5484d; --red-t:rgba(229,72,77,.08); --amber:#b26a00; --amber-t:rgba(255,178,36,.14);
+  --green:#18794e; --green-t:rgba(24,121,78,.08); --grey-t:rgba(0,0,0,.04);
+  --top:rgba(255,255,255,.92); --sticky:rgba(255,255,255,.95); --on-fg:#fff; --on-green:#fff; --on-red:#fff;
+  --scrim:rgba(17,17,17,.4); --na-bg:rgba(0,0,0,.03); --na-fg:#b9b9b9; --code-fg:#2b2b2b;
+  --sans:"Geist",system-ui,-apple-system,"Segoe UI",sans-serif; --mono:"Geist Mono",ui-monospace,Consolas,monospace;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--fg);font:14px/1.55 var(--sans)}
+a{color:var(--accent);text-decoration:none}
+button{font:inherit;color:inherit;cursor:pointer}
+.top{position:sticky;top:0;z-index:10;background:var(--top);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.top .in{max-width:1180px;margin:0 auto;padding:10px 20px;display:flex;align-items:center;gap:22px;flex-wrap:wrap}
+.demobar{background:var(--panel2);border-bottom:1px solid var(--line);color:var(--muted);font-size:12.5px;text-align:center;padding:5px 16px}
+.brand{display:flex;flex-direction:column;line-height:1.15;color:inherit;text-decoration:none}
+.home{flex:none;color:var(--muted);text-decoration:none;font-size:13px;padding:5px 9px;border:1px solid var(--line2);border-radius:7px;white-space:nowrap}
+.home:hover{color:var(--fg);background:var(--panel2)}
+.brand b{font-weight:600;letter-spacing:-.01em}
+.brand span{font-size:12px;color:var(--muted)}
+nav.main{display:flex;gap:4px;flex-wrap:wrap;align-items:center}
+nav.main a{color:var(--muted);padding:6px 10px;border-radius:6px;font-weight:500;white-space:nowrap}
+nav.main a:hover{background:var(--panel2)}
+nav.main a.on{color:var(--fg);background:var(--panel2)}
+nav.main .as{color:var(--dim);font-size:12.5px;padding:0 4px 0 0}
+@media (max-width:700px){
+  .top{position:static}
+  .top .in{gap:8px 12px;padding:8px 16px}
+  .right{order:2}
+  nav.main{order:3;width:100%;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin:0 -4px}
+  nav.main::-webkit-scrollbar{display:none}
+}
+@media (max-width:480px){.brand span{display:none}}
+nav.main .n{display:inline-block;min-width:18px;padding:0 5px;margin-left:5px;border-radius:9px;background:var(--red-t);color:var(--red);font-size:11px;text-align:center}
+.right{margin-left:auto;display:flex;align-items:center;gap:12px}
+.seg{display:flex;border:1px solid var(--line2);border-radius:7px;overflow:hidden}
+.seg button{background:none;border:0;padding:5px 12px;color:var(--muted);font-weight:500}
+.seg button.on{background:var(--panel2);color:var(--fg)}
+main{max-width:1180px;margin:0 auto;padding:28px 20px 80px}
+@media (max-width:560px){main{padding:20px 16px 64px}}
+h1{font-size:24px;letter-spacing:-.015em;margin:0 0 4px;font-weight:600}
+h2{font-size:17px;letter-spacing:-.015em;margin:34px 0 12px;font-weight:600}
+h3{font-size:14px;margin:0 0 6px;font-weight:600}
+.sub{color:var(--muted);margin:0 0 22px}
+.mono{font-family:var(--mono)}
+.muted{color:var(--muted)} .dim{color:var(--dim)} .small{font-size:12.5px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:18px}
+.grid{display:grid;gap:12px}
+.g4{grid-template-columns:repeat(4,1fr)} .g3{grid-template-columns:repeat(3,1fr)} .g2{grid-template-columns:1fr 1fr}
+@media (max-width:900px){.g4,.g3,.g2{grid-template-columns:1fr 1fr}}
+@media (max-width:560px){.g4,.g3,.g2{grid-template-columns:1fr}}
+.tile:hover{background:var(--panel2)}
+.tile .k{font-size:13px;color:var(--muted)}
+.tile .v{font-size:30px;font-weight:500;letter-spacing:-.02em;margin:4px 0 2px;font-variant-numeric:tabular-nums}
+.tile .h{font-size:12px;color:var(--dim)}
+.tile.red .v{color:var(--red)} .tile.amber .v{color:var(--amber)} .tile.green .v{color:var(--green)}
+.flow{display:flex;align-items:center;gap:8px;color:var(--dim);font-size:12px;margin:10px 0 0;flex-wrap:wrap}
+.btn{background:var(--fg);color:var(--on-fg);border:0;border-radius:8px;padding:9px 15px;font-weight:600}
+.btn:disabled{opacity:.35;cursor:default}
+.btn.ghost{background:none;color:var(--fg);border:1px solid var(--line2)}
+.btn.ok{background:var(--green);color:var(--on-green)}
+.btn.no{background:none;color:var(--red);border:1px solid color-mix(in srgb,var(--red) 40%,transparent)}
+.btn.sm{padding:6px 11px;font-size:13px}
+.pill{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:500;padding:2px 9px;border-radius:999px;background:var(--grey-t);color:var(--muted);white-space:nowrap}
+.pill.red{background:var(--red-t);color:var(--red)} .pill.amber{background:var(--amber-t);color:var(--amber)}
+.pill.green{background:var(--green-t);color:var(--green)} .pill.blue{background:var(--accent-t);color:var(--accent)}
+.rows{border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.row{display:grid;grid-template-columns:1.6fr 1fr 1.2fr auto;gap:14px;align-items:center;padding:13px 16px;border-top:1px solid var(--line);background:var(--panel)}
+.row:first-child{border-top:0}
+.row:hover{background:var(--panel2)}
+a.row{color:var(--fg)}
+@media (max-width:700px){.row{grid-template-columns:1fr;gap:4px}}
+.bar{display:flex;height:6px;border-radius:3px;overflow:hidden;background:var(--grey-t);min-width:120px}
+.bar i{display:block;height:100%}
+.feed{list-style:none;margin:0;padding:0}
+.feed li{display:grid;grid-template-columns:110px 1fr;gap:12px;padding:8px 0;border-top:1px solid var(--line);font-size:13px}
+.feed li:first-child{border-top:0}
+/* review */
+.split{display:grid;grid-template-columns:240px 1fr;gap:20px;align-items:start}
+@media (max-width:860px){.split{grid-template-columns:1fr}}
+.side a{display:flex;justify-content:space-between;padding:9px 12px;border-radius:8px;color:var(--muted);font-weight:500}
+.side a.on{background:var(--panel2);color:var(--fg)}
+.f{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:18px;margin-bottom:12px}
+.f.done{opacity:.6}
+.f .head{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:6px}
+.f .head h3{flex:1;min-width:0;margin:0}
+.f .cols{display:grid;grid-template-columns:minmax(0,1fr) 160px;gap:18px}
+@media (max-width:860px){.f .cols{grid-template-columns:1fr}}
+.lbl{font-size:12.5px;color:var(--muted);margin:12px 0 4px}
+.quote{border-left:2px solid var(--red);padding:6px 12px;background:var(--red-t);border-radius:0 6px 6px 0;font-size:13.5px;margin-top:10px}
+.quote.ok{border-color:var(--green);background:var(--green-t)}
+.quote.old{text-decoration:line-through;color:var(--muted)}
+.quote.none{border-color:var(--line2);background:var(--panel2);color:var(--muted)}
+.fix{border-left:2px solid var(--green);padding:6px 12px;background:var(--green-t);border-radius:0 6px 6px 0;font-size:13.5px;margin-top:6px}
+.linkbtn.path{display:inline-block;margin-top:3px;font:12px var(--mono);color:var(--dim)}
+.linkbtn.path:hover{color:var(--accent)}
+.krav{color:var(--muted);font-size:13px}
+details.krav{margin-top:10px}
+details.krav summary{cursor:pointer;font-size:12.5px}
+details.krav[open] summary{margin-bottom:4px}
+.progline{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:10px 0 14px;margin-bottom:6px;border-bottom:1px solid var(--line)}
+.progline b{font-weight:600;font-variant-numeric:tabular-nums}
+.progline .btn{margin-left:auto}
+textarea{width:100%;min-height:72px;background:var(--bg);color:var(--fg);border:1px solid var(--line2);border-radius:8px;padding:9px 11px;font:13.5px/1.5 var(--sans);resize:vertical}
+textarea:focus,select:focus,input:focus{outline:1px solid var(--accent);border-color:var(--accent)}
+select,input[type=text]{background:var(--bg);color:var(--fg);border:1px solid var(--line2);border-radius:8px;padding:8px 10px;font:inherit}
+.shot{display:block;width:100%;border-radius:8px;border:1px solid var(--line2);cursor:zoom-in;background:#fff}
+.shotbox{margin:0}
+.shotbox figcaption{font-size:12px;color:var(--dim);margin-top:4px}
+@media (max-width:860px){.f .shotbox{max-width:200px}}
+.acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;align-items:center}
+.sticky{position:sticky;bottom:16px;margin-top:16px;background:var(--sticky);backdrop-filter:blur(6px);border:1px solid var(--line2);border-radius:12px;padding:12px 16px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.thread{margin-top:10px;border-top:1px solid var(--line);padding-top:10px}
+.msg{font-size:13px;padding:6px 0}
+.msg b{font-weight:600}
+.reply{display:flex;gap:8px;margin-top:6px}
+.reply input{flex:1}
+[hidden]{display:none!important}
+#toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:30;max-width:calc(100% - 32px);background:var(--panel);border:1px solid var(--line2);border-radius:10px;padding:10px 16px;font-size:13.5px}
+#toast a{margin-left:10px;font-weight:500}
+.rc{border-left:2px solid var(--amber);background:var(--amber-t);border-radius:0 6px 6px 0;padding:8px 12px;font-size:13px;margin:10px 0 2px}
+.linkbtn{background:none;border:0;padding:0;color:var(--muted);font-size:13px}
+.linkbtn:hover{color:var(--fg)}
+/* shop page and case cards: one card per point, finished points folded */
+.sf .cols{grid-template-columns:minmax(0,1fr) 140px}
+@media (max-width:560px){.sf .cols{grid-template-columns:1fr}}
+details.sf{padding:12px 18px}
+details.sf summary{list-style:none;cursor:pointer;display:flex;gap:10px;align-items:center}
+details.sf summary::-webkit-details-marker{display:none}
+details.sf summary h3{flex:1;min-width:0;margin:0;font-size:14.5px;font-weight:500}
+details.sf summary .chev{color:var(--dim);transition:transform .15s}
+details.sf[open] summary .chev{transform:rotate(90deg)}
+details.sf .meta{display:flex;gap:16px;flex-wrap:wrap;margin-top:10px;font-size:13px}
+/* modal */
+.modal{position:fixed;inset:0;background:var(--scrim);display:flex;align-items:center;justify-content:center;z-index:50;padding:20px}
+.modal .box{background:var(--panel);border:1px solid var(--line2);border-radius:10px;max-width:760px;width:100%;max-height:88vh;overflow:auto;padding:22px}
+.mail{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:14px 16px;white-space:pre-wrap;font-size:13px}
+/* spot check animation */
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:18px 0}
+.step{border:1px solid var(--line);border-radius:10px;padding:10px 12px;color:var(--dim);transition:all .25s}
+.step b{display:block;color:inherit;font-weight:600;font-size:13px}
+.step span{font-size:12px}
+.step.on{border-color:var(--accent);color:var(--fg);background:var(--accent-t)}
+.step.done{color:var(--muted)}
+.step.done b::before{content:"✓ ";color:var(--green)}
+.stage{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:860px){.stage{grid-template-columns:1fr}}
+.pages{list-style:none;margin:10px 0 0;padding:0;font:12.5px var(--mono);color:var(--muted);max-height:220px;overflow:hidden}
+.pages li{padding:3px 0;animation:in .25s ease}
+@keyframes in{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+.krav45{display:grid;grid-template-columns:repeat(9,1fr);gap:5px;margin-top:10px}
+.krav45 i{aspect-ratio:1;border-radius:4px;background:var(--grey-t);display:flex;align-items:center;justify-content:center;font:9.5px var(--mono);color:var(--dim);font-style:normal;transition:background .2s,color .2s}
+.krav45 i.ok{background:var(--green-t);color:var(--green)}
+.krav45 i.br{background:var(--red);color:var(--on-red);font-weight:600}
+.krav45 i.na{background:var(--na-bg);color:var(--na-fg)}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin-top:10px}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+.big{font-size:30px;font-weight:500;letter-spacing:-.02em;line-height:1.1;font-variant-numeric:tabular-nums}
+.nums{display:flex;gap:40px;flex-wrap:wrap;align-items:flex-end}
+.nums .muted{max-width:240px}
+.prog{height:3px;background:var(--line);border-radius:2px;overflow:hidden;margin-top:8px}
+.prog i{display:block;height:100%;background:var(--accent);transition:width .3s}
+.choice{display:flex;gap:8px;flex-wrap:wrap}
+.choice button{background:var(--panel2);border:1px solid var(--line2);border-radius:8px;padding:9px 13px;text-align:left;color:var(--muted)}
+.choice button b{display:block;color:var(--fg);font-weight:600}
+.choice button.on{border-color:var(--accent);background:var(--accent-t)}
+/* system */
+.lg{display:inline-flex;align-items:center;gap:6px;margin-left:10px;font-size:12.5px;color:var(--muted)}
+.lg i{width:9px;height:9px;border-radius:50%;background:var(--green)}
+.lg.pilot i{background:transparent;border:1.5px dashed var(--dim)}
+.pipe{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:22px;margin-top:6px}
+@media (max-width:1000px){.pipe{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:560px){.pipe{grid-template-columns:1fr}}
+.node{position:relative;display:flex;flex-direction:column;gap:3px;background:var(--panel);border:1px solid var(--line2);border-radius:10px;padding:12px 12px 14px;min-height:150px}
+.node.pilot{border-style:dashed;background:transparent}
+.node.src{background:var(--panel2);border-color:var(--line)}
+.node:not(:last-child)::after{content:"→";position:absolute;right:-18px;top:50%;transform:translateY(-50%);color:var(--dim);font-size:15px}
+@media (max-width:560px){.node:not(:last-child)::after{content:"↓";right:auto;left:50%;top:auto;bottom:-20px;transform:translateX(-50%)}}
+@media (max-width:560px){.node{min-height:0}}
+@media (min-width:561px) and (max-width:1000px){.node:nth-child(3)::after{display:none}}
+.nk{display:flex;justify-content:space-between;align-items:center;color:var(--dim);font:11.5px var(--mono);margin-bottom:6px}
+.nk i{width:8px;height:8px;border-radius:50%;background:var(--green)}
+.node.pilot .nk i{background:transparent;border:1.5px dashed var(--dim)}
+.node.src .nk i{display:none}
+.node b{font-size:14px}
+.node .tech{font:11.5px var(--mono);color:var(--accent)}
+.node .what{color:var(--muted);font-size:12.5px;line-height:1.45;margin-top:4px}
+.loop{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:10px;align-items:stretch}
+@media (max-width:760px){.loop{grid-template-columns:1fr}.loop .arrow{transform:rotate(90deg);justify-self:center}}
+.actor{display:flex;flex-direction:column;gap:5px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px}
+.actor .pill{align-self:flex-start}
+.actor b{font-size:15px}
+.actor span:last-child{color:var(--muted);font-size:13px}
+.arrow{align-self:center;color:var(--dim);font-size:18px}
+.loopnote{margin:10px 2px 0;color:var(--muted);font-size:13px}
+.demo-reset{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-top:26px}
+.code{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:12px 14px;font:12px/1.6 var(--mono);color:var(--code-fg);overflow-x:auto;white-space:pre}
+.banner{border:1px solid color-mix(in srgb,var(--green) 35%,transparent);background:var(--green-t);color:var(--green);border-radius:10px;padding:10px 14px;font-size:13px;margin-bottom:18px;display:flex;gap:8px;align-items:center}
+table{border-collapse:collapse;width:100%}
+td,th{text-align:left;padding:8px 10px;border-top:1px solid var(--line);font-size:13px}
+th{color:var(--dim);font-weight:500;font-size:12px;border-top:0}
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+<header class="top"><div class="demobar">Demo · påhittade butiker · inte en tjänst från Svensk Handel</div><div class="in">
+  <div class="brand"><b>Scanningsverktyg</b><span>Granskningsdemo · Trygg E-handel</span></div>
+  <nav class="main" id="nav"></nav>
+  <div class="right">
+    <div class="seg" id="role"><button data-r="jurist">Jurist</button><button data-r="butik">Butik</button></div>
+  </div>
+</div></header>
+<main id="app"></main>
+<div id="modal"></div>
+<div id="toast" hidden></div>
+<script>
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+let S = null;            // state from /api/demo/state
+let role = "jurist";
+const api = async (path, body) => {
+  const r = await fetch(path, body === undefined ? {} : {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(body)});
+  if (!r.ok) throw new Error((await r.json().catch(() => ({}))).detail || r.status);
+  S = await r.json(); return S;
+};
+const SENT = ["hos butiken","åtgärdad","kontrollerad","kvarstår","stängd"];
+const pl = (n, one, many) => `${n} ${n === 1 ? one : many}`;
+function toast(html){ const t = $("#toast"); t.innerHTML = html; t.hidden = false; clearTimeout(toast.t); toast.t = setTimeout(() => t.hidden = true, 7000); }
+function toastNext(html){ toast.next = html; }   // shown by route() once the next view is drawn
+// route counter: an animation that awaits checks it and stops when the user has gone to another view
+let RID = 0;
+const LEFT = Symbol("left");
+const still = rid => { if (rid !== RID) throw LEFT; };
+const shopOf = id => S.shops.find(s => s.id === id);
+const fsOf = (id, ...st) => S.findings.filter(f => f.shop_id === id && (!st.length || st.includes(f.status)));
+const PRIO = {1:["Hög","red"], 2:["Medelhög","amber"], 3:["Låg",""]};
+const STATUS = {"att granska":["Att granska","blue"], "godkänd":["Godkänd","green"], "avfärdad":["Avfärdad",""],
+  "hos butiken":["Hos butiken","amber"], "åtgärdad":["Åtgärdad, väntar på dig","blue"], "kontrollerad":["Ser rätt ut","green"],
+  "kvarstår":["Kvarstår","red"], "stängd":["Stängd","green"]};
+const pill = st => { const [t,c] = STATUS[st] || [st,""]; return `<span class="pill ${c}">${t}</span>`; };
+
+/* ---------- fake screenshots: a light web page drawn in SVG, with the quoted text marked ---------- */
+function hue(s){ let h = 0; for (const c of s) h = (h * 31 + c.charCodeAt(0)) % 360; return h; }
+function wrap(t, n){ const w = String(t).split(/\s+/), out = []; let line = "";
+  for (const x of w){ if ((line + " " + x).trim().length > n){ out.push(line.trim()); line = x; } else line += " " + x; }
+  if (line.trim()) out.push(line.trim()); return out; }
+function shot(shop, path, title, quote, opts = {}){
+  const W = 640, H = 400, h = hue(shop.id), acc = `hsl(${h} 45% 32%)`;
+  const lines = (n, y, w = 520) => Array.from({length:n}, (_, i) => `<rect x="40" y="${y + i*14}" width="${w - (i*37 % 140)}" height="6" rx="3" fill="#e4e4e8"/>`).join("");
+  let body = "";
+  if (opts.home){
+    body = `<rect x="40" y="120" width="560" height="90" rx="6" fill="hsl(${h} 30% 90%)"/>
+      <text x="60" y="160" font-size="20" font-weight="700" fill="${acc}">${esc(shop.kind)}</text>
+      <rect x="60" y="174" width="120" height="22" rx="11" fill="${acc}"/>` +
+      [0,1,2,3].map(i => `<rect x="${40 + i*142}" y="228" width="130" height="96" rx="6" fill="#efeff2"/><rect x="${40 + i*142}" y="332" width="${80 + i*9}" height="6" rx="3" fill="#dcdce1"/><rect x="${40 + i*142}" y="344" width="50" height="6" rx="3" fill="${acc}" opacity=".6"/>`).join("");
+  } else {
+    const q = wrap(quote || "", 74).slice(0, 4);
+    const qy = 196, qh = 18 + q.length * 17;
+    body = `<text x="40" y="138" font-size="19" font-weight="700" fill="#1b1b1f">${esc(title)}</text>
+      ${lines(3, 156)}
+      <rect x="32" y="${qy}" width="576" height="${qh}" rx="4" fill="#fff4d6" stroke="#e8a317" stroke-width="2"/>
+      ${q.map((l, i) => `<text x="44" y="${qy + 22 + i*17}" font-size="12.5" fill="#2b2213">${esc(l)}</text>`).join("")}
+      ${lines(5, qy + qh + 16)}`;
+  }
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" font-family="Helvetica,Arial,sans-serif">
+    <rect width="${W}" height="${H}" fill="#fafafa"/>
+    <rect width="${W}" height="34" fill="#e9e9ed"/>
+    <circle cx="16" cy="17" r="5" fill="#ff5f57"/><circle cx="32" cy="17" r="5" fill="#febc2e"/><circle cx="48" cy="17" r="5" fill="#28c840"/>
+    <rect x="70" y="8" width="500" height="18" rx="9" fill="#fff"/>
+    <text x="84" y="21" font-size="11" fill="#6b6b75">https://${esc(shop.domain)}${esc(path === "/" ? "" : path)}</text>
+    <rect y="34" width="${W}" height="52" fill="#fff"/><line x1="0" y1="86" x2="${W}" y2="86" stroke="#ececf0"/>
+    <text x="40" y="66" font-size="18" font-weight="800" fill="${acc}">${esc(shop.name)}</text>
+    ${["Nyheter","Erbjudanden","Kundservice","Köpvillkor"].map((t, i) => `<text x="${330 + i*72}" y="65" font-size="11" fill="#55555f">${t}</text>`).join("")}
+    ${body}
+  </svg>`;
+}
+const svgUrl = svg => "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
+function pageTitle(shop, path){ const p = shop.pages.find(x => x.path === path); return (p && p.title) || "Köpvillkor"; }
+const shotSrc = (shop, f) => svgUrl(shot(shop, f.page || "/", pageTitle(shop, f.page), f.quote));
+// the demo draws its page pictures; the tool itself saves a real screenshot of each page
+function shotImg(shop, f){ return `<figure class="shotbox"><img class="shot" alt="Illustration av ${esc(f.page)}" src="${shotSrc(shop, f)}" data-shot="${f.id}"><figcaption>Illustration</figcaption></figure>`; }
+function openShot(fid){
+  const f = S.findings.find(x => x.id === fid), s = shopOf(f.shop_id);
+  openModal(`<img class="shot" style="cursor:default" alt="Illustration av ${esc(f.page)}" src="${shotSrc(s, f)}">
+    <p class="small dim">Illustration av ${esc(s.domain + f.page)} · sparad ${esc(s.scanned)} · sha256 ${esc(f.sha256.slice(0, 12))}. Verktyget sparar en riktig skärmbild av sidan.</p>
+    <div class="acts"><button class="btn ghost sm" onclick="closeModal()">Stäng</button></div>`);
+}
+document.addEventListener("click", e => { const b = e.target.closest("[data-shot]"); if (b){ e.preventDefault(); openShot(b.dataset.shot); } });
+// the shop's text and the page it is on; a point whose text was missing from the pages says so
+const quoteBox = (f, cls = "") => `<div class="quote ${f.quote ? cls : "none"}">${f.quote ? esc(f.quote) : "Hittades inte på sidorna."}</div>${f.page ? `<button class="linkbtn path" data-shot="${f.id}">${esc(f.page)}</button>` : ""}`;
+
+/* ---------- navigation ---------- */
+function nav(){
+  const todo = S.findings.filter(f => f.status === "att granska").length;
+  const waiting = S.findings.filter(f => ["åtgärdad","kontrollerad"].includes(f.status)).length;
+  const items = role === "jurist"
+    ? [["oversikt","Översikt"],["stickprov","Stickprov"],["granska","Granska",todo],["arenden","Ärenden",waiting],["regel","Regeländring"],["system","System"]]
+    : S.shops.filter(s => fsOf(s.id).some(f => !["ej kontrollerad","att granska","godkänd","avfärdad"].includes(f.status))).map(s => ["butik/" + s.id, s.name]);
+  const cur = location.hash.slice(2);
+  // as the shop, the demo lets you switch between the demo shops
+  $("#nav").innerHTML = (role === "butik" ? `<span class="as">Visa som:</span>` : "")
+    + items.map(([k, t, n]) => `<a href="#/${k}" class="${cur.startsWith(k) ? "on" : ""}">${t}${n ? `<span class="n">${n}</span>` : ""}</a>`).join("");
+  document.querySelectorAll("#role button").forEach(b => b.classList.toggle("on", b.dataset.r === role));
+}
+document.querySelectorAll("#role button").forEach(b => b.onclick = () => {
+  // switching role keeps the same shop in view: Ärenden <-> the shop's own page
+  const [v, a] = location.hash.slice(2).split("/"), sent = id => fsOf(id, ...SENT).length;
+  if (b.dataset.r === "butik"){ const s = (a && sent(a) && shopOf(a)) || S.shops.find(x => fsOf(x.id, "hos butiken", "kvarstår").length) || S.shops.find(x => sent(x.id)) || S.shops[0]; location.hash = "#/butik/" + s.id; }
+  else location.hash = v === "butik" && a ? "#/arenden/" + a : "#/oversikt";
+});
+async function route(){
+  const rid = ++RID;
+  if (!S) await api("/api/demo/state");
+  if (rid !== RID) return;
+  const views = {oversikt, stickprov, granska, arenden, regel, system, butik};
+  let [v, a] = location.hash.slice(2).split("/");
+  if (!views[v]){ v = "oversikt"; a = undefined; history.replaceState(null, "", "#/oversikt"); }
+  role = v === "butik" ? "butik" : "jurist";
+  clearTimeout(toast.t); $("#toast").hidden = true; closeModal();
+  nav();
+  views[v](a);
+  window.scrollTo(0, 0);
+  if (toast.next){ toast(toast.next); toast.next = null; }
+}
+window.addEventListener("hashchange", route);
+
+/* ---------- 1. overview ---------- */
+function oversikt(){
+  const n = st => S.findings.filter(f => st.includes(f.status)).length;
+  const shopsWith = st => new Set(S.findings.filter(f => st.includes(f.status)).map(f => f.shop_id)).size;
+  const todo = n(["att granska"]), out = n(["hos butiken","kvarstår"]), back = n(["åtgärdad","kontrollerad"]), closed = n(["stängd"]);
+  const head = todo ? `${pl(shopsWith(["att granska"]), "butik", "butiker")} väntar på granskning.`
+    : back ? `${pl(back, "åtgärdad punkt", "åtgärdade punkter")} väntar på din bekräftelse.` : "Inget väntar på dig just nu.";
+  $("#app").innerHTML = `
+    <h1>${head}</h1>
+    <p class="sub">${S.batch.listed} certifierade e-handlare i registret · ${S.batch.scanned} kontrollerade i senaste körningen (påhittade siffror) · senaste stickprov ${esc(S.spot_checks.at(-1).created_at)}</p>
+    <div class="grid g4">
+      <a class="card tile red" href="#/granska"><div class="k">Att granska</div><div class="v">${todo}</div><div class="h">möjliga brister från verktyget</div></a>
+      <a class="card tile amber" href="#/arenden"><div class="k">Hos butiken</div><div class="v">${out}</div><div class="h">skickade, väntar på åtgärd</div></a>
+      <a class="card tile" href="#/arenden"><div class="k">Åtgärdade, väntar på dig</div><div class="v" style="color:var(--accent)">${back}</div><div class="h">butiken har rättat, kontrollera</div></a>
+      <div class="card tile green"><div class="k">Stängda</div><div class="v">${closed}</div><div class="h">bekräftade av jurist</div></div>
+    </div>
+    <div class="flow">Verktyget hittar möjliga brister → juristen granskar → butiken åtgärdar → verktyget kontrollerar igen → juristen stänger</div>
+    <h2>Butiker i stickproven</h2>
+    <div class="rows">${S.shops.map(s => {
+      const fs = fsOf(s.id), c = st => fs.filter(f => st.includes(f.status)).length;
+      const parts = [["att granska","var(--accent)"],["hos butiken","var(--amber)"],["åtgärdad","var(--accent)"],["kontrollerad","var(--green)"],["stängd","var(--green)"],["kvarstår","var(--red)"]];
+      const label = c(["att granska","godkänd"]) ? pill("att granska") : !s.checked ? `<span class="pill">Inte kontrollerad än</span>`
+        : c(["åtgärdad","kontrollerad"]) ? pill("åtgärdad") : c(["hos butiken","kvarstår"]) ? pill("hos butiken") : pill("stängd");
+      const href = c(["att granska","godkänd"]) ? "#/granska/" + s.id : !s.checked ? "#/stickprov" : "#/arenden/" + s.id;
+      return `<a class="row" href="${href}"><div><b>${esc(s.name)}</b><div class="small muted mono">${esc(s.domain)}</div></div>
+        <div class="small muted">${esc(s.kind)}</div>
+        <div>${s.checked ? `<div class="bar">${parts.map(([st, col]) => `<i style="width:${100 * c([st]) / Math.max(1, fs.length)}%;background:${col}"></i>`).join("")}</div><div class="small dim" style="margin-top:4px">${pl(fs.length, "möjlig brist", "möjliga brister")} · kontrollerad ${esc(s.scanned)}</div>` : `<span class="small dim">—</span>`}</div>
+        <div>${label}</div></a>`; }).join("")}</div>
+    <h2>Senaste händelser</h2>
+    <div class="card"><ul class="feed">${S.audit_log.slice(0, 7).map(e => `<li><span class="mono dim small">${esc(e.at.slice(5))}</span><span><span class="muted">${esc(e.actor)}</span> · ${esc(e.action)}</span></li>`).join("") || `<li><span></span><span class="muted">Inga händelser än. Starta med ett stickprov.</span></li>`}</ul></div>`;
+}
+
+/* ---------- 2. spot check with the scan animation ---------- */
+let sel = "risk";
+function stickprov(){
+  const pending = S.shops.filter(s => !s.checked);
+  const SEL = {slump:["Slumpvis","jämnt över registret"], risk:["Efter risk","längst sedan kontroll, flest tidigare brister"], tips:["Tips eller ARN-ärende","konsumenttips och ärenden från ARN"]};
+  $("#app").innerHTML = `
+    <h1>Stickprov</h1>
+    <p class="sub">Verktyget läser butikens sidor och jämför dem med Trygg E-handels krav. Inget skickas till butiken förrän en jurist har granskat.</p>
+    <div class="card" id="setup">
+      <div class="lbl" style="margin-top:0">Urval</div>
+      <div class="choice">${Object.entries(SEL).map(([k, [t, d]]) => `<button data-s="${k}" class="${k === sel ? "on" : ""}"><b>${t}</b>${d}</button>`).join("")}</div>
+      <div class="lbl">Valda butiker (${pending.length} av ${S.batch.listed})</div>
+      <div class="small">${pending.length ? pending.map(s => `<span class="pill" style="margin:0 6px 6px 0">${esc(s.name)}</span>`).join("") : `<span class="muted">Alla demobutiker är kontrollerade. Återställ demon under System för att köra igen.</span>`}</div>
+      <div class="acts"><button class="btn" id="run" ${pending.length ? "" : "disabled"}>Kör stickprov</button><span class="small dim">Tar ungefär 5 minuter per butik i verkligheten. Här går det snabbare.</span></div>
+    </div>
+    <div id="run-area"></div>
+    <h2>Tidigare stickprov</h2>
+    <div class="card"><table><tr><th>Datum</th><th>Urval</th><th>Butiker</th><th>Av</th></tr>${S.spot_checks.slice().reverse().map(sp => `<tr><td class="mono">${esc(sp.created_at)}</td><td>${esc((SEL[sp.selection] || [sp.selection])[0])}</td><td>${sp.shop_ids.map(id => esc(shopOf(id).name)).join(", ")}</td><td class="muted">${esc(sp.by)}</td></tr>`).join("")}</table></div>`;
+  document.querySelectorAll(".choice button").forEach(b => b.onclick = () => { sel = b.dataset.s; stickprov(); });
+  const run = $("#run"); if (run) run.onclick = () => runSpot(pending);
+}
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+let skip = false;
+async function runSpot(shops){
+  const rid = RID;
+  skip = false;
+  $("#run").disabled = true;
+  // the result is saved first; the animation only shows it, and stops if the user goes elsewhere
+  await api("/api/demo/spotcheck", {shop_ids: shops.map(s => s.id), selection: sel});
+  if (rid !== RID) return;
+  nav();
+  try { await animateSpot(shops, rid); } catch (e) { if (e === LEFT) return; throw e; }
+}
+async function animateSpot(shops, rid){
+  $("#setup").classList.add("hidden");
+  const area = $("#run-area");
+  const pts = S.points;
+  const pause = async ms => { await sleep(ms); still(rid); };
+  let total = 0;
+  for (let k = 0; k < shops.length; k++){
+    const s = shops[k], fails = s.findings ? 0 : fsOf(s.id).length;
+    area.innerHTML = `
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap">
+          <div><span class="muted small">Butik ${k + 1} av ${shops.length}</span><h2 style="margin:2px 0 0">${esc(s.name)} <span class="mono small muted">${esc(s.domain)}</span></h2></div>
+          <button class="btn ghost sm" id="skip">Hoppa till resultatet</button>
+        </div>
+        <div class="prog"><i style="width:${100 * k / shops.length}%"></i></div>
+        <div class="steps">
+          <div class="step" id="st1"><b>1 · Hittar sidorna</b><span>villkor, frakt, retur, kontakt</span></div>
+          <div class="step" id="st2"><b>2 · Kontrollerar 45 krav</b><span>mot Trygg E-handels krav</span></div>
+          <div class="step" id="st3"><b>3 · Sparar bevis</b><span>sida, citat, tid, kontrollsumma</span></div>
+          <div class="step" id="st4"><b>4 · Till juristen</b><span>möjliga brister granskas</span></div>
+        </div>
+        <div class="stage">
+          <div><img class="shot" id="live-shot" style="cursor:default" src="${svgUrl(shot(s, "/", "", "", {home:true}))}"><ul class="pages" id="pages"></ul></div>
+          <div><div class="small muted"><span id="kcount">0</span> av ${pts.length} krav kontrollerade</div>
+            <div class="krav45" id="k45">${pts.map(p => `<i title="${esc(p.id + " " + p.label)}">${esc(p.id)}</i>`).join("")}</div>
+            <div class="legend"><span><i style="background:var(--green-t);outline:1px solid var(--green)"></i>Uppfyllt</span><span><i style="background:var(--red)"></i>Möjlig brist</span><span><i style="background:var(--grey-t)"></i>Kräver intyg eller testköp</span></div>
+            <div id="result" style="margin-top:18px"></div></div>
+        </div>
+      </div>`;
+    $("#skip").onclick = () => { skip = true; };
+    const t = ms => skip ? 0 : ms;
+    const on = i => { for (let j = 1; j <= 4; j++){ const e = $("#st" + j); e.classList.toggle("on", j === i); e.classList.toggle("done", j < i); } };
+    on(1);
+    for (const p of s.pages.slice(0, 10)){ $("#pages").insertAdjacentHTML("beforeend", `<li>✓ ${esc(p.path)}${p.title ? ` <span class="dim">· ${esc(p.title.slice(0, 34))}</span>` : ""}</li>`); await pause(t(130)); }
+    $("#pages").insertAdjacentHTML("beforeend", `<li class="dim">${s.pages_read} sidor lästa</li>`);
+    on(2);
+    const cells = [...document.querySelectorAll("#k45 i")];
+    for (let i = 0; i < pts.length; i++){
+      const st = s.states[pts[i].id] || "";
+      cells[i].className = st === "brist" ? "br" : st === "uppfyllt" ? "ok" : "na";
+      $("#kcount").textContent = i + 1;
+      if (st === "brist"){
+        const f = fsOf(s.id).find(x => x.pid === pts[i].id);
+        if (f) $("#live-shot").src = shotSrc(s, f);
+        await pause(t(260));
+      } else await pause(t(45));
+    }
+    on(3); await pause(t(600));
+    on(4);
+    const nf = fsOf(s.id).length; total += nf;
+    $("#result").innerHTML = `<div class="big" style="color:var(--red)">${nf}</div><div class="muted">${nf === 1 ? "möjlig brist går" : "möjliga brister går"} till juristens granskning</div>`;
+    await pause(t(1100));
+  }
+  area.innerHTML = `<div class="card"><div class="steps">${["Hittar sidorna","Kontrollerar 45 krav","Sparar bevis","Till juristen"].map((x, i) => `<div class="step done"><b>${i + 1} · ${x}</b></div>`).join("")}</div>
+    <div class="nums">
+      <div><div class="big">${shops.length}</div><div class="muted">${shops.length === 1 ? "butik kontrollerad" : "butiker kontrollerade"}</div></div>
+      <div><div class="big" style="color:var(--red)">${total}</div><div class="muted">${total === 1 ? "möjlig brist" : "möjliga brister"} att granska</div></div>
+      <div><div class="big" style="color:var(--green)">0</div><div class="muted">skickade utan jurist</div></div>
+    </div>
+    <div class="acts" style="margin-top:20px"><a class="btn" href="#/granska/${shops[0].id}">Börja granska →</a></div></div>`;
+}
+
+/* ---------- 3. the lawyer's review ---------- */
+function granska(id){
+  const shops = S.shops.filter(s => fsOf(s.id, "att granska", "godkänd").length);
+  if (!shops.length){ $("#app").innerHTML = `<h1>Inget att granska</h1><p class="sub">Kör ett stickprov för att få nya möjliga brister.</p><a class="btn" href="#/stickprov">Till stickprov</a>`; return; }
+  const s = shopOf(id) && shops.includes(shopOf(id)) ? shopOf(id) : shops[0];
+  const fs = fsOf(s.id).filter(f => ["att granska","godkänd","avfärdad"].includes(f.status)).sort((a, b) => a.prio - b.prio);
+  const left = fs.filter(f => f.status === "att granska").length, ok = fs.filter(f => f.status === "godkänd").length, no = fs.filter(f => f.status === "avfärdad").length;
+  $("#app").innerHTML = `
+    <div class="split">
+      <div class="side"><div class="lbl" style="margin-top:0">Att granska</div>${shops.map(x => `<a href="#/granska/${x.id}" class="${x === s ? "on" : ""}">${esc(x.name)}<span class="pill">${fsOf(x.id, "att granska").length}</span></a>`).join("")}</div>
+      <div>
+        <h1>${esc(s.name)}</h1>
+        <p class="sub"><span class="mono">${esc(s.domain)}</span> · ${esc(s.kind)} · kontrollerad ${esc(s.scanned)} · ${s.pages_read} sidor lästa · sorterat efter prioritet. Rött är butikens text i dag, grönt är förslaget som butiken får. Du kan ändra förslaget innan du godkänner.</p>
+        ${fs.map(f => findingCard(s, f)).join("")}
+        <div class="sticky"><span><b>${ok}</b> godkända · <b>${no}</b> avfärdade · <b>${left}</b> kvar</span>
+          <button class="btn" style="margin-left:auto" id="send" ${ok ? "" : "disabled"}>Skicka ${pl(ok, "punkt", "punkter")} till butiken</button></div>
+      </div>
+    </div>`;
+  bindFindings();
+  $("#send").onclick = () => previewSend(s);
+}
+function findingCard(s, f){
+  const [pt, pc] = PRIO[f.prio] || PRIO[3];
+  const decided = f.status !== "att granska";
+  return `<div class="f ${f.status === "avfärdad" ? "done" : ""}" id="f-${f.id}">
+    <div class="head"><h3>${esc(f.label)}</h3><span class="pill ${pc}">${pt} prioritet</span>${decided ? pill(f.status) : ""}</div>
+    <div class="cols"><div style="min-width:0">
+      ${f.rule_change ? `<div class="rc"><b>Regeländring:</b> ${esc(f.rule_change.title)}</div>` : ""}
+      <div class="muted">${esc(f.summary)}</div>
+      ${quoteBox(f)}
+      ${decided ? `<div class="fix">${esc(f.fix_text)}</div>` : `<textarea class="fix" data-fix="${f.id}" aria-label="Förslag till butiken">${esc(f.fix_text)}</textarea>`}
+      <details class="krav"><summary>Trygg E-handels krav · punkt ${esc(f.pid)}</summary>${esc(f.sh)}</details>
+      <div class="acts">${decided ? `<button class="btn ghost sm" data-a="undo" data-f="${f.id}">Ångra</button>`
+        : `<button class="btn ok sm" data-a="approve" data-f="${f.id}">Godkänn</button><button class="btn no sm" data-a="reject" data-f="${f.id}">Avfärda</button>`}</div>
+    </div>${shotImg(s, f)}</div></div>`;
+}
+function bindFindings(){
+  document.querySelectorAll("[data-a]").forEach(b => b.onclick = async () => {
+    const fid = b.dataset.f, a = b.dataset.a, ta = document.querySelector(`[data-fix="${fid}"]`);
+    const y = window.scrollY;
+    await api("/api/demo/finding/" + encodeURIComponent(fid), {action: a, fix_text: ta ? ta.value : undefined});
+    nav(); granska(S.findings.find(f => f.id === fid).shop_id); window.scrollTo(0, y);
+  });
+}
+function previewSend(s){
+  const fs = fsOf(s.id, "godkänd");
+  openModal(`<h2 style="margin-top:0">Skicka till ${esc(s.name)}</h2>
+    <p class="muted">Butiken får en länk till sin egen sida hos Trygg E-handel, och samma lista som mejl om den hellre vill det.</p>
+    <div class="lbl">Det här ser butiken</div>
+    <ol style="padding-left:18px">${fs.map(f => `<li style="margin:6px 0"><b>${esc(f.label)}</b><div class="krav">${esc(f.fix_text)}</div></li>`).join("")}</ol>
+    <div class="small dim">Svarstid 30 dagar · sidan syns bara för butiken och granskande jurist</div>
+    <div class="acts"><button class="btn" id="go">Skicka</button><button class="btn ghost" onclick="closeModal()">Avbryt</button></div>`);
+  $("#go").onclick = async () => { const n = fsOf(s.id, "godkänd").length; await api("/api/demo/send/" + s.id, {}); closeModal(); nav();
+    toastNext(`${n === 1 ? "1 punkt skickad" : `${n} punkter skickade`} till ${esc(s.name)}.<a href="#/butik/${s.id}">Öppna som butiken →</a>`);
+    location.hash = "#/arenden/" + s.id; };
+}
+
+/* ---------- 4. cases: rescan and confirm ---------- */
+function arenden(id){
+  const shops = S.shops.filter(s => fsOf(s.id, "hos butiken","åtgärdad","kontrollerad","kvarstår","stängd").length);
+  if (!shops.length){ $("#app").innerHTML = `<h1>Inga ärenden än</h1><p class="sub">Skicka granskade punkter till en butik för att starta ett ärende.</p>`; return; }
+  const s = shopOf(id) && shops.includes(shopOf(id)) ? shopOf(id) : shops.find(x => fsOf(x.id, "åtgärdad").length) || shops[0];
+  const fs = fsOf(s.id, "hos butiken","åtgärdad","kontrollerad","kvarstår","stängd");
+  const order = {"åtgärdad":0, "kontrollerad":1, "kvarstår":2, "hos butiken":3, "stängd":4};
+  fs.sort((a, b) => order[a.status] - order[b.status] || a.prio - b.prio);
+  const done = fs.filter(f => f.status === "stängd").length;
+  $("#app").innerHTML = `
+    <div class="split">
+      <div class="side"><div class="lbl" style="margin-top:0">Ärenden</div>${shops.map(x => { const w = fsOf(x.id, "åtgärdad", "kontrollerad").length; return `<a href="#/arenden/${x.id}" class="${x === s ? "on" : ""}">${esc(x.name)}${w ? `<span class="pill blue">${w}</span>` : ""}</a>`; }).join("")}</div>
+      <div>
+        <h1>${esc(s.name)}</h1>
+        <p class="sub">${done} av ${fs.length} punkter stängda · svar senast ${esc((fs.find(f => f.due) || {}).due || "")} · <a href="#/butik/${s.id}">Se butikens sida →</a></p>
+        ${fs.map(f => caseCard(s, f)).join("")}
+      </div>
+    </div>`;
+  bindCases(s);
+}
+function thread(f, who){
+  const ms = S.messages.filter(m => m.finding_id === f.id);
+  const ask = who === "jurist" ? "Svara butiken" : "Fråga juristen";
+  // without messages the field stays folded behind a link, and no thread is drawn
+  return `<div class="thread" ${ms.length ? "" : 'style="border-top:0;padding-top:0"'}>${ms.map(m => `<div class="msg"><b>${m.author === "jurist" ? "Jurist" : "Butiken"}</b> <span class="dim mono small">${esc(m.at.slice(5))}</span><div>${esc(m.text)}</div></div>`).join("")}
+    ${ms.length ? "" : `<button class="linkbtn" onclick="this.hidden=true;const r=this.nextElementSibling;r.hidden=false;r.querySelector('input').focus()">💬 ${ask}</button>`}
+    <div class="reply" ${ms.length ? "" : "hidden"}><input type="text" placeholder="${ask} …" data-msg="${f.id}"><button class="btn ghost sm" data-send="${f.id}" data-who="${who}">Skicka</button></div></div>`;
+}
+function caseCard(s, f){
+  let body = "";
+  if (f.status === "åtgärdad") body = `${quoteBox(f)}<div class="fix">${esc(f.new_text || f.fix_text)}</div>
+      <div class="acts"><button class="btn sm" data-re="${f.id}">Kontrollera igen</button><span class="small dim" id="re-${f.id}">(simulerat i demon)</span></div>`;
+  else if (f.status === "kontrollerad" || f.status === "kvarstår") body = `
+      <div class="grid g2"><div><div class="lbl">Före · ${esc(f.sent_at.slice(0, 10))}</div>${quoteBox(f, "old")}</div>
+      <div><div class="lbl">Efter · ${esc(f.recheck.at)}</div><div class="quote ${f.status === "kontrollerad" ? "ok" : ""}">${esc(f.new_text || f.quote)}</div></div></div>
+      <div class="acts">${f.status === "kontrollerad" ? `<span class="pill green">Den gamla formuleringen finns inte kvar</span><button class="btn ok sm" data-c="close" data-f="${f.id}">Bekräfta och stäng</button>` : `<span class="pill red">Den gamla formuleringen finns kvar</span>`}
+        <button class="btn ghost sm" data-c="return" data-f="${f.id}">Skicka tillbaka till butiken</button></div>`;
+  else body = `${quoteBox(f)}<div class="fix">${esc(f.fix_text)}</div>
+      <div class="acts"><span class="small dim">Skickad ${esc(f.sent_at.slice(0, 10))} · väntar på att butiken åtgärdar</span><a class="small" href="#/butik/${s.id}">Öppna som butiken →</a></div>`;
+  if (f.status === "stängd") return `<details class="f sf done"><summary><span class="chev">›</span><h3>${esc(f.label)}</h3>${pill(f.status)}</summary>
+    ${quoteBox(f, "old")}<div class="fix">${esc(f.new_text || f.fix_text)}</div><div class="small dim" style="margin-top:8px">Stängd · bekräftad av jurist</div></details>`;
+  return `<div class="f"><div class="head"><h3>${esc(f.label)}</h3>${pill(f.status)}</div>${body}${thread(f, "jurist")}</div>`;
+}
+function bindCases(s){
+  document.querySelectorAll("[data-re]").forEach(b => b.onclick = async () => {
+    const rid = RID, fid = b.dataset.re, lab = document.getElementById("re-" + fid); b.disabled = true;
+    // saved first; the steps below only show it, and stop if the user goes elsewhere
+    await api("/api/demo/finding/" + encodeURIComponent(fid), {action:"recheck"}); nav();
+    for (const t of ["Hämtar sidan …", "Läser texten …", "Jämför med förra kontrollen …"]){ lab.textContent = t + " (simulerat i demon)"; await sleep(650); if (rid !== RID) return; }
+    const y = window.scrollY; arenden(s.id); window.scrollTo(0, y);
+    const ok = S.findings.find(f => f.id === fid).status === "kontrollerad";
+    toast(ok ? "Den gamla formuleringen finns inte kvar. Bekräfta och stäng punkten." : `Den gamla formuleringen finns kvar.<a href="#/butik/${s.id}">Öppna som butiken →</a>`);
+  });
+  document.querySelectorAll("[data-c]").forEach(b => b.onclick = async () => {
+    const rid = RID, y = window.scrollY; await api("/api/demo/finding/" + encodeURIComponent(b.dataset.f), {action: b.dataset.c}); if (rid !== RID) return;
+    nav(); arenden(s.id); window.scrollTo(0, y);
+    toast(b.dataset.c === "close" ? "Punkten är stängd. Butiken ser den som klar." : `Punkten är tillbaka hos butiken.<a href="#/butik/${s.id}">Öppna som butiken →</a>`);
+  });
+  bindThreads(() => arenden(s.id));
+}
+function bindThreads(again){
+  document.querySelectorAll("[data-msg]").forEach(i => i.onkeydown = e => { if (e.key === "Enter") document.querySelector(`[data-send="${i.dataset.msg}"]`).click(); });
+  document.querySelectorAll("[data-send]").forEach(b => b.onclick = async () => {
+    const inp = document.querySelector(`[data-msg="${b.dataset.send}"]`); if (!inp.value.trim()) return;
+    const y = window.scrollY; await api("/api/demo/message/" + encodeURIComponent(b.dataset.send), {author: b.dataset.who, text: inp.value}); again(); window.scrollTo(0, y);
+  });
+}
+
+/* ---------- 5. the shop's private page ---------- */
+function butik(id){
+  const s = shopOf(id) || S.shops[0];
+  const fs = fsOf(s.id, "hos butiken","åtgärdad","kontrollerad","kvarstår","stängd")
+    .sort((a, b) => ["hos butiken","kvarstår"].includes(b.status) - ["hos butiken","kvarstår"].includes(a.status) || a.prio - b.prio);  // to-do first
+  const todo = fs.filter(f => ["hos butiken","kvarstår"].includes(f.status)).length, done = fs.length - todo;
+  const mail = S.outbox.find(m => m.shop_id === s.id);
+  $("#app").innerHTML = `
+    <div class="banner">🔒 Den här sidan syns bara för ${esc(s.name)} och granskande jurist. Inget här är publikt.</div>
+    <h1>${esc(s.name)} · Trygg E-handel</h1>
+    <p class="sub">Vi har gjort ett stickprov på er webbplats. Rött är texten på er sida i dag, grönt är juristens förslag som ni kan klistra in som det är. När ni har ändrat på sidan markerar ni punkten som åtgärdad. Då kontrollerar verktyget sidan igen och juristen bekräftar.</p>
+    ${fs.length ? `<div class="progline"><span><b>${todo}</b> att åtgärda · <b>${done}</b> åtgärdade · svara senast ${esc((fs.find(f => f.due) || {}).due || "")}</span>
+      ${mail ? `<button class="btn ghost sm" id="mail">Få listan som mejl</button>` : ""}</div>` : `<div class="card muted">Inget att åtgärda just nu.</div>`}
+    ${fs.map(f => shopCard(s, f)).join("")}`;
+  document.querySelectorAll("[data-fixed]").forEach(b => b.onclick = async () => {
+    const rid = RID, fid = b.dataset.fixed, y = window.scrollY;
+    await api("/api/demo/finding/" + encodeURIComponent(fid), {action:"fixed", new_text: ""}); if (rid !== RID) return;
+    nav(); butik(s.id); window.scrollTo(0, y);
+    toast(`Juristen har fått besked.<a href="#/arenden/${s.id}">Öppna som jurist →</a>`);
+  });
+  bindThreads(() => butik(s.id));
+  const m = $("#mail"); if (m) m.onclick = () => openModal(`<h2 style="margin-top:0">${esc(mail.subject)}</h2><p class="small muted mono">Till ${esc(mail.to)} · ${esc(mail.at)}</p><div class="mail">${esc(mail.body)}</div><div class="acts"><button class="btn ghost" onclick="closeModal()">Stäng</button></div>`);
+}
+function shopCard(s, f){
+  const open = ["hos butiken","kvarstår"].includes(f.status);
+  const st = {"hos butiken":["Att åtgärda","amber"], "kvarstår":["Kvarstår: den gamla texten finns fortfarande på sidan","red"], "åtgärdad":["Åtgärdad, juristen kontrollerar","blue"],
+    "kontrollerad":["Åtgärdad, juristen kontrollerar","blue"], "stängd":["Klar","green"]}[f.status];
+  if (open) return `<div class="f sf"><div class="head"><h3>${esc(f.label)}</h3><span class="pill ${st[1]}">${st[0]}</span></div>
+    <div class="cols"><div style="min-width:0">
+      ${f.rule_change ? `<div class="rc"><b>Ny vägledning: ${esc(f.rule_change.title)}</b>${f.rule_change.message ? `<div>${esc(f.rule_change.message)}</div>` : ""}</div>` : ""}
+      <div class="muted">${esc(f.summary)}</div>
+      ${quoteBox(f)}
+      <div class="fix">${esc(f.fix_text)}</div>
+      <div class="acts"><button class="btn ok sm" data-fixed="${f.id}">Markera som åtgärdad</button></div>
+      ${thread(f, "butik")}
+    </div>${shotImg(s, f)}</div></div>`;
+  // finished points fold to one line; the details are one click away
+  return `<details class="f sf ${f.status === "stängd" ? "done" : ""}"><summary><span class="chev">›</span><h3>${esc(f.label)}</h3><span class="pill ${st[1]}">${st[0]}</span></summary>
+    ${quoteBox(f, "old")}<div class="fix">${esc(f.new_text || f.fix_text)}</div>
+    ${["åtgärdad","kontrollerad"].includes(f.status) ? `<div class="meta"><a class="small" href="#/arenden/${s.id}">Öppna som jurist →</a></div>` : ""}
+    ${f.status !== "stängd" ? thread(f, "butik") : ""}</details>`;
+}
+
+/* ---------- rule change: check one requirement across every certified shop ---------- */
+function regel(){
+  const pts = S.points.filter(p => p.group !== 5);
+  $("#app").innerHTML = `
+    <h1>Regeländring</h1>
+    <p class="sub">När en regel eller vägledningen ändras kontrollerar verktyget den punkten hos alla certifierade butiker. Bara de som berörs får besked.</p>
+    <div class="card">
+      <div class="grid g2"><div><div class="lbl" style="margin-top:0">Punkt</div><select id="rp" style="width:100%">${pts.map(p => `<option value="${esc(p.id)}" ${p.id === "9a" ? "selected" : ""}>${esc(p.id)} · ${esc(p.label)} · ${pl(S.batch.brist_per_point[p.id] || 0, "butik", "butiker")}</option>`).join("")}</select></div>
+      <div><div class="lbl" style="margin-top:0">Rubrik</div><input type="text" id="rt" style="width:100%" value="Återbetalning vid ånger"></div></div>
+      <div class="lbl">Meddelande till berörda butiker</div><textarea id="rm">Svensk Handel har förtydligat kravet på återbetalning vid ånger. Se över hur ni beskriver återbetalningen. Juristen har lagt ett förslag på formulering på er sida.</textarea>
+      <div class="acts"><button class="btn" id="rgo">Kontrollera alla ${S.batch.scanned} butiker</button><span class="small dim">Siffrorna i demon är påhittade.</span></div>
+    </div>
+    <div id="rres"></div>
+    ${S.rule_changes.length ? `<h2>Tidigare regeländringar</h2><div class="card"><table><tr><th>Datum</th><th>Punkt</th><th>Rubrik</th><th>Möjlig brist</th><th>I demon</th></tr>${S.rule_changes.map(r => `<tr><td class="mono">${esc(r.at)}</td><td class="mono">${esc(r.pid)}</td><td>${esc(r.title)}</td><td>${r.affected} av ${r.checked}</td><td>${(r.demo_queued || []).length} till granskning</td></tr>`).join("")}</table></div>` : ""}`;
+  $("#rgo").onclick = async () => {
+    const rid = RID, pid = $("#rp").value;
+    $("#rgo").disabled = true;
+    // saved first; the counter only shows it, and stops if the user goes elsewhere
+    await api("/api/demo/rulechange", {pid, title: $("#rt").value, message: $("#rm").value});
+    if (rid !== RID) return;
+    nav();
+    const rc = S.rule_changes[0], N = rc.checked;
+    $("#rres").innerHTML = `<div class="card" style="margin-top:12px"><div class="small muted">Kontrollerar punkt ${esc(pid)}</div><div class="big" id="rc">0</div><div class="muted small">av ${N} butiker</div><div class="prog"><i id="rpg" style="width:0"></i></div></div>`;
+    for (let i = 0; i < N; i += 7){ $("#rc").textContent = i; $("#rpg").style.width = (100 * i / N) + "%"; await sleep(16); if (rid !== RID) return; }
+    $("#rc").textContent = N; $("#rpg").style.width = "100%"; await sleep(250); if (rid !== RID) return;
+    regel();
+    const queued = rc.demo_queued.map(shopOf), busy = rc.demo_busy.map(shopOf);
+    $("#rres").innerHTML = `<div class="card" style="margin-top:12px"><div class="nums">
+      <div><div class="big" style="color:var(--red)">${rc.affected}</div><div class="muted">har en möjlig brist och går till juristen, som beslutar innan butiken får besked</div></div>
+      <div><div class="big">${rc.met ?? N - rc.affected}</div><div class="muted">uppfyller kravet</div></div>
+      <div><div class="big" style="color:var(--dim)">${rc.unknown ?? 0}</div><div class="muted">kunde inte kontrolleras</div></div></div>
+      <p class="small dim">Siffrorna i demon är påhittade.</p>
+      <div class="lbl">Bland demobutikerna</div>
+      ${queued.length ? `<p style="margin:4px 0">${queued.map(s => `<b>${esc(s.name)}</b>`).join(", ")}: punkten ligger nu i din granskningskö, märkt med regeländringen. När du skickar den ser butiken vägledningen på sin sida.</p>
+        <div class="acts"><a class="btn sm" href="#/granska/${queued[0].id}">Granska →</a></div>` : `<p class="muted" style="margin:4px 0">Ingen demobutik har en ny möjlig brist på den här punkten.</p>`}
+      ${busy.length ? `<p class="small muted" style="margin-bottom:0">${busy.map(s => esc(s.name)).join(", ")} har redan punkten som ett öppet ärende.</p>` : ""}</div>`;
+    if (queued.length) toast(`${pl(queued.length, "butik", "butiker")} har punkten i granskningskön.<a href="#/granska/${queued[0].id}">Granska →</a>`);
+  };
+}
+
+/* ---------- system: one picture of the parts and who does what ---------- */
+function system(){
+  const node = (n, title, tech, what, state) => `<div class="node ${state}"><div class="nk"><span>${n}</span><i title="${state === "pilot" ? "kommer i piloten" : "finns i dag"}"></i></div><b>${title}</b><span class="tech">${tech}</span><span class="what">${what}</span></div>`;
+  $("#app").innerHTML = `
+    <h1>System</h1>
+    <p class="sub"><span class="lg built"><i></i>finns i dag</span> <span class="lg pilot"><i></i>kommer i piloten</span></p>
+    <h2>Från butikens sida till juristens beslut</h2>
+    <div class="pipe">
+      ${node("01", "Butikens webbplats", "publika sidor", "villkor, hjälpsidor, produkter och kassan", "src")}
+      ${node("02", "Läsare", "Python · Playwright", "läser som en kund och sparar text och skärmbild", "built")}
+      ${node("03", "Regelmotor", "45 krav", "plockar ut rätt stycken och ger ett första svar", "built")}
+      ${node("04", "AI-domare", "agentisk AI · tidigare beslut", "bedömer varje krav, och varje citat kontrolleras mot sidan", "built")}
+      ${node("05", "Databas", "Supabase · EU", "Postgres, lagring av sidor, inloggning och roller", "pilot")}
+      ${node("06", "Webbapp", "HTML i dag · React i piloten", "juristens kö och butikens egen sida", "built")}
+    </div>
+    <h2>Vem gör vad</h2>
+    <div class="loop">
+      <div class="actor"><span class="pill">jurist</span><b>Beslutar</b><span>godkänner, ändrar eller avfärdar varje möjlig brist</span></div>
+      <div class="arrow">→</div>
+      <div class="actor"><span class="pill">butik</span><b>Åtgärdar</b><span>ser vad som ska ändras, på sin sida eller i mejl</span></div>
+      <div class="arrow">→</div>
+      <div class="actor"><span class="pill">verktyget</span><b>Kontrollerar igen</b><span>läser sidan igen, juristen bekräftar</span></div>
+    </div>
+    <p class="loopnote">Ändras en regel läser verktyget om den punkten hos alla butiker. Bara de som berörs får besked.</p>
+    <div class="card demo-reset"><span class="muted">Butiker, citat och siffror i demon är påhittade, och omkontrollen simuleras.</span><button class="btn ghost sm" id="reset">Återställ demon</button></div>`;
+  $("#reset").onclick = async () => { await api("/api/demo/reset", {}); location.hash = "#/oversikt"; route(); };
+}
+
+/* ---------- modal ---------- */
+function openModal(html){ $("#modal").innerHTML = `<div class="modal" onclick="if(event.target===this)closeModal()"><div class="box">${html}</div></div>`; }
+function closeModal(){ $("#modal").innerHTML = ""; }
+document.addEventListener("keydown", e => { if (e.key === "Escape") closeModal(); });
+route();
+</script>
+</body>
+</html>

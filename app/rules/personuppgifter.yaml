@@ -1,0 +1,97 @@
+# 14a Personuppgifter.
+# Ett värde är ett reguljärt uttryck eller en lista med alternativ (de sätts ihop med |).
+# {NUM} betyder ett tal i siffror eller ord.
+
+PRIV_PARTS:
+  'personuppgiftsansvarig':
+    - 'personuppgiftsansvarig'
+    - 'ansvarig för (behandling\w*|insamling\w*|hantering\w*|dina personuppgifter|de personuppgifter|personuppgifter\w*)'
+    - 'ansvara\w* för (\w+\s+){0,2}(behandling\w*|hantering\w*|insamling\w*) av (\w+\s+)?(person)?uppgifter'
+    - 'data(skydds)?ansvarig\w*'
+    - 'data controller'
+    # the controller named by its organisation number on the policy page ("Organisationsnummer: 556000-0000")
+    - '(org\.?\s?nr|organisationsnummer)\.?:?\s*\d{6}-?\d{4}'
+  'ändamål':
+    - 'ändamål'
+    - 'syfte'
+    - 'används (för|till|i syfte)'
+    - 'för att kunna'
+    - 'använder (vi )?(dina )?(person)?uppgifter(na)? (för|till)'
+    - 'för att (kunna )?(leverera|hantera|administrera)'
+  'rättslig grund':
+    - 'rättslig\w* grund\w*'
+    - 'laglig\w* grund\w*'
+    - 'med stöd av (\w+\s+)?(avtal\w*|samtycke\w*|lag\w*|gdpr|dataskyddsförordning\w*)'
+    - 'fullgörande av (ett |vårt |ditt |köpe)?avtal'
+    - 'artikel 6'
+    - 'berättigat intresse'
+    - 'fullgöra (ett |vårt |ditt |ert |er )?(köpe)?avtal'
+    - 'rättslig förpliktelse'
+    - 'samtycke'
+  'lagringstid':
+    - 'lagras'
+    - 'sparas'
+    - 'lagringstid'
+    - 'så länge'
+    - 'raderas'
+    - 'gallras'
+    - 'hur länge (vi )?(sparar|lagrar|behandlar)'
+    - 'bevaras'
+  'dina rättigheter':
+    - 'rätt (till|att) (tillgång|rättelse|radering|få|begära|invända|dataportabilitet|begränsning|kontakta)'
+    - 'begära (att få |ut )?(information|utdrag|rättelse|radering)'
+    - 'tillgång till (dina|de) (person)?uppgifter'
+    - 'registerutdrag'
+    - 'dataportabilitet'
+    - 'rätt att bli bortglömd'
+    - '(dina|vilka) rättigheter'
+  'klagomål till IMY':
+    - 'integritetsskyddsmyndigheten'
+    - '\bIMY\b'
+    - 'datainspektionen'
+    - 'tillsynsmyndighet'
+SHARED:
+  - '(delas|delar|dela|lämnar ut|lämnas ut|överför\w*)\b[^.]{0,80}(partner|leverantör|aktörer|fraktbolag|tredje part|biträd)'
+  - '(tjänsteleverantör|samarbetspartner)\w*[^.]{0,40}tredje part'
+# "lämnas aldrig ut till tredje part": the negation between the verb and its particle
+NOT_SHARED: '\b(inte|ej|aldrig|inga)\b[^.]{0,90}(sälj\w*|lämna\w* ut|lämna\w* vidare|överlåt\w*|göras tillgänglig\w*|delas|vidarebefordra\w*)[^.]{0,40}(tredje part|till andra\b|utomstående)|\blämna\w*\s+(aldrig|inte|ej)\s+(ut|vidare)\b[^.]{0,40}(tredje part|till andra\b|utomstående)'
+NOT_SHARED_BUT:
+  - 'om (det )?inte'
+  - 'utan (ditt |er )?(samtycke|godkännande|medgivande)'
+  - 'marknadsföring'
+  - 'förutom'
+  - 'utöver'
+  - 'undantag'
+  - 'såvida'
+  - 'endast'
+  - 'krävs'
+  - 'nödvändig'
+  - 'behöv'
+# A terms section that points to a separate privacy policy ("Läs mer om vår behandling av dina personuppgifter").
+PRIV_REF:
+  - 'läs mer'
+  - 'integritetspolicy'
+  - 'personuppgiftspolicy'
+  - 'dataskyddspolicy'
+  - 'i enlighet med vår'
+  - 'utförlig information'
+# WordPress's built-in privacy policy template (comments, Gravatar, embedded content): written for a blog, it
+# says nothing about how order and customer data are handled.
+WP_TEMPLATE:
+  - 'gravatar'
+  - 'lämnar kommentarer på webbplatsen'
+  - 'kommentarsformuläret'
+# The policy shares data with processors that handle the order for the shop (not a contradiction of "säljs inte").
+PROCESSOR:
+  - 'biträd\w*'
+  - '(enligt|efter) våra instruktioner'
+  - 'för att (kunna )?(leverera|genomföra|administrera|hantera|utföra)'
+  - 'i syfte att (leverera|genomföra|administrera|hantera|utföra)'
+  - 'betalning'
+  - 'frakt'
+  - 'spedition'
+  - 'leverans'
+# A promise that data is handed over, not only sold ("lämnas ut", "överlåts", "görs tillgängliga", "delas").
+SHARE_VERB: 'lämna\w*\s+(ut|vidare)|överlåt\w*|tillgänglig\w*|\bdelas\b|vidarebefordra\w*'
+# An absolute promise: "till någon tredje part", "någonsin", "under inga omständigheter", "inte … några personuppgifter".
+ABSOLUTE: '\b(någon|några|ingen|inga)\s+(som\s+helst\s+)?tredje\s+part|någonsin|under inga omständigheter|\baldrig\b[^.]{0,60}tredje part|\b(några|inga)\s+(person)?uppgifter'

@@ -1,0 +1,50 @@
+# 1 Företagsuppgifter.
+# Ett värde är ett reguljärt uttryck eller en lista med alternativ (de sätts ihop med |).
+# {NUM} betyder ett tal i siffror eller ord.
+
+# bolagsform efter namnet (AB, Handelsbolag, ek. för. …), eller en enskild firma med sitt namn ("Enskild firma: Anna Design"),
+# bolagsformen före namnet ("AB Exempelbutiken", "Aktiebolaget Exempelhem"), eller namnet efter en rubrik för det
+# ("Företagsnamn: Exempelfirman HB", "Företagets namn: AB Exempelbutiken"); en tom rubrik följd av nästa
+# fält ("Företagsnamn: Org.nr: …") är inget namn
+COMPANY: '\b(?:[Ff]öretagsnamn|[Ff]öretagets\snamn|[Bb]olagsnamn|[Bb]olagets\snamn|[Jj]uridiskt\snamn|[Ff]irmanamn|Firma)\s*:\s*(?!(?:Org|Adress|Telefon|Tel|E-?post|Mail|Momsreg|VAT|Säte|Kontakt)\w*\b)[A-ZÅÄÖ][\wÅÄÖåäö&.\-]*(?:\s[A-ZÅÄÖ0-9][\wÅÄÖåäö&.\-]*){0,4}|\b(?-i:AB|Aktiebolaget)\s(?!(?:Org|Box|Tel)\b)[A-ZÅÄÖ][\wÅÄÖåäö&\-]{2,}(?:\s[A-ZÅÄÖ][\wÅÄÖåäö&\-]*){0,3}|\b[A-ZÅÄÖ][\wÅÄÖåäö&.\-]*(?:\s[A-ZÅÄÖ0-9][\wÅÄÖåäö&.\-]*){0,4}\s(?:AB|Aktiebolag|HB|Handelsbolag|KB|Kommanditbolag|Ekonomisk\sförening|ek\.\s?för|ApS|A/S|AS|Oy|Ltd|GmbH)\b(\s\(publ\))?|\b[Ee]nskild\s(?:firma|näringsidkare):?\s+[A-ZÅÄÖ][\wÅÄÖåäö&.\-]*(?:\s[A-ZÅÄÖ][\wÅÄÖåäö&.\-]*){0,4}'
+OTHER_CO:
+  - 'klarna'
+  - 'svea'
+  - 'qliro'
+  - 'walley'
+  - 'resurs'
+  - 'collector'
+  - 'nets'
+  - 'adyen'
+  - 'stripe'
+  - 'paypal'
+  - 'postnord'
+  - 'bring'
+  - 'schenker'
+  - 'budbee'
+  - 'instabox'
+  - 'dhl'
+  - 'bank'
+  - 'google'
+  - 'meta'
+  - 'trustpilot'
+  - 'svensk handel'
+
+# 10a ARN. "ARN" only in capitals (Arn is a name; "Arninge" is a place); the rest in any case.
+# Common misspellings count: "Allmäna reklamationsnämnden", "reklamationsnämd", "www.arn.se".
+ARN_NAME:
+  - '(?-i:\bARN\b)'
+  - '\barn\.se\b'
+  - 'reklamationsnämn?d\w*'
+  - 'allmänn?a\s+reklamations\w*'
+  - 'national board for consumer (disputes|complaints)'
+  # "arn" in lower case only next to a dispute word ("anmäla ärendet till arn"), since Arn is also a name
+  - '\barn(:?s)?\b(?=[^.]{0,80}\b(tvist|anmäl|pröva|klagomål))'
+  - '\b(tvist|anmäl|pröva|klagomål)\w*[^.]{0,80}\barn(:?s)?\b'
+# Says there is an out-of-court body without naming ARN ("alternativt tvistlösningsorgan"): not enough for
+# uppfyllt, but no proof of brist either.
+ARN_WEAK:
+  - 'alternativ\w*\s+tvistlösning\w*'
+  - 'tvistlösningsorgan\w*'
+  - 'tvistlösningsnämnd\w*'
+  - 'konsumenttvist\w*'

@@ -1,0 +1,15 @@
+# Ord och mönster som flera punkter delar.
+# Ett värde är ett reguljärt uttryck eller en lista med alternativ (de sätts ihop med |).
+# {NUM} betyder ett tal i siffror eller ord.
+
+ANG:
+  - 'ånger'
+  - 'ångra'
+  - 'frånträd'
+OPPET:
+  - 'öppet köp'
+  - 'öppna köp'
+  - 'bytesrätt'
+  - 'returrätt'
+EMAIL: '[\w.+-]+@[\w-]+(\.[\w-]+)*\.[a-z]{2,}'
+PHONE: '(\+46|\b0)\s?\d{1,3}[- ]?\d{2,3}[ -]?\d{2}[ -]?\d{2,3}\b'

@@ -1,0 +1,1807 @@
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Scanningsverktyg prototyp 1</title>
+<style>
+:root{
+  --bg:#fbfaf7;--card:#fbfaf7;--card2:#f4f2ed;--line:rgba(15,23,42,.09);--line2:rgba(15,23,42,.16);
+  --text:#111;--muted:#737373;--dim:#8a8a8a;
+  --brist:#b91c1c;--osaker:#a16207;--ok:#15803d;--intyg:#2563eb;--testkop:#6d28d9;--na:#737373;--kik:#737373;
+  --brist-t:#fbeeec;--osaker-t:#f8f1df;--ok-t:#e9f3ec;--intyg-t:#ebf0fb;--testkop-t:#f1ecfa;--na-t:#f4f2ed;--kik-t:#f4f2ed;
+  --brist-b:#ecc5c0;--osaker-b:#e6d3a3;--ok-b:#bcdcc6;--intyg-b:#c3d3f3;--testkop-b:#d5c7f0;--na-b:rgba(15,23,42,.12);--kik-b:rgba(15,23,42,.12);
+  --topbg:rgba(251,250,247,.9);
+  --r:0px;color-scheme:light;
+  --sans:"Inter Variable",Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;--mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+}
+:root[data-theme="dark"]{
+  --bg:#0a0a0a;--card:#0a0a0a;--card2:#151515;--line:rgba(255,255,255,.08);--line2:rgba(255,255,255,.16);
+  --text:#f5f5f5;--muted:#9a9a9a;--dim:#7d7d7d;
+  --brist:#f87171;--osaker:#facc15;--ok:#4ade80;--intyg:#60a5fa;--testkop:#c4b5fd;--na:#9a9a9a;--kik:#9a9a9a;
+  --brist-t:#2a1212;--osaker-t:#261f08;--ok-t:#0c2216;--intyg-t:#0e1a2b;--testkop-t:#1c1530;--na-t:#151515;--kik-t:#151515;
+  --brist-b:#5c2222;--osaker-b:#4d3f10;--ok-b:#1a4d30;--intyg-b:#1e3a5f;--testkop-b:#3b2d63;--na-b:rgba(255,255,255,.12);--kik-b:rgba(255,255,255,.12);
+  --topbg:rgba(10,10,10,.9);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--text)}
+body{font:15px/1.55 var(--sans);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit}
+button{font:inherit;color:inherit}
+.num{font-variant-numeric:tabular-nums}
+.muted{color:var(--muted)}.dim{color:var(--dim)}
+[hidden]{display:none!important}
+svg{flex:none}
+/* top bar */
+.top{position:sticky;top:0;z-index:30;background:var(--topbg);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.top .in{max-width:1240px;margin:0 auto;padding:0 20px;height:56px;display:flex;align-items:center;gap:20px}
+.brand{display:flex;align-items:center;gap:9px;font-weight:650;letter-spacing:-.01em;text-decoration:none}
+.brand .m{display:grid;grid-template-columns:repeat(2,6px);gap:2px}
+.brand .m i{width:6px;height:6px;border-radius:2px;display:block}
+.nav{display:flex;gap:4px;margin-left:auto}
+.theme{width:36px;height:36px;border-radius:50%;border:1px solid var(--line);background:var(--card2);display:grid;place-items:center;cursor:pointer;color:var(--text);flex:none}
+.theme:hover{border-color:var(--line2)}
+.mfilter{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 12px}.mfilter button{border:1px solid var(--line);background:transparent;padding:5px 11px;font-size:13px;color:var(--muted);cursor:pointer}.mfilter button.on{color:var(--text);border-color:var(--text)}.mfilter button:disabled{opacity:.4;cursor:default}
+.mode{font:500 11.5px var(--mono);letter-spacing:.02em;color:var(--muted);white-space:nowrap}
+@media(max-width:640px){.top .in{gap:10px;padding:0 12px}.nav{overflow-x:auto;scrollbar-width:none}.nav a{padding:7px 8px;font-size:13px}.theme{width:32px;height:32px}}
+.nav a{text-decoration:none;color:var(--muted);padding:7px 12px;border-radius:2px;font-size:14px;white-space:nowrap}
+.nav a:hover,.nav a.on{color:var(--text)}.nav a.on{box-shadow:inset 0 -1.5px 0 var(--text)}
+.wrap{max-width:1080px;margin:0 auto;padding:32px 20px 80px}
+.wrap.wide{max-width:1240px}
+h1{font-size:34px;line-height:1.1;letter-spacing:-.018em;margin:0 0 8px;font-weight:600}
+h2{font:500 11.5px var(--mono);letter-spacing:.08em;text-transform:lowercase;color:var(--muted);margin:44px 0 14px;display:flex;gap:10px;align-items:baseline}
+h2 .n{color:var(--dim);letter-spacing:0}h2::before{content:"~/";margin-right:-6px}
+.sub{color:var(--muted);margin:0}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r)}
+.k{font-size:11.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--dim);font-weight:600;margin:0 0 6px}
+/* chips and state colours */
+.chip{display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 9px 0 7px;border-radius:2px;font-size:12.5px;font-weight:600;white-space:nowrap;border:1px solid transparent}
+.chip svg{width:14px;height:14px}
+.chip b{font-weight:700}
+.s-brist{color:var(--brist);background:var(--brist-t);border-color:var(--brist-b)}
+.s-osaker,.s-granska{color:var(--osaker);background:var(--osaker-t);border-color:var(--osaker-b)}
+.s-ok{color:var(--ok);background:var(--ok-t);border-color:var(--ok-b)}
+.s-intyg{color:var(--intyg);background:var(--intyg-t);border-color:var(--intyg-b)}
+.s-testkop{color:var(--testkop);background:var(--testkop-t);border-color:var(--testkop-b)}
+.s-na{color:var(--na);background:var(--na-t);border-color:var(--na-b)}
+.s-kik{color:var(--kik);background:var(--kik-t);border-color:var(--kik-b)}
+.c-brist{color:var(--brist)}.c-osaker{color:var(--osaker)}.c-ok{color:var(--ok)}.c-intyg{color:var(--intyg)}.c-testkop{color:var(--testkop)}.c-na{color:var(--na)}.c-kik{color:var(--kik)}
+.b-brist{background:var(--brist)}.b-osaker,.b-granska{background:var(--osaker)}.b-ok{background:var(--ok)}.b-intyg{background:var(--intyg)}.b-testkop{background:var(--testkop)}.b-na{background:var(--na)}.b-kik{background:var(--kik)}
+/* point chip: icon + id, never colour alone */
+.pc{display:inline-flex;align-items:center;gap:4px;height:24px;min-width:44px;padding:0 7px 0 5px;border-radius:0;font-size:12px;font-weight:600;background:var(--card2);border:1px solid var(--line2);color:var(--dim);white-space:nowrap;transition:background .35s,border-color .35s,color .35s,transform .35s}
+.pc svg{width:12px;height:12px}
+button.pc{cursor:pointer}
+.pc.st-brist{background:var(--brist);border-color:var(--brist);color:#fff}
+.pc.st-osaker,.pc.st-granska{background:var(--osaker);border-color:var(--osaker);color:#fff}
+.pc.st-ok{background:var(--ok-t);border-color:var(--ok-b);color:var(--ok)}
+.pc.st-intyg{background:var(--intyg-t);border-color:var(--intyg-b);color:var(--intyg)}
+.pc.st-testkop{background:var(--testkop-t);border-color:var(--testkop-b);color:var(--testkop)}
+.pc.st-na{background:var(--na-t);border-color:var(--na-b);color:var(--na)}
+.pc.st-kik{background:var(--kik-t);border-color:var(--na-b);color:var(--kik)}
+.pc.pop{animation:pop .45s ease-out}
+.pc.dimmed{opacity:.15}
+@keyframes pop{0%{transform:scale(.6)}60%{transform:scale(1.12)}100%{transform:scale(1)}}
+.board{display:flex;flex-wrap:wrap;gap:12px 14px}
+.board .sec{display:flex;flex-direction:column;gap:5px;min-width:0}
+.board .sec .lab{font-size:11px;color:var(--dim);white-space:nowrap}
+.board .sec .row{display:flex;flex-wrap:wrap;gap:3px}
+.caption{font-size:13px;color:var(--muted);min-height:20px}
+.caption b{color:var(--text);font-weight:600}
+.stack{display:flex;height:10px;border-radius:2px;overflow:hidden;gap:2px;background:var(--card2)}
+.stack i{display:block;height:100%}
+.legend{display:flex;flex-wrap:wrap;gap:8px}
+.legend button{all:unset;cursor:pointer;border-radius:2px}
+.legend button[aria-pressed=false] .chip{opacity:.35}
+.legend .chip{height:30px;padding:0 12px 0 9px;font-size:13px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:44px;padding:0 20px;border-radius:2px;background:var(--text);color:#fff;font-weight:650;text-decoration:none;border:0;cursor:pointer;white-space:nowrap}
+.btn svg{width:16px;height:16px}
+.btn.ghost{background:transparent;color:var(--text);border:1px solid var(--line2)}
+.btn.ghost:hover{border-color:#555}
+.lnk{all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:6px;color:var(--text);font-weight:600;font-size:13.5px;padding:6px 12px;border-radius:2px;border:1px solid var(--line2)}
+.lnk:hover{border-color:var(--dim)}
+.lnk svg{width:13px;height:13px}
+:focus-visible{outline:2px solid var(--intyg);outline-offset:2px}
+details>summary{list-style:none;cursor:pointer}
+details>summary::-webkit-details-marker{display:none}
+.caret{transition:transform .2s;color:var(--dim);display:inline-flex}
+details[open]>summary .caret{transform:rotate(90deg)}
+.err{color:var(--brist)}
+@keyframes in{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+/* ---------- start ---------- */
+.hero{padding:64px 0 8px;text-align:center}
+.hero h1{font-size:48px}
+.hero .sub{font-size:17px}
+.go{display:flex;gap:8px;max-width:560px;margin:32px auto 0;padding:6px;background:var(--card);border:1px solid var(--line2);border-radius:2px}
+.go:focus-within{border-color:#555}
+.go input{flex:1;min-width:0;background:transparent;border:0;color:var(--text);font:inherit;font-size:17px;padding:0 18px;outline:0}
+.go input::placeholder{color:var(--dim)}
+.go-err{min-height:22px;margin:10px 0 0;font-size:14px}
+.steps4{display:grid;grid-template-columns:repeat(4,1fr);max-width:720px;margin:36px auto 0;position:relative}
+.steps4::before{content:"";position:absolute;left:12.5%;right:12.5%;top:19px;height:1px;background:var(--line2)}
+.steps4 .st{text-align:center;position:relative}
+.steps4 .ic{width:38px;height:38px;border-radius:50%;background:var(--card);border:1px solid var(--line2);display:grid;place-items:center;margin:0 auto 10px;color:var(--muted)}
+.steps4 .ic svg{width:17px;height:17px}
+.steps4 b{display:block;font-size:14px;font-weight:600}
+.steps4 span{font-size:12.5px;color:var(--dim)}
+.recent{max-width:760px;margin:56px auto 0}
+.bcta{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px 18px;margin:0 0 28px;text-decoration:none;color:var(--text)}.bcta>span:first-child{display:grid;gap:2px}.bcta .dim{font-size:13.5px}.bcta:hover{background:var(--card2)}.batch{max-width:880px;margin:40px auto 0}.batch h1{margin:0 0 8px}.batch .sub{max-width:70ch;margin:0 0 22px}.btiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin:0 0 22px}.btiles .card{padding:12px 14px;display:grid;gap:4px}.btiles .dim{font-size:12.5px}.btiles b{font-size:24px;font-weight:600}.btools{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;margin:0 0 12px}.btools .mfilter{margin:0}.btools input{flex:1 1 200px;max-width:280px;padding:7px 10px;border:1px solid var(--line);background:var(--card);color:var(--text);font:inherit;font-size:14px}.frow{display:grid;gap:2px;padding:12px 18px;border-bottom:1px solid var(--line)}.frow .dim{font-size:13px}
+.rlist{list-style:none;margin:0;padding:0}
+.rlist a{display:grid;grid-template-columns:minmax(140px,1fr) auto 200px 16px;align-items:center;gap:16px;padding:14px 18px;text-decoration:none;border-bottom:1px solid var(--line)}
+.rlist li:last-child a{border-bottom:0}
+.rlist a:hover{background:var(--card2)}
+.rlist .shop b{display:block;font-weight:600}
+.rlist .shop span{font-size:13px;color:var(--dim)}
+.rlist .cnt{display:flex;gap:6px;justify-content:flex-end}
+.mini{display:flex;gap:2px}
+.mini i{flex:1;height:18px;border-radius:2px;display:block}
+.empty{padding:18px;color:var(--dim);font-size:14px}
+
+/* ---------- live ---------- */
+.eyebrow{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:14px;margin-bottom:8px;flex-wrap:wrap}
+.live{display:inline-flex;align-items:center;gap:7px;height:24px;padding:0 10px;border-radius:2px;font-size:12.5px;font-weight:600;color:var(--text);background:var(--card2);border:1px solid var(--line2)}
+.live::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
+.live.run::before{animation:blink 1s ease-in-out infinite}
+.live.fail{color:var(--brist)}
+@keyframes blink{50%{opacity:.2}}
+.lv-head{padding:0 0 22px}
+.lv-head h1{font-size:30px;margin:0;line-height:1.2}
+.lv-head .why{margin:6px 0 0;color:var(--muted);font-size:14.5px}
+.lv-clock{color:var(--text)}
+.cta{display:flex;align-items:center;gap:14px;margin-top:14px;flex-wrap:wrap}
+.lv-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));margin:20px 0 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.lv-stats>div{padding:12px 16px;min-width:0}
+.lv-stats>div:first-child{padding-left:0}
+.lv-stats>div+div{border-left:1px solid var(--line)}
+.lv-stats dt{font-size:12.5px;color:var(--dim)}
+.lv-stats dd{margin:2px 0 0;font-size:22px;font-weight:620;letter-spacing:-.01em;line-height:1.3}
+.lv-stats dd small{display:block;font-size:12.5px;font-weight:400;letter-spacing:0;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lv-lanes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;align-items:start}
+.lv-lane{padding:14px 16px 12px;min-width:0}
+.lv-lane header{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.lv-lane h2{margin:0;font-size:14.5px;letter-spacing:0;text-transform:none;color:var(--text);font-weight:620}
+.lv-lane .ct{font-size:12.5px;color:var(--muted);white-space:nowrap}
+.lv-lane .note{margin:2px 0 0;font-size:12.5px;color:var(--dim);min-height:1.5em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lv-shot{all:unset;box-sizing:border-box;display:block;width:100%;cursor:zoom-in;margin:10px 0 2px;border-radius:0;overflow:hidden;border:1px solid var(--line2);background:var(--card2);aspect-ratio:16/10;position:relative}
+.lv-shot img{width:100%;height:100%;object-fit:cover;object-position:top;display:block}
+.lv-shot span{position:absolute;left:0;right:0;bottom:0;padding:18px 10px 7px;font-size:12px;color:#ddd;background:linear-gradient(transparent,rgba(0,0,0,.9));white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lv-shot.none{cursor:default;aspect-ratio:auto;display:block;color:var(--dim);font-size:12.5px;padding:10px 12px;border-style:dashed}
+.lv-shot:focus-visible{outline:2px solid var(--intyg);outline-offset:2px}
+.lv-strip{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 0}
+.lv-strip button{all:unset;box-sizing:border-box;cursor:zoom-in;width:54px;height:38px;border-radius:2px;overflow:hidden;border:1px solid var(--line2);background:var(--card2)}
+.lv-strip button:focus-visible{outline:2px solid var(--intyg);outline-offset:2px}
+.lv-strip img{width:100%;height:100%;object-fit:cover;object-position:top;display:block}
+.lv-rows{list-style:none;margin:10px 0 0;padding:0}
+.lv-rows li{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:0 10px;padding:7px 0;border-top:1px solid var(--line);font-size:13.5px}
+.lv-rows li:first-child{border-top:0}
+.lv-rows .p{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lv-rows .s{grid-row:1/3;grid-column:2;display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--muted);white-space:nowrap}
+.lv-rows .d{font-size:12px;color:var(--dim);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lv-rows li.run .s{color:var(--text)}
+.lv-rows li.skip .p{color:var(--muted)}
+.lv-rows li.skip .s{color:var(--dim)}
+.lv-rows li.stop .p{color:var(--text);font-weight:600}
+.lv-rows .cam{all:unset;cursor:zoom-in;display:inline-grid;place-items:center;width:24px;height:24px;border-radius:0;border:1px solid var(--line2);color:var(--muted)}
+.lv-rows .cam:hover{color:var(--text);border-color:#555}
+.lv-rows .cam:focus-visible{outline:2px solid var(--intyg);outline-offset:2px}
+.lv-rows .cam svg{width:13px;height:13px}
+.lv-rows .empty{display:block;padding:7px 0;color:var(--dim);font-size:13px}
+.lv-more{all:unset;cursor:pointer;font-size:12.5px;color:var(--muted);margin-top:4px;padding:4px 0}
+.lv-more:hover{color:var(--text)}
+.lv-more:focus-visible{outline:2px solid var(--intyg);outline-offset:2px}
+.lv-dlg{background:var(--card);color:var(--text);border:1px solid var(--line2);border-radius:0;padding:0;width:min(1100px,94vw);max-width:none;max-height:90vh;overflow:hidden}
+.lv-dlg::backdrop{background:rgba(0,0,0,.82)}
+.lv-dlg header{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 8px 8px 16px;border-bottom:1px solid var(--line);font-size:13.5px;color:var(--muted)}
+.lv-dlg header span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lv-dlg .x{all:unset;cursor:pointer;width:36px;height:36px;display:grid;place-items:center;border-radius:0;font-size:22px;color:var(--text)}
+.lv-dlg .x:focus-visible{outline:2px solid var(--intyg)}
+.lv-dlg .body{overflow:auto;max-height:calc(90vh - 54px)}
+.lv-dlg img{display:block;width:100%;height:auto}
+
+/* ---------- results ---------- */
+.rhead{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:20px;flex-wrap:wrap}
+.meta{margin:0;color:var(--muted);font-size:14px}
+.lnk.play{height:40px;padding:0 16px;box-sizing:border-box}
+.pill{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);text-decoration:none;padding:5px 12px;border-radius:2px;border:1px solid var(--line2);margin-top:8px;flex-wrap:wrap}
+.pill:hover{border-color:#555;color:var(--text)}
+.pill svg{width:12px;height:12px}
+.pill .ok{color:var(--ok)}
+.sum{display:grid;grid-template-columns:280px 1fr;overflow:hidden}
+.verdict{padding:24px;border-right:1px solid var(--line);background:linear-gradient(180deg,var(--brist-t),var(--card) 70%)}
+.verdict.clean{background:linear-gradient(180deg,var(--ok-t),var(--card) 70%)}
+.verdict .big{font-size:76px;font-weight:700;line-height:.9;letter-spacing:-.04em}
+.verdict .lbl{font-size:20px;font-weight:600;margin:6px 0 18px}
+.verdict .lead{margin:6px 0 16px;color:var(--muted);font-size:14px}
+.vrows{display:grid;gap:8px}
+.vrows button{all:unset;cursor:pointer;display:grid;grid-template-columns:18px 30px 1fr;align-items:center;gap:6px;font-size:14px;color:var(--muted);border-radius:0}
+.vrows button:hover{color:var(--text)}
+.vrows svg{width:15px;height:15px}
+.vrows b{font-size:16px;color:var(--text)}
+.overview{padding:20px 22px;display:flex;flex-direction:column;gap:14px;min-width:0}
+/* brist cards */
+.bc{margin-bottom:12px;overflow:hidden;border-left:3px solid var(--brist);scroll-margin-top:80px;padding:18px 22px;display:grid;gap:14px}
+.bc .bh{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.bc .pid{font-size:13px;color:var(--muted)}
+.bc h3{font-size:20px;line-height:1.3;margin:-6px 0 0;font-weight:620;letter-spacing:-.01em}
+.bc .ev{display:grid;gap:8px;min-width:0}
+.bc .src{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:2px 0 0}
+.bc .src .path{font:500 12px var(--mono);color:var(--muted);overflow-wrap:anywhere}
+.bc .k2{margin:6px 0 0;font-size:13px;color:var(--muted)}
+.bc .kv2{margin:0;padding-top:12px;border-top:1px solid var(--line);display:grid;gap:6px}
+.bc .kv2>div{display:grid;grid-template-columns:4.2rem minmax(0,1fr);gap:12px}
+.bc dt{font-size:13px;font-weight:600;color:var(--text);padding-top:1px}
+.bc dd{margin:0;font-size:14px;line-height:1.5;color:var(--muted)}
+.req{margin:0;color:var(--muted);font-size:14.5px}
+blockquote{margin:0;font-size:15.5px;line-height:1.55;padding-left:12px;border-left:2px solid var(--brist-b);overflow-wrap:anywhere}
+blockquote u{text-decoration-color:var(--brist);text-decoration-thickness:2px;text-underline-offset:3px}
+blockquote.alt{border-left-color:var(--osaker-b);margin-top:4px;font-size:14px;color:var(--muted)}
+blockquote.alt u{text-decoration-color:var(--osaker)}
+.miss{color:var(--muted);font-size:14px;margin:0}
+.pstrip{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.pshot{all:unset;cursor:pointer;display:flex;flex-direction:column;width:132px;border:1px solid var(--line2);border-radius:0;overflow:hidden;background:var(--card2)}
+.pshot img{width:100%;height:84px;object-fit:cover;object-position:top;display:block;background:#fff}
+.pshot.crop img{object-fit:contain;object-position:center}
+.pshot span{font-size:11.5px;color:var(--muted);padding:4px 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pshot:focus-visible,.fs:focus-visible{outline:2px solid var(--text);outline-offset:2px}
+.cobox{padding:0}
+.cocase{margin-top:10px;min-width:0;max-width:100%}
+.rows .body{grid-template-columns:minmax(0,1fr)}.rows .body>*{min-width:0}
+.film{display:flex;gap:8px;align-items:flex-end;overflow-x:auto;padding-bottom:4px;max-width:100%;min-width:0}
+.fs{all:unset;cursor:pointer;flex:0 0 auto;width:96px;border:1px solid var(--line2);border-radius:0;overflow:hidden;background:var(--card2)}
+.fs.last{width:220px;border-color:var(--osaker-b)}
+.fs img{width:100%;height:64px;object-fit:cover;object-position:top;display:block;background:#fff}
+.fs.last img{height:150px}
+.fs span{display:block;font-size:11.5px;color:var(--muted);padding:3px 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cl{margin:8px 0 0;font-size:14px;color:var(--muted)}.cl b{color:var(--text);font-weight:600}
+.tag-m{font-size:12px;font-weight:600;color:var(--osaker);border:1px solid var(--osaker-b);border-radius:2px;padding:2px 9px}
+.bc .vs{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.bc .vs>div{min-width:0}
+.bc .vs .k{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.tf,.tr{font-size:11.5px;font-weight:700;border-radius:2px;padding:1px 7px;text-transform:none;letter-spacing:0}
+.tf{color:var(--brist);background:var(--brist-t);border:1px solid var(--brist-b)}
+.tr{color:var(--ok);background:var(--ok-t);border:1px solid var(--ok-b)}
+.bc .vs blockquote.ok{border-left-color:var(--ok-b)}
+.bc .vs blockquote.ok u{text-decoration-color:var(--ok)}
+.bc .why2{margin:12px 0 0;font-size:14.5px;color:var(--text)}
+.bc .ex{margin:0;font-size:13.5px;color:var(--muted)}
+.bc .shotmini{all:unset;cursor:pointer;display:block;margin-top:10px;width:160px;border-radius:0;overflow:hidden;border:1px solid var(--line2)}
+.bc .shotmini img{width:100%;height:90px;object-fit:cover;object-position:top;display:block}
+.hl{animation:hl 1.6s ease-out}
+@keyframes hl{0%{box-shadow:0 0 0 2px var(--text)}100%{box-shadow:0 0 0 2px transparent}}
+/* rows */
+.rows{list-style:none;margin:0;padding:0}
+.rows>li{border-top:1px solid var(--line);scroll-margin-top:80px}
+.rows>li:first-child{border-top:0}
+.rows summary{display:grid;grid-template-columns:auto 48px minmax(0,1fr) auto;gap:12px;align-items:center;padding:12px 18px}
+.rows summary:hover{background:var(--card2)}
+.rows .id{color:var(--dim);font-size:13px}
+.rows .lb b{font-weight:560}
+.rows .lb span{color:var(--muted);font-size:13.5px;display:block}
+.rows .body{padding:2px 18px 16px 18px;display:grid;gap:10px;margin-left:60px}
+.rows .body p{margin:0;color:var(--muted);font-size:14px}
+.rows .body blockquote{border-left-color:var(--osaker-b);font-size:14.5px}
+.rows .body blockquote u{text-decoration-color:var(--osaker)}
+.rows .body .acts{display:flex;gap:10px;flex-wrap:wrap}
+.fold{margin-top:10px}
+.fold>summary{display:flex;align-items:center;gap:10px;padding:14px 18px}
+.fold>summary .n{margin-left:auto;color:var(--dim)}
+.fold .rows{border-top:1px solid var(--line)}
+.follow .fh{margin:0;padding:14px 18px 0}
+.flw{list-style:none;margin:0;padding:10px 18px 14px;font-size:14px;color:var(--muted)}
+.flw li{padding:3px 0}.flw .id{color:var(--dim);margin-right:4px}
+/* dashboard */
+.tiles{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+.tile{padding:14px 16px}
+.tile b{display:block;font-size:28px;font-weight:650;line-height:1.1;letter-spacing:-.02em}
+.tile span{font-size:13px;color:var(--text)}
+.tile small{display:block;font-size:12px;color:var(--dim);margin-top:2px}
+.dash{display:grid;grid-template-columns:1fr 1.35fr;gap:12px;margin-top:12px;align-items:start}
+.widget{padding:18px 20px;min-width:0}
+.widget>.k{display:flex;justify-content:space-between;gap:10px}
+.widget>.k span{text-transform:none;letter-spacing:0;font-weight:500}
+.gantt{display:grid;grid-template-columns:96px 1fr 46px;gap:10px 10px;align-items:center;font-size:13.5px;margin-top:10px}
+.gantt .tr{height:10px;border-radius:2px;background:var(--card2);position:relative}
+.gantt .tr i{position:absolute;top:0;bottom:0;border-radius:2px;background:#4a4a4a}
+.gantt .s{color:var(--muted);text-align:right;font-size:12.5px}
+.gantt .ax{grid-column:2;display:flex;justify-content:space-between;font-size:11px;color:var(--dim)}
+.p2p{width:100%;border-collapse:collapse;font-size:13.5px;margin-top:6px}
+.p2p td{padding:9px 0;border-top:1px solid var(--line);vertical-align:top}
+.p2p tr:first-child td{border-top:0}
+.p2p .pg{all:unset;cursor:pointer;display:block;min-width:0}
+.p2p .pg b{display:block;font-weight:560;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.p2p .pg span{display:block;font-size:12px;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.p2p .pg:hover b{text-decoration:underline}
+.p2p .ch{display:flex;flex-wrap:wrap;gap:3px;padding-left:12px}
+.p2p .pc{min-width:0;height:22px;font-size:11px}
+.p2p td:first-child{width:38%;max-width:0}
+.p2p .note{font-size:12.5px;color:var(--dim);padding-top:10px}
+.gallery{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+.gallery button{all:unset;cursor:pointer;display:block;min-width:0}
+.gallery img{width:100%;aspect-ratio:1/.72;object-fit:cover;object-position:top;border-radius:0;border:1px solid var(--line2);display:block}
+.gallery span{display:block;font-size:12px;color:var(--muted);margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* drawer */
+.scrim{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:40}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(620px,100vw);background:var(--card);border-left:1px solid var(--line2);z-index:41;display:flex;flex-direction:column;animation:slide .25s ease-out}
+@keyframes slide{from{transform:translateX(30px);opacity:0}to{transform:none;opacity:1}}
+.drawer header{display:flex;gap:12px;align-items:flex-start;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--line)}
+.drawer header b{display:block;font-size:16px}
+.drawer header a{font-size:13px;color:var(--muted);overflow-wrap:anywhere}
+.drawer .x{all:unset;cursor:pointer;width:34px;height:34px;border-radius:0;border:1px solid var(--line2);display:grid;place-items:center;flex:none;font-size:20px}
+.dbody{overflow:auto;padding:16px 20px 40px;flex:1}
+.dbody .hit{font-size:13px;margin:0 0 12px;color:var(--muted)}
+.ptext{font-size:14.5px;line-height:1.6;color:#cfcfcf}
+.ptext p{margin:0 0 6px}
+.ptext h4{margin:14px 0 6px;font-size:15px;color:var(--text)}
+.ptext mark{background:transparent;color:var(--text);outline:2px solid var(--brist);outline-offset:2px;border-radius:2px}
+.dbody .rel{margin-top:22px;padding-top:16px;border-top:1px solid var(--line)}
+.dbody .rel .row{display:flex;flex-wrap:wrap;gap:4px}
+.dbody img.full{width:100%;border-radius:0;border:1px solid var(--line2);display:block}
+/* krav */
+.ov{padding:20px 22px;display:grid;gap:16px;margin-top:24px}
+.ov .stack{height:12px}
+.outs{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.outs button{all:unset;cursor:pointer;border:1px solid var(--line2);border-radius:0;padding:10px 12px;display:grid;gap:4px;align-content:start}
+.outs button[aria-pressed=false]{opacity:.35}
+.outs button:hover{border-color:#555}
+.outs .h{display:flex;align-items:center;gap:7px;font-weight:620;font-size:14px}
+.outs .h svg{width:15px;height:15px}
+.outs .h b{margin-left:auto;font-size:18px}
+.outs small{font-size:12px;color:var(--dim);line-height:1.35}
+.secs{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:20px;align-items:start}
+.sec2{padding:6px 0;overflow:hidden}
+.sec2 header{display:flex;align-items:center;gap:10px;padding:10px 18px 8px}
+.sec2 header b{font-size:15px;font-weight:620}
+.sec2 header .no{width:24px;height:24px;border-radius:0;background:var(--card2);display:grid;place-items:center;font-size:12px;color:var(--muted)}
+.pt{border-top:1px solid var(--line)}
+.pt summary{display:grid;grid-template-columns:28px 40px minmax(0,1fr) auto 14px;align-items:center;gap:8px;padding:9px 18px}
+.pt summary:hover{background:var(--card2)}
+.pt .ic{width:24px;height:24px;border-radius:0;display:grid;place-items:center;border:1.5px solid currentColor;background:transparent}
+.pt .ic svg{width:13px;height:13px}
+.pt .id{font-size:12.5px;color:var(--dim)}
+.pt .lb{font-size:14.5px}
+.pt .mt{font-size:12px;color:var(--dim);white-space:nowrap}
+.pt .body{padding:2px 18px 16px 94px;display:grid;gap:10px;font-size:14px}
+.pt .body p{margin:0;color:var(--muted)}
+.pt .body blockquote{border-left-color:var(--line2);font-size:14px;color:var(--text)}
+.pt.hide,.sec2.hide{display:none}
+.mts{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.mts .k{margin:0 6px 0 0}
+.mts button{all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:7px;height:30px;padding:0 11px;border:1px solid var(--line2);border-radius:2px;font-size:13px}
+.mts button b{color:var(--dim);font-weight:600}
+.mts button[aria-pressed=false]{opacity:.35}
+.mts button:hover{border-color:#555}
+.mts button:focus-visible,.outs button:focus-visible,.kr:focus-visible{outline:2px solid var(--text);outline-offset:2px}
+.mdot{width:9px;height:9px;border-radius:50%;background:var(--mc);flex:none;display:inline-block}
+.kv-cols{display:grid;grid-template-columns:1fr 72px 1fr;margin-top:26px}
+.kv-cols .k{margin:0}
+.kv-grid{position:relative}
+.kv-lines{position:absolute;inset:0;width:100%;pointer-events:none;overflow:visible}
+.kv-lines path{fill:none;stroke-width:1.4;opacity:.55;transition:opacity .15s}
+.kv-lines circle{opacity:.7}
+.kv-grid.focus .kv-lines path{opacity:.08}.kv-grid.focus .kv-lines circle{opacity:.1}
+.kv-grid.focus .kv-lines path.hi{opacity:1;stroke-width:2.2}
+.kv-sec{display:flex;align-items:center;gap:10px;font-size:15px;font-weight:620;margin:26px 0 10px}
+.kv-sec .no{width:24px;height:24px;border-radius:0;background:var(--card2);display:grid;place-items:center;font-size:12px;color:var(--muted)}
+.kv-row{display:grid;grid-template-columns:1fr 72px 1fr;margin-bottom:12px;align-items:start}
+.kv-row.hide,.kv-sec.hide{display:none}
+.kr{background:var(--card);border:1px solid var(--line);border-radius:0;padding:14px 16px;cursor:pointer;transition:border-color .15s,opacity .15s}
+.kr-h{display:flex;justify-content:space-between;font-size:12.5px;color:var(--dim);margin-bottom:6px}
+.kr-h .num{color:var(--text);font-weight:600;font-size:13.5px}
+.kr-t{margin:0 0 8px;font-size:14.5px;line-height:1.5;color:var(--text)}
+.kr-t:last-of-type{margin-bottom:0}
+.kr-pts{display:none}
+.kv-pts{display:grid;gap:8px}
+.kp{background:var(--card);border:1px solid var(--line);border-left:3px solid var(--mc);border-radius:0;padding:10px 14px;cursor:pointer;transition:border-color .15s,opacity .15s}
+.kp.off{opacity:.25}
+.kp-h{display:flex;align-items:center;gap:8px;font-size:14.5px}
+.kp-h .id{font-size:12.5px;color:var(--dim)}
+.kp-h b{font-weight:600;flex:1;min-width:0}
+.kp-h .ic{display:grid;place-items:center;width:20px;height:20px}.kp-h .ic svg{width:14px;height:14px}
+.kp-w{margin:4px 0 0;font-size:13.5px;color:var(--muted);line-height:1.45}
+.kp-m{margin:6px 0 0;font-size:12.5px;color:var(--dim);display:flex;align-items:center;gap:7px}
+.kv-grid.focus .kr:not(.hi),.kv-grid.focus .kv-pts .kp:not(.hi){opacity:.35}
+.kv-grid .kr.hi,.kv-grid .kp.hi{border-color:#555}
+.kv-grid .kp.hi{border-left-color:var(--mc)}
+/* Svensk Handel's own text: cut parts, whole paragraph, whole document */
+.ell{all:unset;cursor:pointer;color:var(--muted);border-bottom:1px dashed var(--dim);padding:0 2px;border-radius:2px}
+.ell:hover{color:var(--text);border-bottom-color:var(--text)}
+.ell[aria-expanded=true]{color:var(--muted);background:var(--card2)}
+.shbtn{all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:5px;font-size:12.5px;color:var(--dim);margin:6px 0 2px}
+.shbtn:hover{color:var(--text)}
+.shbtn svg{width:12px;height:12px;transition:transform .2s}
+.shbtn[aria-expanded=true] svg{transform:rotate(90deg)}
+.krq+.krq{margin-top:10px}
+.shp{border-left:2px solid var(--line2);padding:2px 0 2px 12px;margin:8px 0 2px;cursor:default}
+.shp .shh{font-size:12px;color:var(--dim);margin:0 0 6px}
+.shx{color:var(--muted);font-size:14px;line-height:1.65;overflow-wrap:anywhere}
+.shx p{margin:0 0 8px}.shx p:last-child{margin-bottom:0}
+.shx ul{margin:0 0 8px;padding-left:20px}.shx ul:last-child{margin-bottom:0}
+.shx li{margin:0 0 3px}
+.shm{background:var(--card2);color:var(--text);border-bottom:1.5px solid var(--dim);border-radius:2px;cursor:pointer;-webkit-box-decoration-break:clone;box-decoration-break:clone}
+.shm:hover{background:var(--line2)}
+.shm.cur{background:var(--line2);border-bottom-color:var(--text)}
+.sht{all:unset;cursor:pointer;display:inline-block;font-size:10.5px;font-weight:650;line-height:15px;padding:0 5px;margin:0 3px 0 1px;border-radius:2px;border:1px solid var(--line2);color:var(--muted);background:var(--card2);vertical-align:1px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.sht:hover{color:var(--text);border-color:var(--dim)}
+.sht.cur{color:var(--bg);background:var(--text);border-color:var(--text)}
+.ell:focus-visible,.shbtn:focus-visible,.sht:focus-visible{outline:2px solid var(--text);outline-offset:2px}
+.shbar{display:flex;align-items:center;gap:8px 14px;flex-wrap:wrap;margin-top:18px}
+.shbar small{font-size:12.5px;color:var(--dim)}
+.shdoc{padding:6px 22px 22px;margin-top:12px}
+.shdoc .shx{max-width:760px;font-size:14.5px}
+.shdoc h3{font-size:15px;font-weight:620;margin:22px 0 8px;color:var(--text)}
+.shdoc h4{font-size:14px;font-weight:600;margin:14px 0 6px;color:var(--text)}
+.shdoc .src{font-size:12.5px;color:var(--dim);margin:16px 0 0}
+
+@media (max-width:900px){
+  .sum{grid-template-columns:1fr}.verdict{border-right:0;border-bottom:1px solid var(--line)}
+  .dash{grid-template-columns:1fr}.secs{grid-template-columns:1fr}
+  .lv-lanes{grid-template-columns:1fr}
+  .lv-shot{aspect-ratio:16/9}
+  .outs{grid-template-columns:repeat(2,1fr)}
+}
+@media (max-width:640px){
+  .top .in{padding:0 16px;gap:10px}.brand span{display:none}
+  .rhead{align-items:flex-start}
+  .nav a{padding:6px 10px;font-size:13px}
+  .wrap{padding:22px 16px 64px}
+  h1{font-size:28px}
+  .hero{padding:32px 0 0}.hero h1{font-size:32px}.hero .sub{font-size:15px}
+  .go{flex-direction:column;border-radius:0;padding:8px}.go input{height:46px;padding:0 10px}
+  .steps4{grid-template-columns:repeat(2,1fr);row-gap:22px}.steps4::before{display:none}
+  .rlist a{grid-template-columns:1fr auto;gap:8px 12px}.rlist .mini{grid-column:1/-1;order:3}.rlist .arr{display:none}
+  .lv-head h1{font-size:24px}
+  .lv-stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .lv-stats>div:nth-child(odd){padding-left:0;border-left:0}
+  .lv-stats>div:nth-child(n+3){border-top:1px solid var(--line)}
+  .lv-stats dd{font-size:20px}
+  .lv-lane{padding:12px 14px 10px}
+  .verdict{padding:20px}.verdict .big{font-size:60px}.overview{padding:16px}
+  .bc{padding:16px}.bc h3{font-size:18px}.bc .kv2>div{grid-template-columns:1fr;gap:2px}
+  .kv-cols,.kv-lines,.kv-pts,.kv-row>span{display:none}.kv-row{grid-template-columns:1fr}.kr{cursor:default}.kr-pts{display:grid;gap:8px;margin-top:12px}.mts .k{width:100%}
+  .bc .vs{grid-template-columns:1fr}.fs.last{width:180px}.fs.last img{height:124px}
+  .rows summary{grid-template-columns:auto minmax(0,1fr);padding:12px 14px}.rows .id,.rows summary .caret{display:none}
+  .rows .body{margin-left:0;padding:2px 14px 14px}
+  .tiles{grid-template-columns:repeat(2,1fr)}.tile:last-child{grid-column:1/-1}
+  .gallery{grid-template-columns:repeat(2,1fr)}
+  .p2p td{display:block;width:auto!important;max-width:none!important;padding:0}
+  .p2p tr{display:block;border-top:1px solid var(--line);padding:9px 0}
+  .p2p tr:first-child{border-top:0}
+  .p2p .ch{padding:6px 0 0}
+  .outs{grid-template-columns:1fr}
+  .pt summary{grid-template-columns:26px minmax(0,1fr) 14px;padding:9px 14px}.pt .id,.pt .mt{display:none}
+  .pt .body{padding:2px 14px 14px 48px}
+  .shdoc{padding:2px 16px 18px}
+  .widget{padding:16px}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+}
+.ai-tag,.lb b .ai-tag{display:inline-block;margin-left:6px;padding:1px 6px;border:1px solid currentColor;border-radius:2px;font-size:11px;font-weight:500;letter-spacing:.03em;opacity:.75;vertical-align:1px}
+/* ================= Så funkar det ================= */
+.inf{--rl:#7cc4f5;--ai:var(--testkop)}
+.inf .lead{font-size:17px;color:var(--muted);max-width:68ch;margin:0}
+.inf p{max-width:72ch}
+.inf .flow{padding:22px;overflow-x:auto}
+.inf .fg{display:grid;grid-template-columns:120px repeat(3,minmax(150px,1fr)) minmax(160px,1fr);gap:10px;min-width:820px}
+.inf .ln{font-size:11.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--dim);font-weight:600;align-self:center}
+.inf .bx{border:1px solid var(--line2);border-left:3px solid var(--rl);border-radius:0;background:var(--card2);padding:10px 12px;display:grid;gap:3px;align-content:start}
+.inf .bx b{font-size:14px;font-weight:620}
+.inf .bx span{font-size:12.5px;color:var(--muted);line-height:1.4}
+.inf .bx.ai{border-left-color:var(--ai);background:var(--testkop-t)}
+.inf .bx.out{border-left-color:var(--ok);grid-column:5;grid-row:1 / span 3;align-content:center}
+.inf .bx.blank{border:0;background:none}
+.inf .legend{display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:14px;font-size:12.5px;color:var(--muted)}
+.inf .legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:-1px}
+.inf .cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}
+.inf .cols .card{padding:18px;display:grid;gap:10px;align-content:start;min-width:0}
+.inf h3{margin:0;font-size:16px;font-weight:620}
+.inf ul{margin:0;padding-left:18px;display:grid;gap:6px}
+.inf ul li::marker{color:var(--dim)}
+.inf code{font:12.5px var(--mono);background:var(--card2);border:1px solid var(--line2);border-radius:2px;padding:1px 5px}
+.inf .chain{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));overflow:hidden}
+.inf .chain>div{padding:16px 16px 18px;border-right:1px solid var(--line);display:grid;gap:8px;align-content:start;min-width:0}
+.inf .chain>div:last-child{border-right:0}
+.inf .chain .k{margin:0}
+.inf .chain .ex{font-size:13px;color:var(--muted);line-height:1.45;margin:0}
+.inf .chain .ex q{color:var(--text)}
+.inf .cases{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.inf .cases .card{padding:16px;display:grid;gap:6px;align-content:start;min-width:0}
+.inf .cases b{font:600 13px var(--mono);color:var(--ai)}
+.inf .cases small{color:var(--muted);font-size:13px;line-height:1.45}
+.inf .steps{list-style:none;margin:0;padding:0;counter-reset:s}
+.inf .steps li{counter-increment:s;display:grid;grid-template-columns:34px minmax(0,1fr);gap:12px;padding:12px 0;border-top:1px solid var(--line)}
+.inf .steps li:first-child{border-top:0}
+.inf .steps li::before{content:counter(s);width:24px;height:24px;border-radius:0;background:var(--card2);display:grid;place-items:center;font-size:12px;color:var(--muted)}
+.inf .steps b{font-weight:620}
+.inf .steps span{color:var(--muted)}
+.inf .stat{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}
+.inf .stat .card{padding:16px;display:grid;gap:4px;align-content:start}
+.inf .stat .k{margin:0}
+.inf .stat .v{font-size:24px;font-weight:650;letter-spacing:-.02em}
+.inf .stat small{color:var(--muted);font-size:12.5px;line-height:1.4}
+.inf table{width:100%;border-collapse:collapse;font-size:14px}
+.inf td{padding:9px 14px;border-top:1px solid var(--line);vertical-align:top}
+.inf tr:first-child td{border-top:0}
+.inf td:first-child{white-space:nowrap;width:1%}
+.inf .tw{overflow-x:auto;padding:4px 0}
+@media (max-width:760px){.inf .chain{grid-template-columns:1fr 1fr}.inf .chain>div:nth-child(2){border-right:0}.inf .chain>div:nth-child(-n+2){border-bottom:1px solid var(--line)}.inf .cases{grid-template-columns:1fr}}
+@media (max-width:480px){.inf .chain{grid-template-columns:1fr}.inf .chain>div{border-right:0;border-bottom:1px solid var(--line)}}
+@media (max-width:520px){.top .in{gap:10px}.nav{min-width:0;overflow-x:auto;scrollbar-width:none}.nav a{padding:7px 8px;font-size:13px}}
+</style>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;550;600;650&display=swap" rel="stylesheet">
+<script>try{if(localStorage.getItem("theme")==="dark")document.documentElement.dataset.theme="dark"}catch(e){}</script>
+</head>
+<body>
+<header class="top"><div class="in">
+  <a class="brand" href="#/"><span class="m" aria-hidden="true"><i class="b-brist"></i><i class="b-osaker"></i><i class="b-ok"></i><i class="b-intyg"></i></span><span>Scanningsverktyg prototyp 1</span></a>
+  <nav class="nav"><a href="#/" id="nav-start">Ny granskning</a><a href="#/certifierade" id="nav-cert">Butikslista</a><a href="#/krav" id="nav-krav">Vad vi kontrollerar</a><a href="#/infra" id="nav-infra">Så funkar det</a></nav>
+  <button class="theme" id="theme" aria-label="Byt mellan ljust och mörkt läge"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+</div></header>
+<main class="wrap" id="app"></main>
+<div class="scrim" id="scrim" hidden></div>
+<aside class="drawer" id="drawer" hidden role="dialog" aria-modal="true" aria-labelledby="dr-title">
+  <header><div style="min-width:0"><b id="dr-title"></b><a id="dr-link" target="_blank" rel="noopener noreferrer"></a></div>
+    <button class="x" id="dr-x" aria-label="Stäng">×</button></header>
+  <div class="dbody" id="dr-body"></div>
+</aside>
+<script>
+"use strict";
+/* ================= shared ================= */
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const esc = (s) => String(s == null ? "" : s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const safeUrl = (u) => /^https?:\/\//i.test(String(u || "")) ? esc(u) : "#";
+const RM = !!(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches);
+const nf = (n) => n == null ? "–" : Number(n).toLocaleString("sv-SE");
+const fmtTime = (s) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, "0")}`;
+const secs = (s) => s == null ? "" : s < 10 ? `${String(Math.round(s * 10) / 10).replace(".", ",")} s` : `${Math.round(s)} s`;
+const host = (u) => { try { return new URL(u).hostname.replace(/^www\./, ""); } catch (e) { return String(u || ""); } };
+const path = (u) => { try { const x = new URL(u); return decodeURIComponent(x.pathname + x.search).replace(/\/$/, "") || "/"; } catch (e) { return String(u || ""); } };
+
+const ICON = {
+  brist: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="8" cy="8" r="6.3"/><path d="M5.8 5.8l4.4 4.4M10.2 5.8l-4.4 4.4"/></svg>',
+  osaker: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"><path d="M8 2.2l6.2 11H1.8z"/><path d="M8 6.6v3M8 11.6v.1"/></svg>',
+  ok: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.2 8.4l3.1 3 6.5-6.6"/></svg>',
+  na: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 8h8"/></svg>',
+  doc: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M4 1.8h5.5L12.5 5v9.2H4z"/><path d="M6.3 8.2h4M6.3 10.8h4" stroke-linecap="round"/></svg>',
+  cart: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" stroke-linecap="round"><path d="M1.5 2.5h2l1.6 7.7h7l1.5-5.6H4.3"/><circle cx="6" cy="13.2" r="1"/><circle cx="11.5" cy="13.2" r="1"/></svg>',
+  kik: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="8" cy="8" r="6.2" stroke-dasharray="2.6 2"/><path d="M6.4 6.3a1.7 1.7 0 113 1.1c-.6.5-1.4.8-1.4 1.7M8 11.3v.1"/></svg>',
+  cam: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M1.8 5h3l1.3-1.8h3.8L11.2 5h3v8H1.8z"/><circle cx="8" cy="8.8" r="2.3"/></svg>',
+  page: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M3.5 1.8h6L12.5 5v9.2h-9z"/></svg>',
+  ext: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h4v4M13 3L7.5 8.5M11.5 9.5v3.5h-8.5v-8.5h3.5"/></svg>',
+  arrow: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg>',
+  caret: '<svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3.5l4.5 4.5L6 12.5"/></svg>',
+  text: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M2.5 4h11M2.5 8h11M2.5 12h7"/></svg>',
+  tag: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M2 2h6l6 6-6 6-6-6z"/><circle cx="5.2" cy="5.2" r="1"/></svg>',
+  clock: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="8" cy="8" r="6"/><path d="M8 4.8V8l2.2 1.5"/></svg>',
+  gear: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="8" cy="8" r="2.3"/><path d="M8 1.8v2M8 12.2v2M1.8 8h2M12.2 8h2M3.6 3.6l1.4 1.4M11 11l1.4 1.4M3.6 12.4L5 11M11 5l1.4-1.4" stroke-linecap="round"/></svg>',
+  scale: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v12M4 14h8M3 4h10M3 4l-2 5h4zM13 4l-2 5h4z"/></svg>',
+  hand: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8V3.5a1 1 0 012 0V7M7 7V2.5a1 1 0 012 0V7M9 7V3.5a1 1 0 012 0V9M11 6.5a1 1 0 012 0V10a4.5 4.5 0 01-4.5 4.5h-.8A4 4 0 014.3 13L2.6 10a1 1 0 011.6-1.2L5 9.8V8"/></svg>',
+  play: '<svg viewBox="0 0 16 16" fill="currentColor"><path d="M4.5 2.8v10.4L13 8z"/></svg>',
+  search: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="7" cy="7" r="4.6"/><path d="M10.4 10.4l3.6 3.6"/></svg>',
+  home: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M2 7.5L8 2.5l6 5V14H2z"/><path d="M6.5 14v-4h3v4"/></svg>',
+};
+const ST = {
+  brist: ["Brist", "brist"], granska: ["Granska", "osaker"], osaker: ["Osäker", "osaker"], ok: ["Uppfyllt", "ok"], intyg: ["Kräver intyg", "doc"],
+  testkop: ["Kräver testköp", "cart"], na: ["Ej tillämplig", "na"], kik: ["Ej kontrollerad", "kik"],
+};
+const ORDER = ["brist", "granska", "osaker", "ok", "intyg", "testkop", "na", "kik"];
+const INTYG_IDS = new Set(["2b", "6.1b", "6.2b", "8.1", "9c", "11a", "11c", "14b", "14c"]);
+const TESTKOP_IDS = new Set(["2a", "3.3", "6.3"]);
+const KMAP = { "brist": "brist", "osäker": "osaker", "råd": "osaker", "uppfyllt": "ok", "kräver intyg": "intyg",
+  "kräver testköp": "testkop", "ej tillämplig": "na", "kunde inte kontrolleras": "kik" };
+/* a brist the rule could not decide and no AI judged is shown as Granska, not counted as brist (display only) */
+const keyR = (r) => r.state === "brist" && r.unclear && r.method !== "regel + AI" ? "granska" : keyOf(r.state, r.id);
+function keyOf(state, id) {
+  if (state === "kunde inte kontrolleras" && INTYG_IDS.has(id)) return "intyg";
+  if (state === "kunde inte kontrolleras" && TESTKOP_IDS.has(id)) return "testkop";
+  return KMAP[state] || "kik";
+}
+const icon = (k) => ICON[ST[k][1]];
+function chip(k, label, n) {
+  return `<span class="chip s-${k}">${icon(k)}${esc(label == null ? ST[k][0] : label)}${n != null ? ` <b class="num">${n}</b>` : ""}</span>`;
+}
+const SECTIONS = { 1: "Företaget", 2: "Kundservice", 3: "Produkt och pris", 4: "Erbjudanden", 5: "Köpknapp",
+  6: "Leverans", 7: "Ångerrätt", 8: "Reklamation", 9: "Återbetalning", 10: "Tvister", 11: "Minderåriga",
+  12: "Betalning", 13: "Prenumeration", 14: "Dataskydd" };
+const secOf = (id) => parseInt(id, 10);
+function bySection(list) {
+  const m = {}; list.forEach((p) => (m[secOf(p.id)] = m[secOf(p.id)] || []).push(p)); return m;
+}
+const KIND = { start: "Startsida", villkor: "Köpvillkor", retur: "Retur", reklamation: "Reklamation", integritet: "Integritet",
+  leverans: "Leverans", betalning: "Betalning", kontakt: "Kontakt", faq: "Frågor och svar", om: "Om oss", pdf: "PDF",
+  produkt: "Produkt", kampanj: "Kampanj", kassa: "Kassa", underlag: "Underlag" };
+
+async function api(p, opts) {
+  const res = await fetch(p, opts);
+  if (!res.ok) {
+    let msg = `Fel ${res.status}`;
+    try { const j = await res.json(); if (typeof j.detail === "string") msg = j.detail; } catch (e) {}
+    throw new Error(msg);
+  }
+  // older reports carry " (Bedömt av AI efter regelmotorn.)" in their explanations; not shown
+  return JSON.parse((await res.text()).replace(/ \(Bedömt av AI efter regelmotorn\.\)/g, ""));
+}
+let METHOD = null;
+async function method() {
+  if (!METHOD) METHOD = await api("/api/method").catch(() => ({ points: [], outcomes: {}, methods: {} }));
+  return METHOD;
+}
+const mp = (id) => ((METHOD && METHOD.points) || []).find((p) => p.id === id) || {};
+
+/** URL for a screenshot path from the engine: "out/…" or relative to the scan's snapshot folder. */
+function screenUrl(rep, s) {
+  s = String(s || "");
+  if (!s || /(^|\/)\.\.(\/|$)/.test(s) || /^[a-z]+:/i.test(s)) return null;
+  if (s.startsWith("/files/")) return s;
+  const enc = (x) => "/files/" + x.split("/").map(encodeURIComponent).join("/");
+  if (s.startsWith("out/")) return enc(s.slice(4));
+  if (rep && rep.snapshot && String(rep.snapshot).startsWith("out/")) return enc(rep.snapshot.slice(4) + "/" + s);
+  return null;
+}
+/** Find quote in text: exact first, then ignoring whitespace and case. */
+function locate(text, quote) {
+  const q0 = String(quote || "").replace(/…$/, "").trim();
+  if (!q0) return null;
+  const i = text.indexOf(q0);
+  if (i >= 0) return [i, i + q0.length];
+  const map = []; let norm = "";
+  for (let j = 0; j < text.length; j++) {
+    if (/\s/.test(text[j])) { if (norm && norm[norm.length - 1] !== " ") { norm += " "; map.push(j); } }
+    else { norm += text[j].toLowerCase(); map.push(j); }
+  }
+  const q = q0.replace(/\s+/g, " ").toLowerCase();
+  const k = norm.indexOf(q);
+  return k < 0 ? null : [map[k], map[k + q.length - 1] + 1];
+}
+function renderText(text, span) {
+  let out = "", pos = 0;
+  for (const line of text.split("\n")) {
+    const start = pos, end = pos + line.length; pos = end + 1;
+    if (!line.trim()) continue;
+    const head = line.startsWith("## "), off = head ? 3 : 0;
+    let body = esc(line.slice(off));
+    if (span && span[0] < end && span[1] > start + off) {
+      const a = Math.max(span[0], start + off) - start, z = Math.min(span[1], end) - start;
+      body = esc(line.slice(off, a)) + "<mark>" + esc(line.slice(a, z)) + "</mark>" + esc(line.slice(z));
+    }
+    out += head ? `<h4>${body}</h4>` : `<p>${body}</p>`;
+  }
+  return out || `<p class="dim">Sidan innehöll ingen text.</p>`;
+}
+const STOP = new Set(("eller under efter andra annan annat samt inte detta denna dessa sådan sådana gäller konsumenten konsument " +
+  "kunden kunder företaget företag trygg handlaren handlare handel svensk information enligt kunna skall måste finns också " +
+  "vilket mellan genom innan sådant vilka varje deras alltid").split(" "));
+function underlineKeys(quote, ref) {
+  const stems = [...new Set((String(ref).toLowerCase().match(/[a-zåäöéü]{5,}/g) || []).filter((w) => !STOP.has(w)).map((w) => w.slice(0, 6)))];
+  const words = String(quote).match(/[A-Za-zÅÄÖåäöÉéÜü]+/g) || [];
+  const hit = (w) => w.length >= 5 && !STOP.has(w.toLowerCase()) && stems.some((s) => w.toLowerCase().includes(s));
+  if (!stems.length || words.filter(hit).length > words.length * 0.4) return esc(quote);
+  return String(quote).split(/([A-Za-zÅÄÖåäöÉéÜü]+)/).map((part, i) => i % 2 && hit(part) ? `<u>${esc(part)}</u>` : esc(part)).join("");
+}
+function shortReq(sh) {
+  let s = String(sh || "").trim().replace(/\s+/g, " ")
+    .replace(/(?<![\wåäöÅÄÖ.])(ev|t\.ex|bl\.a|s\.k|m\.m|inkl|exkl|resp|ca|kr)\./gi, (a) => a.replace(/\./g, "․"));
+  const m = s.match(/^(.{50,170}?)[.;:](\s|$)/);
+  if (m) s = m[1]; else if (s.length > 170) s = s.slice(0, 170).replace(/\s+\S*$/, "") + " …";
+  s = s.replace(/․/g, ".");
+  return s.charAt(0).toUpperCase() + s.slice(1);
+}
+function stackHtml(c) {
+  return `<div class="stack" aria-hidden="true">${ORDER.filter((k) => c[k]).map((k) => `<i class="b-${k}" style="flex:${c[k]}" title="${ST[k][0]} ${c[k]}"></i>`).join("")}</div>`;
+}
+function countsOf(results) {
+  const c = {}; ORDER.forEach((k) => (c[k] = 0));
+  results.forEach((r) => c[keyR(r)]++); return c;
+}
+const plural = (n, one, many) => `${n} ${n === 1 ? one : many}`;
+
+/* ================= router ================= */
+let CLEAN = null;
+window.addEventListener("hashchange", route);
+window.addEventListener("DOMContentLoaded", route);
+function setNav(name) {
+  $("#nav-start").classList.toggle("on", name === "start");
+  $("#nav-krav").classList.toggle("on", name === "krav");
+  $("#nav-infra").classList.toggle("on", name === "infra");
+  $("#nav-cert").classList.toggle("on", name === "cert");
+}
+function route() {
+  if (CLEAN) { CLEAN(); CLEAN = null; }
+  closeDrawer();
+  const parts = location.hash.replace(/^#\/?/, "").split("/").filter(Boolean).map(decodeURIComponent);
+  const app = $("#app"); app.className = "wrap";
+  window.scrollTo(0, 0);
+  if (parts[0] === "infra") { setNav("infra"); document.title = "Så funkar det – Scanningsverktyg prototyp 1"; return renderInfra(); }
+  if (parts[0] === "certifierade") { setNav("cert"); document.title = "Butikslista – Scanningsverktyg prototyp 1"; return renderBatch(parts[1]); }
+  if (parts[0] === "krav") { setNav("krav"); document.title = "Vad vi kontrollerar – Scanningsverktyg prototyp 1"; return renderKrav(); }
+  if (parts[0] === "scan" && parts[1]) {
+    setNav("");
+    if (parts[2] === "granska") { location.replace("/static/legacy.html" + location.hash); return; }  // review mode: kept, not linked
+    if (parts[2] === "replay") return startLive(parts[1], "replay");
+    return openScan(parts[1], parts[2] === "point" ? parts[3] : null);
+  }
+  setNav("start"); document.title = "Scanningsverktyg prototyp 1";
+  return renderStart();
+}
+async function openScan(id, pid) {
+  $("#app").innerHTML = `<p class="dim">Hämtar granskningen …</p>`;
+  let rep;
+  try { rep = await api(`/api/scans/${encodeURIComponent(id)}`); }
+  catch (e) { return renderMessage("Granskningen finns inte", e.message); }
+  if (rep.status === "running") return startLive(id, "live");
+  if (rep.status === "failed") return renderMessage("Granskningen misslyckades", rep.error || "", rep.input || rep.url);
+  await renderResults(rep);
+  if (pid) jumpTo(pid);
+}
+function renderMessage(title, text, retry) {
+  $("#app").innerHTML = `<section class="card" style="padding:28px;max-width:640px;margin:40px auto">
+    <h1 style="font-size:26px">${esc(title)}</h1><p class="muted">${esc(text)}</p>
+    <div style="display:flex;gap:10px;margin-top:18px;flex-wrap:wrap">${retry ? `<button class="btn" id="retry">Försök igen</button>` : ""}<a class="btn ghost" href="#/">Ny granskning</a></div></section>`;
+  if (retry) $("#retry").onclick = () => startScan(retry);
+}
+async function startScan(url) {
+  const r = await api("/api/scans", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ url }) });
+  location.hash = `#/scan/${encodeURIComponent(r.id)}`;
+}
+
+/* ================= Ny granskning ================= */
+async function renderStart() {
+  $("#app").innerHTML = `
+  <section class="hero">
+    <h1>Granska en webbutik</h1>
+    <p class="sub">Mot Svensk Handels 45 krav. Tar 1–2 minuter.</p>
+    <form class="go" id="go" novalidate>
+      <input id="url" aria-label="Butikens adress" placeholder="butik.se" autocomplete="off" autocapitalize="off" spellcheck="false">
+      <button class="btn" type="submit">Granska ${ICON.arrow}</button>
+    </form>
+    <p class="go-err err" id="go-err" role="alert"></p>
+    <div class="steps4">${[["page", "Hittar sidorna", "villkor, retur, kontakt"], ["cam", "Tar skärmbilder", "produkt och kassa"],
+      ["text", "Läser texten", "varje mening"], ["scale", "Bedömer", "45 krav"]].map(([i, b]) =>
+      `<div class="st"><div class="ic">${ICON[i]}</div><b>${b}</b></div>`).join("")}</div>
+  </section>
+  <section class="recent"><a class="bcta card" id="bcta" href="#/certifierade" hidden></a><h2>Senaste</h2><div class="mfilter" id="mfilter" role="group" aria-label="Visa version"></div><ul class="rlist card" id="recent"><li class="empty">Hämtar …</li></ul></section>`;
+  $("#url").focus();
+  $("#go").onsubmit = async (e) => {
+    e.preventDefault();
+    const v = $("#url").value.trim(), btn = $("#go .btn");
+    if (!v) { $("#go-err").textContent = "Skriv butikens adress, till exempel butik.se."; return; }
+    btn.disabled = true; $("#go-err").textContent = "";
+    try { await startScan(v); } catch (ex) { $("#go-err").textContent = ex.message; btn.disabled = false; }
+  };
+  const [list, M] = await Promise.all([api("/api/scans").catch(() => []), method()]);
+  const box = $("#recent"); if (!box) return;
+  const ids = M.points.length ? M.points.map((p) => p.id) : null;
+  /* batch scans (report.batch: every shop on a list) have their own page, #/certifierade */
+  const bid = (r) => (r.batch || {}).id || "";
+  const B = list.find((r) => bid(r));
+  if (B) {
+    const n = new Set(list.filter((r) => bid(r) === bid(B) && r.status !== "failed").map((r) => host(r.url || r.shop))).size;
+    const nAi = new Set(list.filter((r) => bid(r) === bid(B) && (r.ai || {}).mode === "alla").map((r) => host(r.url || r.shop))).size;
+    const cta = $("#bcta"); cta.hidden = false;
+    cta.innerHTML = `<span><b>Granskning av en butikslista</b><span class="dim">${n} av ${B.batch.size} butiker på listan granskade, ${nAi} med full granskning</span></span><span class="arr">${ICON.arrow}</span>`;
+  }
+  const seen = new Set(), rows = [];
+  for (const r of list) {
+    const h = host(r.url || r.shop) + "|" + ((r.ai || {}).mode || "regler");  // one row per shop and system version
+    if (r.status === "failed" || bid(r) || seen.has(h)) continue;
+    seen.add(h); rows.push(r);
+  }
+  if (!rows.length) { box.innerHTML = `<li class="empty">Inga granskningar än.</li>`; return; }
+  const modeOf = (r) => (r.ai || {}).mode || "regler";
+  const MODES = [["", "Alla"], ["regler", "Bara regler"], ["oklara", "Delvis granskning"], ["alla", "Full granskning"]];
+  let want = ""; try { want = localStorage.getItem("mode-filter") || ""; } catch (e) {}
+  if (want && !rows.some((r) => modeOf(r) === want)) want = "";
+  const draw = () => {
+    $("#mfilter").innerHTML = MODES.map(([m, t]) => { const n = m ? rows.filter((r) => modeOf(r) === m).length : rows.length;
+      return `<button type="button" data-m="${m}" class="${m === want ? "on" : ""}" ${n ? "" : "disabled"}>${esc(t)} <span class="num dim">${n}</span></button>`; }).join("");
+    $("#mfilter").querySelectorAll("button").forEach((b) => b.onclick = () => { want = b.dataset.m; try { localStorage.setItem("mode-filter", want); } catch (e) {} draw(); });
+    const shown = want ? rows.filter((r) => modeOf(r) === want) : rows;
+    box.innerHTML = shown.length ? shown.map((r) => scanRow(r, ids)).join("") : `<li class="empty">Inga granskningar med den versionen.</li>`;
+  };
+  draw();
+}
+
+/* one row in a list of scans: shop, date and version, brist count, a strip of the 45 points */
+function scanRow(r, ids) {
+  const st = r.states || {}, un = new Set(r.unclear || []), c = countsOf(Object.entries(st).map(([id, state]) => ({ id, state, unclear: un.has(id) })));
+  const d = r.finished ? new Date(r.finished).toLocaleDateString("sv-SE", { day: "numeric", month: "short" }) : "";
+  const strip = (ids || Object.keys(st)).map((id) => { const k = st[id] ? keyR({ id, state: st[id], unclear: un.has(id) }) : "kik";
+    return `<i class="b-${k}" style="opacity:${k === "brist" || k === "osaker" ? 1 : .28}"></i>`; }).join("");
+  return `<li><a href="#/scan/${encodeURIComponent(r.id)}"><span class="shop"><b>${esc(host(r.url || r.shop))}</b>
+    <span>${r.status === "running" ? "Pågår nu" : `${esc(d)} · ${plural(r.pages || 0, "sida", "sidor")} · <span class="mode">${esc(aiMode(r.ai))}</span>`}</span></span>
+    <span class="cnt">${r.status === "running" ? `<span class="live run">Pågår</span>` : (c.brist ? chip("brist", String(c.brist)) : chip("ok", "0 brister")) + (c.osaker ? chip("osaker", String(c.osaker)) : "")}</span>
+    <span class="mini" aria-hidden="true">${r.status === "running" ? "" : strip}</span>
+    <span class="arr dim">${ICON.caret}</span></a></li>`;
+}
+
+/* ================= Batch (every shop on a list) ================= */
+async function renderBatch(id) {
+  $("#app").innerHTML = `<p class="dim">Hämtar omgången …</p>`;
+  const [list, M] = await Promise.all([api("/api/scans").catch(() => []), method()]);
+  const ids = M.points.length ? M.points.map((p) => p.id) : null;
+  const bid = (r) => (r.batch || {}).id || "";
+  const batches = [];
+  for (const r of list) if (bid(r) && !batches.some((b) => b.id === bid(r))) batches.push(r.batch);
+  const B = batches.find((b) => b.id === id) || batches[0];
+  if (!B) return renderMessage("Ingen omgång än", "Ingen omgång med en butikslista har körts.");
+  /* one row per shop: the AI-judged report when there is one, else the rules' report */
+  const by = new Map(), failed = new Map();
+  for (const r of list.filter((x) => bid(x) === B.id)) {
+    const h = host(r.url || r.shop);
+    if (r.status === "failed") { if (!failed.has(h)) failed.set(h, r); continue; }
+    const cur = by.get(h);
+    if (!cur || ((r.ai || {}).mode === "alla" && (cur.ai || {}).mode !== "alla")) by.set(h, r);
+  }
+  for (const h of by.keys()) failed.delete(h);
+  const rows = [...by.values()];
+  /* the counts the row shows: a rules-only brist the rules were unsure of counts as osäker, not brist */
+  const cnt = (r) => { const un = new Set(r.unclear || []); return countsOf(Object.entries(r.states || {}).map(([id, state]) => ({ id, state, unclear: un.has(id) }))); };
+  const nBrist = (r) => cnt(r).brist || 0;
+  const isAi = (r) => (r.ai || {}).mode === "alla";
+  const date = B.name.replace(/^.*listan /, "");
+  const tiles = [["På listan", B.size], ["Granskade", rows.length], ["Full granskning", rows.filter(isAi).length],
+    ["Minst en brist", rows.filter((r) => nBrist(r) > 0).length], ["Kassan stoppad av botskydd", rows.filter((r) => r.reached === "blockerad").length],
+    ["Gick inte att läsa", failed.size]];
+  const F = [["alla", "Alla", rows.length], ["ai", "Full granskning", rows.filter(isAi).length], ["regler", "Bara regler", rows.filter((r) => !isAi(r)).length],
+    ["fel", "Gick inte att läsa", failed.size]];
+  let want = "alla", q = "";
+  $("#app").innerHTML = `<section class="batch">
+    <h1>Granskning av en butikslista</h1>
+    <div class="btiles">${tiles.map(([t, v]) => `<div class="card"><span class="dim">${esc(t)}</span><b class="num">${v}</b></div>`).join("")}</div>
+    <div class="btools"><input id="bq" type="search" placeholder="Sök butik" aria-label="Sök butik" autocomplete="off"><div class="mfilter" id="bf" role="group" aria-label="Visa"></div></div>
+    <ul class="rlist card" id="blist"></ul></section>`;
+  const draw = () => {
+    $("#bf").innerHTML = F.map(([k, t, n]) => `<button type="button" data-k="${k}" class="${k === want ? "on" : ""}" ${n ? "" : "disabled"}>${esc(t)} <span class="num dim">${n}</span></button>`).join("");
+    $("#bf").querySelectorAll("button").forEach((b) => b.onclick = () => { want = b.dataset.k; draw(); });
+    const box = $("#blist");
+    if (want === "fel") {
+      const f = [...failed.entries()].filter(([h]) => h.includes(q));
+      box.innerHTML = f.length ? f.map(([h, r]) => `<li><div class="frow"><b>${esc(h)}</b><span class="dim">${esc(r.error || "")}</span></div></li>`).join("") : `<li class="empty">Inga.</li>`;
+      return;
+    }
+    const shown = rows.filter((r) => (want === "alla" || (want === "ai") === isAi(r)) && host(r.url || r.shop).includes(q))
+      .sort((a, b) => nBrist(b) - nBrist(a) || (cnt(b).osaker || 0) - (cnt(a).osaker || 0));
+    box.innerHTML = shown.length ? shown.map((r) => scanRow(r, ids)).join("") : `<li class="empty">Ingen butik matchar.</li>`;
+  };
+  $("#bq").oninput = (e) => { q = e.target.value.trim().toLowerCase(); draw(); };
+  draw();
+}
+
+/* ================= Så funkar det ================= */
+function renderInfra() {
+  $("#app").innerHTML = `<div class="inf">
+  <h1>Så funkar det</h1>
+  <p class="lead">Butiksadress in, rapport på 45 punkter ut. Regler först, LLM på de fall reglerna inte kan avgöra.</p>
+
+  <h2>Pipeline</h2>
+  <section class="card flow" role="img" aria-label="Tre spår parallellt: villkorssidor (crawl, textregler, LLM), produkter (urval, produktregler), kassa (gå till köpknappen, kassaregler, LLM). Allt till rapporten.">
+    <div class="fg">
+      <span class="ln">Villkorssidor</span>
+      <div class="bx"><b>Crawl</b><span>länkar, sitemap, hjälpcenter, FAQ. ~20–40 sidor</span></div>
+      <div class="bx"><b>Textregler</b><span>körs direkt när villkoren är lästa</span></div>
+      <div class="bx ai"><b>LLM</b><span>tveksamma beslut</span></div>
+      <div class="bx out"><b>Rapport</b><span>läge per punkt, citat, länk, skärmdumpar</span></div>
+      <span class="ln">Produkter</span>
+      <div class="bx"><b>3–5 produktsidor</b><span>pris, kampanj, produktinfo</span></div>
+      <div class="bx"><b>Produktregler</b><span>3.1, 4a, 11b …</span></div>
+      <div class="bx blank"></div>
+      <span class="ln">Kassa</span>
+      <div class="bx"><b>Till köpknappen</b><span>egen process, testdata, max 210 s</span></div>
+      <div class="bx"><b>Kassaregler</b><span>totalsumma, avgifter, betalsätt, knapptext</span></div>
+      <div class="bx ai"><b>LLM</b><span>kassapunkter</span></div>
+    </div>
+    <div class="legend"><span><i style="background:var(--rl)"></i>Kod</span><span><i style="background:var(--ai)"></i>Claude</span><span><i style="background:var(--ok)"></i>Ut</span></div>
+  </section>
+  <ul style="margin-top:14px">
+    <li>Spåren körs parallellt. Utan LLM ca 1 min per butik, kassan tar längst.</li>
+    <li>LLM-steget tar 2–4 min och startar medan kassan går.</li>
+    <li>Allt sparas (HTML, text, skärmdumpar) så regler kan köras om offline.</li>
+  </ul>
+
+  <h2>Insamling</h2>
+  <div class="cols">
+    <section class="card"><h3>Crawler</h3><ul>
+      <li>HTTP först, headless Chromium (Playwright) bara för JS-sidor.</li>
+      <li>Källor: startsidans länkar, sitemap, Shopify-policyadresser, Zendesk/Freshdesk m.fl.</li>
+      <li>Tak per sidtyp (t.ex. 3 leveranssidor). Relevanta sidor först.</li>
+      <li>Dubbletter och överhoppade sidor loggas.</li>
+    </ul></section>
+    <section class="card"><h3>Kassa</h3><ul>
+      <li>Playwright: vara i korgen, kassan med testnamn och testadress.</li>
+      <li>Läser totaler, frakt, betalsätt, avgifter, villkorslänk, knapptext. Skärmdump per steg.</li>
+      <li>Stannar före köp. Aldrig personnummer, konto, kort eller villkorskryss.</li>
+      <li>Fastnar den: Sonnet föreslår nästa klick (max 4). Kodfilter blockerar köp, inloggning, betalning.</li>
+    </ul></section>
+  </div>
+
+  <h2>Regelmotorn</h2>
+  <p>Python + regex. Snabb, gratis, deterministisk.</p>
+  <section class="card chain" style="margin-top:14px">
+    <div><p class="k">1 · Stycken</p><p class="ex">Sidan delas i stycken med rubrikväg.<br><q>Ångerrätt › Så ångrar du köpet</q></p></div>
+    <div><p class="k">2 · Ämnen</p><p class="ex">Taggar per stycke: ångerrätt, retur, reklamation, leverans, garanti …</p></div>
+    <div><p class="k">3 · Fakta</p><p class="ex">Frist <q>14 dagar</q>, returfrakt, ARN, org.nr … med citat.</p></div>
+    <div><p class="k">4 · Beslut</p><p class="ex">Per punkt från fakta. Motsägelse mellan sidor eller saknad info → brist.</p></div>
+  </section>
+  <ul style="margin-top:14px">
+    <li>Varje beslut har citat + sida.</li>
+    <li>10 av 45 punkter syns inte utifrån → ”kräver intyg”.</li>
+  </ul>
+
+  <h2>LLM-delen</h2>
+  <p>Regler missar ovanliga formuleringar. LLM ensam flaggar för mycket. Så LLM:en får bara tre typer av fall:</p>
+  <div class="cases" style="margin-top:14px">
+    <section class="card"><b>unclear</b><small>Regeln hittade något men kunde inte avgöra.<br>Ex: ”Returnerade varor ska vara oanvända”.</small></section>
+    <section class="card"><b>notfound</b><small>Brist för att inget hittades.<br>Ex: ingen leveranstid matchad.</small></section>
+    <section class="card"><b>absence</b><small>Uppfyllt för att inget dåligt hittades.<br>Ex: ingen avgift nämnd.</small></section>
+  </div>
+  <p class="muted" style="margin-top:12px">12 punkter: 6.2, 7.1a, 7.2, 8.2, 8.3, 14a (text) och 3.2a, 3.2b, 3.2c, 5a, 5b, 12a (kassa).</p>
+
+  <section class="card" style="padding:6px 18px;margin-top:16px">
+    <ol class="steps">
+      <li><div><b>Jobbmapp per butik</b> <span>sidkarta, sidtexter, kassasammanfattning, SH-krav, regelns svar och kandidatcitat, våra bedömningsprinciper</span></div></li>
+      <li><div><b>Ett anrop</b> <span>Claude Opus, medium effort, via Claude Code CLI. Läsa/söka i mappen + hämta max 4 sidor på butikens domän</span></div></li>
+      <li><div><b>JSON tillbaka</b> <span>läge, ordagrant citat, sida, motivering per punkt</span></div></li>
+      <li><div><b>Citatkontroll</b> <span>citatet måste finnas ordagrant i en läst sida, annars står regelns svar kvar</span></div></li>
+      <li><div><b>Merge</b> <span>märks ”Full granskning” i rapporten. Cache på jobbets hash</span></div></li>
+    </ol>
+  </section>
+
+  <div class="stat" style="margin-top:16px">
+    <section class="card"><span class="k">Per butik</span><span class="v num">70–95k</span><small>token, 2–4 min</small></section>
+  </div>
+
+  <h2>Kod</h2>
+  <section class="card tw"><table>
+    <tr><td><code>discover.py</code></td><td>crawler</td></tr>
+    <tr><td><code>checkout.py</code></td><td>kassa · <code>llm_nav.py</code> när den fastnar</td></tr>
+    <tr><td><code>rules*.py</code></td><td>regler: text, kassa, produkt, över tid</td></tr>
+    <tr><td><code>engine.py</code></td><td>kör spåren parallellt, slår ihop</td></tr>
+    <tr><td><code>llm_judge.py</code></td><td>väljer fall, bygger jobb, anropar Claude, citatkontroll</td></tr>
+    <tr><td><code>server.py</code></td><td>FastAPI</td></tr>
+  </table></section>
+  </div>`;
+}
+
+/* ================= Vad vi kontrollerar ================= */
+const OUT = { brist: ["Kan ge brist", "brist", "search"], osaker: ["Bara osäker", "osaker", "osaker"], info: ["Bara info", "na", "na"],
+  testkop: ["Kräver testköp", "testkop", "cart"], intyg: ["Kräver intyg", "intyg", "doc"] };
+const OUT_TXT = { brist: "Brist med citat, eller när det som krävs saknas.", osaker: "Vi flaggar, en människa avgör.",
+  info: "Visas som information, aldrig brist.", testkop: "Kräver ett riktigt köp eller en testfråga.", intyg: "Interna rutiner. Butiken visar själv." };
+const MLAB = { text: "Text", kassa: "Kassa", produkt: "Produktsida", tid: "Över tid", testkop: "Testköp", intyg: "Intyg", teknik: "Teknik" };
+const MICON = { text: "text", kassa: "cart", produkt: "tag", tid: "clock", testkop: "cart", intyg: "doc", teknik: "gear" };
+const SH_PAGE = {"1":1,"2a":1,"2b":1,"3.1":1,"3.2a":1,"3.2b":1,"3.2c":2,"3.3":2,"4a":2,"4b":2,"5a":2,"5b":2,
+  "6.1a":2,"6.1b":2,"6.2":2,"6.2b":2,"6.3":2,"7.1a":3,"7.1b":3,"7.1c":3,"7.1d":3,"7.1e":3,"7.1f":3,"7.2":3,
+  "8.1":3,"8.2":3,"8.3":3,"9a":4,"9b":4,"9c":4,"10a":4,"10b":4,"10c":4,"11a":4,"11b":4,"11c":4,"12a":4,"12b":4,
+  "12c":4,"13a":4,"13b":4,"13c":5,"14a":5,"14b":5,"14c":5};
+const aiMode = (ai) => !ai || ai.mode === "regler" ? "Bara regler" : ai.mode === "alla" ? "Full granskning" : `Delvis granskning (${ai.points} punkter)`;
+const reqOf = (id) => String(id).replace(/[a-f]$/, "");
+const MCOL = { text: "#2b7cc4", kassa: "#c86a1e", produkt: "#b4479a", tid: "#94801f", testkop: "#7149c6", intyg: "#4a6a90", teknik: "#6b737d" };
+let SHTEXT = null;
+async function shText() {
+  if (!SHTEXT) SHTEXT = await api("/api/sh-text").catch(() => null);
+  return SHTEXT;
+}
+const squash = (s) => String(s || "").replace(/\s+/g, " ").trim();
+/** Our quote with each "…" as a button that opens the text Svensk Handel wrote there (from full_quote). */
+function quoteHtml(sh, full) {
+  const parts = String(sh || "").split("…").map(squash);
+  if (parts.length < 2 || !full) return esc(squash(sh));
+  const f = squash(full), lf = f.toLowerCase(); let at = 0;
+  const pos = parts.map((p) => {
+    if (!p) return null;
+    const i = lf.indexOf(p.toLowerCase(), at);
+    if (i < 0) return undefined;
+    at = i + p.length; return [i, at];
+  });
+  if (pos.includes(undefined)) return esc(squash(sh));
+  let out = esc(parts[0]);
+  for (let i = 1; i < parts.length; i++) {
+    const cut = f.slice(pos[i - 1] ? pos[i - 1][1] : 0, pos[i] ? pos[i][0] : f.length).trim();
+    const btn = cut ? `<button type="button" class="ell" aria-expanded="false" aria-label="Visa utelämnad text" title="Visa det Svensk Handel skriver här" data-cut="${esc(cut)}">…</button>` : "…";
+    out += (parts[i - 1] ? " " : "") + btn + (parts[i] ? " " + esc(parts[i]) : "");
+  }
+  return out;
+}
+/** Spans per paragraph id: [{s, e, pid}], from each point's paragraph and other_spans. */
+function shSpans(SH, ids) {
+  const m = {};
+  const add = (para, spans, pid) => (spans || []).forEach(([s, e]) => (m[para] = m[para] || []).push({ s, e, pid }));
+  Object.entries(SH.points || {}).forEach(([pid, x]) => {
+    if (!ids.has(pid)) return;
+    add(x.paragraph, x.spans, pid);
+    (x.other_spans || []).forEach((o) => add(o.paragraph, o.spans, pid));
+  });
+  return m;
+}
+/** One paragraph with our spans marked. Each span starts with a tag for its point; cur = points to stress. */
+function shParaHtml(text, spans, cur) {
+  spans = (spans || []).filter((x) => x.e > x.s).sort((a, b) => a.s - b.s || a.pid.localeCompare(b.pid));
+  const cuts = [...new Set([0, text.length, ...spans.flatMap((x) => [x.s, x.e])])].sort((a, b) => a - b);
+  let out = "";
+  for (let i = 0; i < cuts.length - 1; i++) {
+    const a = cuts[i], z = cuts[i + 1], t = esc(text.slice(a, z));
+    spans.filter((x) => x.s === a).forEach((x) => (out += `<button type="button" class="sht${cur.includes(x.pid) ? " cur" : ""}" data-goto="${esc(x.pid)}" aria-label="Gå till punkt ${esc(x.pid)}">${esc(x.pid)}</button>`));
+    const on = spans.filter((x) => x.s <= a && x.e >= z).map((x) => x.pid);
+    out += on.length ? `<mark class="shm${on.some((p) => cur.includes(p)) ? " cur" : ""}" data-goto="${esc(on.find((p) => cur.includes(p)) || on[0])}" title="Punkt ${esc(on.join(", "))}">${t}</mark>` : t;
+  }
+  return out;
+}
+/** Paragraphs in order; list items (bullet) go in one list. */
+function shParasHtml(list, spans, cur) {
+  let out = "", ul = false;
+  list.forEach((p) => {
+    if (p.bullet && !ul) { out += "<ul>"; ul = true; }
+    if (!p.bullet && ul) { out += "</ul>"; ul = false; }
+    const h = shParaHtml(p.text, spans[p.id], cur);
+    out += p.bullet ? `<li>${h}</li>` : `<p>${h}</p>`;
+  });
+  return out + (ul ? "</ul>" : "");
+}
+/** The whole paragraph behind some points: their paragraphs, and a list with its lead-in kept together. */
+function shBlockHtml(SH, spans, pids) {
+  const where = {};
+  SH.sections.forEach((s) => s.paragraphs.forEach((p, i) => (where[p.id] = { s, i })));
+  const ids = pids.flatMap((pid) => { const x = SH.points[pid]; return x ? [x.paragraph, ...(x.other_spans || []).map((o) => o.paragraph)] : []; });
+  const w0 = where[ids[0]];
+  if (!w0) return `<p class="shh">Stycket hittades inte i Svensk Handels text.</p>`;
+  const P = w0.s.paragraphs; let from = w0.i, to = w0.i;
+  ids.forEach((id) => { const w = where[id]; if (w && w.s === w0.s) { from = Math.min(from, w.i); to = Math.max(to, w.i); } });
+  while (from > 0 && P[from].bullet) from--;
+  while (to + 1 < P.length && P[to + 1].bullet) to++;
+  return `<p class="shh">${esc(w0.s.heading)}</p><div class="shx">${shParasHtml(P.slice(from, to + 1), spans, pids)}</div>`;
+}
+/** Svensk Handel's whole text, section by section, with everything we check marked. */
+function shDocHtml(SH, spans) {
+  let g = null, out = "";
+  SH.sections.forEach((s) => {
+    if (s.group && s.group !== g) out += `<h3>${esc(s.group)}</h3>`;
+    g = s.group || null;
+    out += (s.group ? `<h4>${esc(s.heading)}</h4>` : `<h3>${esc(s.heading)}</h3>`) + shParasHtml(s.paragraphs, spans, []);
+  });
+  return `<div class="shx">${out}</div><p class="src">${esc(SH.source || "")}</p>`;
+}
+async function renderKrav() {
+  $("#app").innerHTML = `<p class="dim">Hämtar …</p>`;
+  const [M, SH] = await Promise.all([method(), shText()]);
+  const app = $("#app"); app.className = "wrap wide";
+  const pts = M.points.filter((p) => OUT[p.outcome]);
+  const n = {}; pts.forEach((p) => (n[p.outcome] = (n[p.outcome] || 0) + 1));
+  const nm = {}; pts.forEach((p) => (nm[p.method] = (nm[p.method] || 0) + 1));
+  const OK = Object.keys(OUT).filter((o) => n[o]), MS = Object.keys(MLAB).filter((m) => nm[m]);
+  const reqs = [];
+  pts.forEach((p) => { const k = reqOf(p.id); let r = reqs.find((x) => x.id === k); if (!r) reqs.push(r = { id: k, sec: secOf(p.id), points: [] }); r.points.push(p); });
+  const bySec = {}; reqs.forEach((r) => (bySec[r.sec] = bySec[r.sec] || []).push(r));
+  const pageOf = (r) => { const ps = [...new Set(r.points.map((p) => SH_PAGE[p.id]).filter(Boolean))]; return ps.length ? `s. ${ps.join("–")}` : ""; };
+  const card = (p, nested) => { const o = OUT[p.outcome];
+    return `<div class="kp${nested ? " nested" : ""}" tabindex="-1" data-pid="${esc(p.id)}" data-req="${esc(reqOf(p.id))}" data-m="${esc(p.method)}" data-o="${esc(p.outcome)}" style="--mc:${MCOL[p.method] || "#888"}">
+      <div class="kp-h"><span class="id num">${esc(p.id)}</span><b>${esc(p.label)}</b><span class="ic c-${o[1]}" title="${o[0]}">${ICON[o[2]]}</span></div>
+      ${p.what ? `<p class="kp-w">${esc(p.what)}</p>` : ""}
+      <p class="kp-m"><span class="mdot"></span>${esc(MLAB[p.method] || p.method)}${p.source && p.source !== "–" ? ` · ${esc(p.source)}` : ""}</p></div>`; };
+  const spans = SH ? shSpans(SH, new Set(pts.map((p) => p.id))) : {};
+  const quotes = (r) => [...new Set(r.points.map((p) => p.sh))].map((t) => {
+    const ps = r.points.filter((p) => p.sh === t), x = SH && ps.map((p) => SH.points[p.id]).find(Boolean);
+    return `<div class="krq"><p class="kr-t">”${quoteHtml(t, x && x.full_quote)}”</p>${x ? `
+      <button type="button" class="shbtn" aria-expanded="false" data-pids="${esc(ps.map((p) => p.id).join(" "))}">${ICON.caret}<span>Visa hela stycket</span></button>
+      <div class="shp" hidden></div>` : ""}</div>`; }).join("");
+  app.innerHTML = `
+    <h1>Vad vi kontrollerar</h1>
+    <p class="sub">Svensk Handels krav till vänster, ordagrant. Våra 45 punkter till höger. Linjens färg visar metoden.</p>
+    ${SH ? `<div class="shbar"><button type="button" class="lnk" id="shall" aria-expanded="false" aria-controls="shdoc">${ICON.doc}<span>Visa Svensk Handels hela text</span></button>
+      <small>Markerat = det vi kontrollerar, med punktens nummer. Omarkerat kontrolleras inte.</small></div>
+    <section class="card shdoc" id="shdoc" hidden></section>` : ""}
+    <section class="card ov">
+      <div class="stack">${OK.map((o) => `<i class="b-${OUT[o][1]}" style="flex:${n[o]}"></i>`).join("")}</div>
+      <div class="outs" id="outs">${OK.map((o) => `<button aria-pressed="true" data-o="${o}"><span class="h c-${OUT[o][1]}">${ICON[OUT[o][2]]}${OUT[o][0]}<b class="num">${n[o]}</b></span><small>${OUT_TXT[o]}</small></button>`).join("")}</div>
+      <div class="mts" id="mts"><span class="k">Metod</span>${MS.map((m) => `<button aria-pressed="true" data-m="${m}" style="--mc:${MCOL[m]}"><span class="mdot"></span>${esc(MLAB[m])}<b class="num">${nm[m]}</b></button>`).join("")}</div>
+    </section>
+    <div class="kv-cols"><p class="k">Svensk Handel kräver</p><span></span><p class="k">Vi kontrollerar</p></div>
+    <div class="kv-grid" id="kv-grid"><svg class="kv-lines" id="kv-lines" aria-hidden="true"></svg>
+      ${Object.keys(bySec).map((sn) => `<h3 class="kv-sec"><span class="no num">${sn}</span>${esc(SECTIONS[sn] || "")}</h3>
+        ${bySec[sn].map((r) => `<div class="kv-row" data-req="${esc(r.id)}">
+          <div class="kr" data-req="${esc(r.id)}" tabindex="0">
+            <div class="kr-h"><span class="num">${esc(r.id)}</span><span>${esc(pageOf(r))}</span></div>
+            ${quotes(r)}
+            <div class="kr-pts">${r.points.map((p) => card(p, true)).join("")}</div>
+          </div><span></span>
+          <div class="kv-pts">${r.points.map((p) => card(p, false)).join("")}</div>
+        </div>`).join("")}`).join("")}
+    </div>`;
+  const grid = $("#kv-grid"), svg = $("#kv-lines");
+  const draw = () => {
+    if (!grid.isConnected) return;
+    const g = grid.getBoundingClientRect(), first = grid.querySelector(".kv-row:not(.hide) .kv-pts");
+    if (!first || getComputedStyle(first).display === "none") { svg.innerHTML = ""; return; }
+    svg.setAttribute("viewBox", `0 0 ${g.width} ${g.height}`); svg.style.height = g.height + "px";
+    let html = "";
+    $$(".kv-row:not(.hide)", grid).forEach((row) => {
+      const kr = row.querySelector(".kr").getBoundingClientRect(), x0 = kr.right - g.left, y0 = kr.top - g.top + 22;
+      row.querySelectorAll(".kv-pts .kp:not(.off)").forEach((k) => {
+        const b = k.getBoundingClientRect(), x1 = b.left - g.left, y1 = b.top - g.top + 22, m = (x0 + x1) / 2, c = MCOL[k.dataset.m] || "#888";
+        const at = `data-pid="${esc(k.dataset.pid)}" data-req="${esc(k.dataset.req)}" style="stroke:${c}"`;
+        html += `<path d="M${x0},${y0} C${m},${y0} ${m},${y1} ${x1 - 2},${y1}" ${at}/>`
+          + `<path class="hd" d="M${x1 - 8},${y1 - 4} L${x1 - 2},${y1} L${x1 - 8},${y1 + 4}" ${at}/>`
+          + `<circle cx="${x0}" cy="${y0}" r="2.5" style="fill:${c}"/>`;
+      });
+    });
+    svg.innerHTML = html;
+  };
+  const apply = () => {
+    const on = $$("#outs button[aria-pressed=true]").map((x) => x.dataset.o), mon = $$("#mts button[aria-pressed=true]").map((x) => x.dataset.m);
+    $$(".kp", grid).forEach((k) => k.classList.toggle("off", !(on.includes(k.dataset.o) && mon.includes(k.dataset.m))));
+    $$(".kv-row", grid).forEach((r) => r.classList.toggle("hide", !r.querySelector(".kv-pts .kp:not(.off)")));
+    $$(".kv-sec", grid).forEach((h) => { let x = h.nextElementSibling, any = false; while (x && !x.classList.contains("kv-sec")) { if (!x.classList.contains("hide")) any = true; x = x.nextElementSibling; } h.classList.toggle("hide", !any); });
+    draw();
+  };
+  const focus = (req, pid) => {
+    grid.classList.toggle("focus", !!(req || pid));
+    if (!req && !pid) { $$(".hi", grid).forEach((e) => e.classList.remove("hi")); return; }
+    const r = req || reqOf(pid);
+    const pids = pid ? [pid] : $$(`.kv-pts .kp[data-req="${CSS.escape(r)}"]`, grid).map((e) => e.dataset.pid);
+    $$(".kr, .kv-pts .kp, .kv-lines path", grid).forEach((e) => e.classList.toggle("hi", e.classList.contains("kr") ? e.dataset.req === r : pids.includes(e.dataset.pid)));
+  };
+  let pinned = null;
+  const target = (e) => { if (window.innerWidth <= 900) return null; const k = e.target.closest(".kv-pts .kp"), r = e.target.closest(".kr"); return k ? [null, k.dataset.pid] : r ? [r.dataset.req, null] : null; };
+  grid.addEventListener("mouseover", (e) => { if (!pinned) { const t = target(e); focus(...(t || [null, null])); } });
+  grid.addEventListener("mouseleave", () => { if (!pinned) focus(null, null); });
+  // From Svensk Handel's text to our point: show its card (filters off if they hide it), pin it and scroll to it.
+  const goTo = (pid) => {
+    const vis = () => $$(`.kp[data-pid="${CSS.escape(pid)}"]`, grid).find((k) => k.offsetParent && !k.classList.contains("off"));
+    let k = vis();
+    if (!k) { $$("#outs button, #mts button").forEach((b) => b.setAttribute("aria-pressed", "true")); apply(); k = vis(); }
+    if (!k) return;
+    if (window.innerWidth > 900) { pinned = "|" + pid; focus(null, pid); }
+    k.scrollIntoView({ behavior: RM ? "auto" : "smooth", block: "center" });
+    k.classList.remove("hl"); void k.offsetWidth; k.classList.add("hl");
+    k.focus({ preventScroll: true });
+  };
+  const onSh = (e) => {
+    const ell = e.target.closest(".ell");
+    if (ell) {
+      const open = ell.getAttribute("aria-expanded") !== "true";
+      ell.setAttribute("aria-expanded", String(open)); ell.textContent = open ? ell.dataset.cut : "…";
+      ell.title = open ? "Dölj" : "Visa det Svensk Handel skriver här";
+      if (open) ell.removeAttribute("aria-label"); else ell.setAttribute("aria-label", "Visa utelämnad text");
+      return true;
+    }
+    const b = e.target.closest(".shbtn");
+    if (b) {
+      const open = b.getAttribute("aria-expanded") !== "true", box = b.nextElementSibling;
+      if (open && !box.innerHTML) box.innerHTML = shBlockHtml(SH, spans, b.dataset.pids.split(" "));
+      box.hidden = !open; b.setAttribute("aria-expanded", String(open));
+      b.querySelector("span").textContent = open ? "Dölj stycket" : "Visa hela stycket";
+      return true;
+    }
+    const g = e.target.closest("[data-goto]");
+    if (g) { goTo(g.dataset.goto); return true; }
+    return !!e.target.closest(".shp");
+  };
+  grid.addEventListener("click", (e) => { if (onSh(e)) return; const t = target(e), key = t ? t.join("|") : null; pinned = key && key !== pinned ? key : null; if (pinned) focus(...t); else focus(null, null); });
+  if (SH) {
+    const doc = $("#shdoc"), all = $("#shall");
+    doc.addEventListener("click", onSh);
+    all.onclick = () => {
+      const open = all.getAttribute("aria-expanded") !== "true";
+      if (open && !doc.innerHTML) doc.innerHTML = shDocHtml(SH, spans);
+      doc.hidden = !open; all.setAttribute("aria-expanded", String(open));
+      all.querySelector("span").textContent = open ? "Dölj Svensk Handels hela text" : "Visa Svensk Handels hela text";
+      draw();
+    };
+  }
+  grid.addEventListener("focusin", (e) => { const t = target(e); if (t) focus(...t); });
+  $$("#outs button, #mts button").forEach((b) => b.onclick = () => { b.setAttribute("aria-pressed", b.getAttribute("aria-pressed") === "true" ? "false" : "true"); apply(); });
+  if (window.ResizeObserver) { const ro = new ResizeObserver(() => { if (grid.isConnected) draw(); else ro.disconnect(); }); ro.observe(grid); }
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(draw);
+  apply();
+}
+
+/* ================= live scan ================= */
+/* What the scan is doing, in three lanes that run at the same time; events from app/live.py. */
+const LANES = [["sidor", "Villkorssidor", "text"], ["produkter", "Produkter och kampanjer", "tag"], ["kassa", "Kassan", "cart"]];
+const PHASE_NAME = { start: "Startsidan", sidor: "Villkorssidor", produkter: "Produkter", kassa: "Kassan", regler: "Bedömning" };
+const laneOf = (kind) => kind === "kassa" ? "kassa" : kind === "produkt" || kind === "kampanj" ? "produkter" : "sidor";
+const SPEED = 2;
+const SHOW = 8;
+const MIN_GAP = { point: 40, page_read: 120, page_reading: 60, page_shot: 150, checkout_step: 500, phase: 160, phase_end: 120,
+  done: 400, skip: 30, rule_hit: 0, log: 0, page_found: 0 };
+const SKIP_WHY = { dubblett: "dubblett", tak: "nog sidor av den sorten", "läsfel": "kunde inte läsas", tom: "tom sida",
+  "språk": "annat språk", gammal: "äldre version", manual: "manual (PDF)", extern: "annan webbplats" };
+/* one plain sentence per kind of page being read */
+const READING = { start: "Läser startsidan", villkor: "Läser köpvillkoren", retur: "Läser returvillkoren", reklamation: "Läser om reklamation",
+  integritet: "Läser integritetspolicyn", leverans: "Läser leveransvillkoren", betalning: "Läser om betalning", kontakt: "Läser kontaktsidan",
+  faq: "Läser frågor och svar", om: "Läser om företaget", pdf: "Läser en PDF", produkt: "Läser en produktsida", kampanj: "Läser en kampanjsida" };
+const rowKey = (u) => String(u || "").split("#")[0].replace(/\/+$/, "").toLowerCase();
+const kindName = (k) => KIND[k] || (k ? k.charAt(0).toUpperCase() + k.slice(1) : "Sida");
+const stepName = (n) => /^varukorg/i.test(n || "") ? "Varukorg" : (n || "").replace(/^kassa/i, "Kassa");
+
+async function startLive(id, mode) {
+  const app = $("#app"); app.className = "wrap wide";
+  app.innerHTML = `<p class="dim">Ansluter …</p>`;
+  const lv = { id, mode, queue: [], next: 0, status: "running", stopped: false, finished: false, busy: false,
+    S: { t: 0, seq: 0, ph: {}, rows: { sidor: new Map(), produkter: new Map() }, req: {}, steps: {}, points: {}, shot: {}, notes: {}, last: null },
+    open: {}, sig: {}, repShots: {}, hl: { text: "", at: 0 } };
+  CLEAN = () => { lv.stopped = true; clearTimeout(lv.qt); clearTimeout(lv.pt); clearInterval(lv.clock); const d = $("#lv-dlg"); if (d && d.open) d.close(); };
+  let first;
+  try { first = await api(`/api/scans/${encodeURIComponent(id)}/events?since=0`); }
+  catch (e) { return renderMessage("Granskningen finns inte", e.message); }
+  if (lv.stopped) return;
+  lv.shop = host(first.url) || first.shop; lv.url = first.url;
+  lv.clockBase = first.elapsed || 0; lv.clockAt = performance.now();
+  /* scans saved before page_shot events existed: their screenshots come from the saved report */
+  if (!(first.events || []).some((e) => e.type === "page_shot") && first.status !== "running") {
+    const [rep, screens] = await Promise.all([api(`/api/scans/${encodeURIComponent(id)}`).catch(() => null),
+      api(`/api/scans/${encodeURIComponent(id)}/screens`).catch(() => ({}))]);
+    (rep && rep.pages || []).forEach((p, i) => {
+      const src = (p.screens && p.screens.length ? screenUrl(rep, p.screens[p.screens.length - 1]) : null) || (screens || {})[String(i)];
+      if (src) lv.repShots[rowKey(p.final_url || p.url)] = src;
+    });
+  }
+  if (lv.stopped) return;
+  document.title = `${mode === "replay" ? "Förlopp" : "Granskar"} ${lv.shop} – Scanningsverktyg prototyp 1`;
+  app.innerHTML = `
+  <section class="lv-head">
+    <div class="eyebrow"><span id="lst" class="live run">Pågår</span><span>${esc(lv.shop)}</span><span class="lv-clock num" id="lclock">0:00</span>${mode === "replay" ? `<span class="live">Uppspelning ${SPEED}×</span>` : ""}</div>
+    <h1 id="lh" aria-live="polite">Hämtar startsidan</h1>
+    <p class="why" id="lwhy" hidden></p>
+    <div id="cta" class="cta" hidden></div>
+    <dl class="lv-stats num">
+      <div><dt>Sidor lästa</dt><dd id="st-pages"></dd></div>
+      <div><dt>Produkter och kampanjer</dt><dd id="st-prod"></dd></div>
+      <div><dt>Kassan</dt><dd id="st-kassa"></dd></div>
+      <div><dt>Krav bedömda</dt><dd id="st-pts"></dd></div>
+    </dl>
+  </section>
+  <div class="lv-lanes">${LANES.map(([k, l]) => `<section class="card lv-lane" id="ln-${k}" aria-labelledby="lnh-${k}">
+      <header><h2 id="lnh-${k}">${l}</h2><span class="ct num"></span></header>
+      <p class="note"></p><div class="shotbox"></div><ul class="lv-rows"></ul><button class="lv-more" type="button" hidden aria-expanded="false"></button></section>`).join("")}</div>
+  <dialog class="lv-dlg" id="lv-dlg" aria-labelledby="lv-dlg-cap"><header><span id="lv-dlg-cap"></span><button class="x" type="button" aria-label="Stäng">×</button></header>
+    <div class="body"><img id="lv-dlg-img" alt=""></div></dialog>`;
+  const dlg = $("#lv-dlg");
+  dlg.querySelector(".x").onclick = () => dlg.close();
+  dlg.addEventListener("click", (e) => { if (e.target === dlg) dlg.close(); });
+  $(".lv-lanes").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-img]");
+    if (b) {
+      $("#lv-dlg-img").src = b.dataset.img; $("#lv-dlg-img").alt = "Skärmbild: " + b.dataset.cap; $("#lv-dlg-cap").textContent = b.dataset.cap;
+      dlg.showModal(); return;
+    }
+    const m = e.target.closest(".lv-more");
+    if (m) { const k = m.closest(".lv-lane").id.slice(3); lv.open[k] = !lv.open[k]; lv.sig[k] = null; paint(lv, true); }
+  });
+  ingest(lv, first);
+  paint(lv, true);
+  lv.clock = setInterval(() => paint(lv, false), 500);
+  if (first.status === "running") poll(lv);
+  pump(lv);
+}
+function ingest(lv, res) {
+  lv.queue.push(...(res.events || []));
+  lv.next = res.next; lv.status = res.status; lv.error = res.error;
+  if (res.elapsed != null) { lv.clockBase = res.elapsed; lv.clockAt = performance.now(); }
+}
+function poll(lv) {
+  lv.pt = setTimeout(async () => {
+    if (lv.stopped) return;
+    try { ingest(lv, await api(`/api/scans/${encodeURIComponent(lv.id)}/events?since=${lv.next}`)); } catch (e) {}
+    if (lv.stopped) return;
+    if (lv.status === "running") poll(lv);
+    pump(lv);
+  }, 800);
+}
+function pump(lv) {
+  if (lv.busy || lv.stopped) return;
+  if (!lv.queue.length) { if (lv.status !== "running") finish(lv); return; }
+  lv.busy = true;
+  const e = lv.queue.shift();
+  try { apply(lv, e); paint(lv, true); } catch (err) { console.warn("live:", err); }
+  const base = MIN_GAP[e.type] != null ? MIN_GAP[e.type] : 20;
+  let d;
+  if (lv.mode === "replay") {
+    const nx = lv.queue[0];
+    d = nx ? Math.min(Math.max((nx.t - e.t) * 1000 / SPEED, base), 1100) : base;
+  } else d = base * Math.max(0.2, Math.min(1, 15 / (lv.queue.length + 15)));
+  if (RM) d = Math.min(d, 20);
+  lv.qt = setTimeout(() => { lv.busy = false; pump(lv); }, d);
+}
+/** A page row in a lane, created on first sight; a row that moves to "läser" again goes back on top. */
+function row(S, lane, url, kind) {
+  const m = S.rows[lane], k = rowKey(url);
+  let r = m.get(k);
+  if (!r) { r = { url, kind, state: "run", seq: ++S.seq }; m.set(k, r); }
+  if (kind) r.kind = kind;
+  return r;
+}
+function apply(lv, e) {
+  const S = lv.S; S.t = Math.max(S.t, e.t || 0);
+  switch (e.type) {
+    case "log": {
+      const msg = e.msg || "";
+      let m = /Startsidan hämtad \((\d+) länkar\)/.exec(msg); if (m) S.links = +m[1];
+      m = /Sitemap läst \((\d+) adresser, (\d+) relevanta\)/.exec(msg); if (m) S.notes.sitemap = `Sitemap: ${nf(+m[1])} adresser, ${nf(+m[2])} om villkor`;
+      m = /^(\d+) sidor lästa, kör reglerna/.exec(msg); if (m) S.ruleN = +m[1];
+      if (/^AI bedömer/.test(msg)) S.ai = msg;
+      if (/^AI-steget misslyckades/.test(msg)) S.ai = null;
+      break;
+    }
+    case "phase": S.ph[e.name] = { s: e.t }; if (e.name !== "start") S.last = { type: "phase", lane: e.name }; break;
+    case "phase_end":
+      S.ph[e.name] = Object.assign(S.ph[e.name] || { s: e.t }, { e: e.t, count: e.count, sec: e.seconds });
+      if (S.rows[e.name]) S.rows[e.name].forEach((r, k) => { if (r.state === "run") S.rows[e.name].delete(k); });
+      break;
+    case "page_reading": { const r = row(S, "sidor", e.url, e.kind); if (r.state !== "ok") { r.state = "run"; r.why = ""; r.seq = ++S.seq; } S.last = { type: "reading", lane: "sidor", kind: e.kind }; break; }
+    case "page_found": if (e.req) S.req[e.n] = e.req; break;
+    case "page_read": {
+      if (e.kind === "kassa") break;
+      const lane = laneOf(e.kind), m = S.rows[lane];
+      if (e.fix && m.has(rowKey(e.url))) break;
+      const asked = S.req[e.n] && rowKey(S.req[e.n]);
+      const prev = asked && asked !== rowKey(e.url) ? m.get(asked) : null;
+      if (prev) m.delete(asked);
+      const r = row(S, lane, e.url, e.kind);
+      if (prev) r.seq = prev.seq;
+      Object.assign(r, { url: e.url, state: "ok", why: "", chars: e.chars, pdf: e.pdf });
+      const src = lv.repShots[rowKey(e.url)];
+      if (src) { r.shot = src; S.shot[lane] = { src, cap: `${kindName(r.kind)} · ${path(e.url)}` }; }
+      S.last = { type: lane === "produkter" ? "reading" : "read", lane, kind: e.kind };
+      break;
+    }
+    case "page_shot": {
+      const lane = laneOf(e.kind), src = screenUrl(null, e.screen);
+      if (!src || !S.rows[lane]) break;
+      const r = row(S, lane, e.url, e.kind); if (r.state === "run") r.state = "ok";
+      r.shot = src; S.shot[lane] = { src, cap: `${kindName(r.kind)} · ${path(e.url)}` };
+      if (lane === "produkter") S.last = { type: "shot", lane, kind: e.kind };
+      break;
+    }
+    case "skip":
+      if (e.reason === "produkt") { S.prodLinks = e.n; break; }
+      if (!e.url) break;
+      { const r = row(S, "sidor", e.url, null); if (r.state !== "ok") { r.state = "skip"; r.why = SKIP_WHY[e.reason] || e.reason || ""; } }
+      break;
+    case "checkout_step": {
+      S.steps[e.step] = Object.assign({}, e, { src: screenUrl(null, e.screen) });
+      if (S.steps[e.step].src) S.shot.kassa = { src: S.steps[e.step].src, cap: stepCap(e) };
+      S.last = { type: "step", lane: "kassa" };
+      break;
+    }
+    case "checkout": S.co = e; break;
+    case "point": S.points[e.point] = e; break;
+    case "done": S.done = e; break;
+    case "failed": S.failed = e.error || "Granskningen misslyckades."; break;
+  }
+}
+function stepCap(e) { return `${stepName(e.name)}${e.total != null ? " · " + nf(e.total) + " kr" : ""} · ${path(e.url)}`; }
+function stepLabel(e) { return `Kassan steg ${e.step}${e.name ? " · " + e.name : ""}${e.total != null ? " · " + nf(e.total) + " kr" : ""}`; }
+function nowT(lv) {
+  if (lv.finished || lv.mode === "replay" || lv.status !== "running") return lv.S.done ? lv.S.done.t : lv.S.t;
+  return Math.max(lv.S.t, lv.clockBase + (performance.now() - lv.clockAt) / 1000);
+}
+const running = (S, n) => !!S.ph[n] && S.ph[n].e == null;
+/** How far the checkout got: varukorg, kassa or före köpknapp. */
+function furthest(S) {
+  const steps = Object.values(S.steps);
+  if (S.co && S.co.reached) return S.co.reached;
+  if (steps.some((s) => s.button_text && !/^varukorg/i.test(s.name || "") || /köpknapp/i.test(s.name || ""))) return "före köpknapp";
+  if (steps.some((s) => /^kassa/i.test(s.name || ""))) return "kassa";
+  return steps.length ? "varukorg" : "";
+}
+function kassaSentence(S) {
+  const steps = Object.values(S.steps).sort((a, b) => a.step - b.step), l = steps[steps.length - 1];
+  if (!l) return "Lägger en produkt i varukorgen";
+  if (/^varukorg/i.test(l.name || "")) return "Går från varukorgen till kassan";
+  if (l.button_text) return "Stannar före köpknappen";
+  return "Fyller i kassan med testuppgifter";
+}
+/** The one sentence at the top: what the scan is doing right now. */
+function sentence(lv) {
+  const S = lv.S;
+  if (S.failed) return "Granskningen stoppades";
+  if (S.done) return "Granskningen är klar";
+  if (running(S, "regler")) return `Kör reglerna på ${plural(S.ruleN || readCount(S), "sida", "sidor")}`;
+  if (S.ph.regler) return S.ai || "Sammanställer resultatet";
+  if (!S.ph.start || running(S, "start")) return "Hämtar startsidan";
+  const live = ["sidor", "produkter", "kassa"].filter((n) => running(S, n));
+  if (!live.length) return "Sparar sidorna och skärmbilderna";
+  const l = S.last && live.includes(S.last.lane) ? S.last : { type: "phase", lane: live[0] };
+  if (l.lane === "kassa") return kassaSentence(S);
+  if (l.type === "shot") return `Tar skärmbild av en ${l.kind === "kampanj" ? "kampanjsida" : "produktsida"}`;
+  if (l.type === "reading" || l.type === "read") return READING[l.kind] || "Läser en sida";
+  return l.lane === "produkter" ? "Letar produkt- och kampanjsidor" : "Letar villkorssidor";
+}
+const rowsOf = (S, lane) => [...S.rows[lane].values()];
+function readCount(S) { return ["sidor", "produkter"].reduce((n, k) => n + rowsOf(S, k).filter((r) => r.state === "ok").length, 0); }
+const STATE = { run: "läser …", ok: "läst", skip: "hoppade över", stop: "stopp" };
+/** One row: what (p), its kind and details (d), its state, and a button for its screenshot when it has one. */
+function li(o) {
+  const cam = o.shot ? `<button class="cam" type="button" data-img="${esc(o.shot)}" data-cap="${esc(o.cap)}" aria-label="Visa skärmbild: ${esc(o.cap)}">${ICON.cam}</button>` : "";
+  return `<li class="${o.state}"><span class="p"${o.title ? ` title="${esc(o.title)}"` : ""}>${esc(o.p)}</span><span class="s">${cam}${STATE[o.state]}</span><span class="d">${esc(o.d)}</span></li>`;
+}
+function pageLi(r) {
+  return li({ p: path(r.url), title: r.url, state: r.state, shot: r.shot, cap: `${kindName(r.kind)} · ${path(r.url)}`,
+    d: [kindName(r.kind), r.state === "skip" ? r.why : r.chars ? `${nf(r.chars)} tecken` : ""].filter(Boolean).join(" · ") });
+}
+function shotHtml(shot, empty) {
+  return shot ? `<button class="lv-shot" type="button" data-img="${esc(shot.src)}" data-cap="${esc(shot.cap)}" aria-label="Förstora skärmbild: ${esc(shot.cap)}"><img alt="" src="${esc(shot.src)}"><span>${esc(shot.cap)}</span></button>`
+    : `<div class="lv-shot none">${esc(empty)}</div>`;
+}
+/** Lane body: count, note, latest screenshot, rows (newest first, the latest SHOW unless opened). */
+function paintLane(lv, k, o) {
+  const el = $("#ln-" + k);
+  const sig = JSON.stringify([o.ct, o.note, o.shot && o.shot.src, o.strip, o.rows.map((r) => r.html), lv.open[k]]);
+  if (lv.sig[k] === sig) return;
+  lv.sig[k] = sig;
+  const act = document.activeElement, focusKey = act && el.contains(act) ? (act.dataset.img || (act.classList.contains("lv-more") ? "more" : null)) : null;
+  el.querySelector(".ct").textContent = o.ct;
+  el.querySelector(".note").textContent = o.note || "";
+  el.querySelector(".shotbox").innerHTML = shotHtml(o.shot, o.empty) + (o.strip || "");
+  const shown = lv.open[k] ? o.rows : o.rows.slice(0, SHOW);
+  el.querySelector(".lv-rows").innerHTML = shown.map((r) => r.html).join("") || `<li class="empty"><span class="empty">${esc(o.wait)}</span></li>`;
+  const more = el.querySelector(".lv-more"), extra = o.rows.length - SHOW;
+  more.hidden = extra <= 0;
+  more.textContent = lv.open[k] ? "Visa färre" : `+${extra} till`;
+  more.setAttribute("aria-expanded", String(!!lv.open[k]));
+  if (focusKey) { const f = focusKey === "more" ? more : $$("[data-img]", el).find((b) => b.dataset.img === focusKey); if (f) f.focus(); }
+}
+function paint(lv, full) {
+  if (lv.stopped) return;
+  const S = lv.S, t = nowT(lv), done = !!S.done, failed = !!S.failed;
+  $("#lclock").textContent = fmtTime(t);
+  $("#lst").className = "live " + (failed ? "fail" : done ? "" : "run");
+  $("#lst").textContent = failed ? "Stoppad" : done ? "Klar" : "Pågår";
+  /* the sentence holds a moment so it can be read while pages fly by; phase changes show at once */
+  const s = sentence(lv), now = performance.now(), firm = done || failed || S.ph.regler;
+  if (s !== lv.hl.text && (firm || now - lv.hl.at > 1400 || !lv.hl.text)) { lv.hl = { text: s, at: now }; $("#lh").textContent = s; }
+  if (!full) return;
+  if (failed) { $("#lwhy").hidden = false; $("#lwhy").textContent = S.failed; }
+  /* numbers */
+  const sid = rowsOf(S, "sidor"), prod = rowsOf(S, "produkter");
+  const all = sid.concat(prod), read = all.filter((r) => r.state === "ok").length, skipped = all.filter((r) => r.state === "skip").length;
+  $("#st-pages").innerHTML = `${read}<small>${all.length ? `${nf(all.length)} hittade · ${nf(skipped)} hoppade över` : "letar …"}</small>`;
+  const np = prod.filter((r) => r.state === "ok" && r.kind === "produkt").length, nk = prod.filter((r) => r.state === "ok" && r.kind === "kampanj").length;
+  $("#st-prod").innerHTML = `${np + nk}<small>${np + nk ? `${plural(np, "produkt", "produkter")} · ${plural(nk, "kampanj", "kampanjer")}` : running(S, "produkter") ? "letar …" : S.ph.produkter ? "inga hittade" : "väntar"}</small>`;
+  const steps = Object.values(S.steps).sort((a, b) => a.step - b.step), far = furthest(S);
+  $("#st-kassa").innerHTML = `${plural(steps.length, "steg", "steg")}<small>${far ? `längst: ${esc(far)}` : running(S, "kassa") ? "startar …" : S.ph.kassa ? "kom inte in" : "väntar"}</small>`;
+  const npts = Object.keys(S.points).length, nb = Object.values(S.points).filter((p) => keyOf(p.state, p.point) === "brist").length;
+  $("#st-pts").innerHTML = `${npts} / 45<small>${done ? plural(nb, "brist", "brister") : running(S, "regler") ? "kör reglerna" : S.ph.regler ? "slutförs" : npts ? "utifrån villkorssidorna" : "efter läsningen"}</small>`;
+  /* lanes */
+  const order = (a, b) => b.seq - a.seq;
+  const laneCt = (k, n, unit) => [n ? `${nf(n)} ${unit}` : "", S.ph[k] && S.ph[k].e != null ? "klar" : running(S, k) ? "pågår" : ""].filter(Boolean).join(" · ");
+  paintLane(lv, "sidor", { ct: laneCt("sidor", sid.filter((r) => r.state === "ok").length, "lästa"), note: S.notes.sitemap || (S.links ? `Startsidan har ${nf(S.links)} länkar` : ""),
+    shot: S.shot.sidor, empty: "Skärmbild bara för sidor som behöver webbläsare", wait: S.ph.start ? "Letar villkorssidor …" : "Hämtar startsidan …",
+    rows: sid.sort(order).map((r) => ({ html: pageLi(r) })) });
+  paintLane(lv, "produkter", { ct: laneCt("produkter", np + nk, "lästa"), note: S.prodLinks ? `${nf(S.prodLinks)} produktlänkar på startsidan · läser ett stickprov` : "",
+    shot: S.shot.produkter, empty: S.ph.produkter ? "Ingen skärmbild än" : "Väntar på startsidan", wait: S.ph.produkter ? "Letar produkt- och kampanjsidor …" : "Väntar på startsidan …",
+    rows: prod.sort(order).map((r) => ({ html: pageLi(r) })) });
+  /* checkout: steps newest first, a "läser" row for the next one while it runs, then where it stopped */
+  const lastBtn = steps.filter((e) => e.button_text).pop();
+  const krows = steps.slice().reverse().map((e) => ({ html: li({ p: `Steg ${e.step} · ${stepName(e.name)}`, title: e.url, state: "ok",
+    d: [e.total != null ? `${nf(e.total)} kr` : "", e.button_text && e === lastBtn ? `knapp ”${e.button_text}”` : "", path(e.url)].filter(Boolean).join(" · ") }) }));
+  if (running(S, "kassa") && !S.co) krows.unshift({ html: li({ p: steps.length ? `Steg ${steps.length + 1}` : "Väljer en billig vara", state: "run", d: kassaSentence(S) }) });
+  if (S.co) {
+    const btn = (steps.find((x) => x.button_text && !/^varukorg/i.test(x.name || "")) || {}).button_text;
+    krows.unshift({ html: li({ state: "stop", d: S.co.why || "Köpet slutförs aldrig",
+      p: /köpknapp/i.test(S.co.reached || "") ? `Stannade före ${btn ? "”" + btn + "”" : "köpknappen"}` : `Kom till: ${S.co.reached || "–"}` }) });
+  }
+  const strip = steps.filter((e) => e.src).length > 1 ? `<div class="lv-strip">${steps.filter((e) => e.src).map((e) =>
+    `<button type="button" data-img="${esc(e.src)}" data-cap="${esc(stepCap(e))}" aria-label="Förstora ${esc(stepName(e.name))}"><img alt="" src="${esc(e.src)}"></button>`).join("")}</div>` : "";
+  paintLane(lv, "kassa", { ct: laneCt("kassa", steps.length, "steg"), note: S.ph.kassa ? "Stannar alltid före köpknappen" : "",
+    shot: S.shot.kassa, strip, empty: S.ph.kassa ? "Ingen skärmbild än" : "Väntar på startsidan", wait: "Väntar på startsidan …", rows: krows });
+  /* done */
+  if ((done || failed) && $("#cta").hidden) {
+    const c = { brist: 0, osaker: 0 }; Object.values(S.points).forEach((p) => { const k = keyOf(p.state, p.point); c[k] = (c[k] || 0) + 1; });
+    $("#cta").hidden = false;
+    $("#cta").innerHTML = failed ? `<a class="btn ghost" href="#/">Ny granskning</a>`
+      : `<a class="btn" id="cta-go" href="#/scan/${encodeURIComponent(lv.id)}">Visa resultat ${ICON.arrow}</a>
+         ${c.brist ? chip("brist", plural(c.brist, "brist", "brister")) : chip("ok", "0 brister")}${c.osaker ? chip("osaker", `${c.osaker} osäkra`) : ""}`;
+  }
+}
+async function finish(lv) {
+  if (lv.finished || lv.stopped) return;
+  lv.finished = true; clearInterval(lv.clock);
+  lv.hl.at = 0;
+  paint(lv, true);
+}
+
+/* ================= results ================= */
+async function renderResults(rep) {
+  const id = rep.id, M = await method();
+  const screens = await api(`/api/scans/${encodeURIComponent(id)}/screens`).catch(() => ({}));
+  /* a point open only because one scan exists is followed up over time, not osäker */
+  const FOLLOW = (r) => r.needs_history || (r.state === "osäker" && /skanningar över tid; bara (en|\d+) skanning/.test(r.why || ""));
+  const RES = (rep.results || []).map((r) => FOLLOW(r) ? Object.assign({}, r, { state: "kunde inte kontrolleras", evidence: [], _follow: true,
+    _first: r.first_scan || ((r.why || "").match(/första (\d{4}-\d\d-\d\d)/) || [])[1] || "" }) : r), C = countsOf(RES), byId = Object.fromEntries(RES.map((r) => [String(r.id), r]));
+  const pages = rep.pages || [], co = rep.checkout || null, steps = (co && co.steps) || [];
+  const kOf = keyR;
+  const pageName = (n) => { const p = pages[n] || {}; return p.kind === "kassa" ? "Kassan" : (KIND[p.kind] || "Sida"); };
+  /* one set of numbers, used everywhere on the page */
+  const nRead = pages.filter((p) => p.kind !== "kassa").length;
+  const nProd = pages.filter((p) => p.kind === "produkt" || p.kind === "kampanj").length;
+  const links = [];
+  RES.forEach((r) => (r.evidence || []).forEach((e) => { if (e.quote && Number.isInteger(e.page) && !links.some((l) => l.p === e.page && l.id === r.id)) links.push({ p: e.page, id: String(r.id), k: kOf(r) }); }));
+  const nQuotes = new Set(RES.flatMap((r) => (r.evidence || []).filter((e) => e.quote).map((e) => e.page + "|" + e.quote))).size;
+  /* screenshots: pages read in the browser, then checkout steps */
+  const gallery = [];
+  let kassaNo = 0;
+  pages.forEach((p, n) => {
+    if (p.kind === "kassa") kassaNo++;
+    const src = screens[String(n)];
+    if (!src) return;
+    const st = p.kind === "kassa" ? steps[kassaNo - 1] : null;
+    gallery.push({ src, n, step: p.kind === "kassa" ? kassaNo : null, cap: st ? stepLabel(Object.assign({ step: kassaNo }, st)) : `${KIND[p.kind] || p.kind} · ${path(p.final_url || p.url)}` });
+  });
+  steps.forEach((st, i) => { if (!gallery.some((g) => g.step === i + 1) && st.screen) { const src = screenUrl(rep, st.screen); if (src) gallery.push({ src, step: i + 1, cap: stepLabel(Object.assign({ step: i + 1 }, st)) }); } });
+  const total = rep.started && rep.finished ? Math.round((new Date(rep.finished) - new Date(rep.started)) / 1000) : null;
+  const date = rep.finished ? new Date(rep.finished).toLocaleDateString("sv-SE", { day: "numeric", month: "long", year: "numeric" }) : "";
+  const reached = co && (/köpknapp/i.test(co.reached || "") || steps.some((x) => /köpknapp/i.test(x.name || "")));
+  const evShot = (r) => { const e = (r.evidence || []).find((x) => x.screen); return e ? screenUrl(rep, e.screen) : null; };
+
+  /* product and campaign points: one thumbnail per cited page, the crop around the price first */
+  const PROD_IDS = ["3.1", "4a", "11b", "13a", "13b"];
+  function shotStrip(r) {
+    if (!PROD_IDS.includes(String(r.id))) return "";
+    const seen = new Set(), items = [];
+    /* every page the point is about (4a: each sale page), not only the quoted ones */
+    const extra = (r.shot_pages || []).filter((n) => !(r.evidence || []).some((e) => e.page === n)).map((n) => ({ page: n }));
+    (r.evidence || []).concat(extra).forEach((e) => {
+      if (!Number.isInteger(e.page) || seen.has(e.page)) return;
+      const pg = pages[e.page] || {}, list = (e.screens || pg.screens || (e.screen ? [e.screen] : [])).map((x) => screenUrl(rep, x)).filter(Boolean);
+      if (!list.length) return;
+      seen.add(e.page);
+      const crop = /_crop\.png$/.test(list[0]), big = list.find((x) => /_view\.png$/.test(x)) || list[0];
+      items.push({ thumb: list[0], big, crop, cap: path(e.url || pg.final_url || pg.url) });
+    });
+    if (!items.length) return "";
+    return `<div class="pstrip">${items.map((x) => `<button class="pshot${x.crop ? " crop" : ""}" data-img="${esc(x.big)}" data-cap="${esc(x.cap)}" aria-label="Visa skärmbild av ${esc(x.cap)}">
+      <img alt="" src="${esc(x.thumb)}" loading="lazy"><span>${x.crop ? "Priset markerat · " : ""}${esc(x.cap)}</span></button>`).join("")}</div>`;
+  }
+  /* checkout points: the case, so a human can judge it without opening the shop */
+  const CO_IDS = ["3.2a", "3.2b", "3.2c", "5a", "5b", "12a", "12c"];
+  function checkoutCase(r) {
+    if (!co || !CO_IDS.includes(String(r.id)) || !["brist", "granska", "osaker"].includes(kOf(r))) return "";
+    const st = steps.map((x, i) => Object.assign({ i }, x, { src: x.screen ? screenUrl(rep, x.screen) : null, crop: x.crop ? screenUrl(rep, x.crop) : null })).filter((x) => x.src);
+    const last = st[st.length - 1];
+    const why = co.why || "", top = /köpknapp/i.test(co.reached || "") || steps.some((x) => x.button_text);
+    const stop = top ? "Nådde köpknappen (klickas aldrig)."
+      : /adress|namn|personnummer/i.test(why) ? "Stannade vid adressteget: skriptet fyller inte i namn, adress eller personnummer."
+      : /betal/i.test(why) ? "Stannade vid betalsteget."
+      : last ? `Stannade vid steget ”${last.name}”.` : "Kassan nåddes inte.";
+    const quotes = [["Köpknappen", co.button_text || (last && last.button_text)], ["Text vid köpknappen", co.near_button_text],
+      ["Villkorslänk", co.terms_link ? co.terms_link + (co.terms_where ? ` (${co.terms_where})` : "") : ""]]
+      .concat((r.evidence || []).filter((e) => e.quote && e.step).slice(0, 1).map((e) => ["I kassan", e.quote])).filter((q) => q[1]);
+    const film = st.map((x) => `<button class="fs${x === last ? " last" : ""}" data-img="${esc(x.src)}" data-cap="${esc(stepLabel(Object.assign({ step: x.i + 1 }, x)))}" aria-label="Visa steg ${x.i + 1}">
+      <img alt="" src="${esc(x.src)}" loading="lazy"><span>${x.i + 1} · ${esc(x.name || "")}</span></button>`).join("")
+      + (last && last.crop ? `<button class="fs crop" data-img="${esc(last.crop)}" data-cap="Utsnitt vid köpknappen"><img alt="" src="${esc(last.crop)}" loading="lazy"><span>Utsnitt</span></button>` : "");
+    return `<div class="cocase">
+      ${film ? `<div class="film">${film}</div>` : ""}
+      <p class="cl"><b>Stopp:</b> ${esc(stop)}</p>
+      ${r.looked_for ? `<p class="cl"><b>Letade efter:</b> ${esc(String(r.looked_for).split(/(?<=\.)\s/)[0])}</p>` : ""}
+      ${quotes.map((q) => `<p class="k" style="margin-top:10px">${esc(q[0])}</p><blockquote class="alt">${esc(q[1])}</blockquote>`).join("")}
+    </div>`;
+  }
+  /* short page name for contradiction titles: "Köpvillkoren", "Ångra-sidan" */
+  function shortPage(n) {
+    const p = pages[n] || {}, t = ((p.title || "") + " " + path(p.final_url || p.url)).toLowerCase();
+    if (p.kind === "villkor") return "Köpvillkoren";
+    if (/ångra|angra|ånger|anger/.test(t)) return "Ångra-sidan";
+    const by = { retur: "Retursidan", reklamation: "Reklamationssidan", faq: "Frågor och svar", leverans: "Leveranssidan", betalning: "Betalningssidan", kontakt: "Kontaktsidan", kassa: "Kassan", produkt: "Produktsidan", kampanj: "Kampanjsidan" };
+    return by[p.kind] || "Sidan " + path(p.final_url || p.url);
+  }
+  /* one-line worked example for deadline brister, from the day count in the wrong quote */
+  function deadlineExample(r, e) {
+    const id = String(r.id);
+    if (!e || !e.quote || e.role !== "brist" || !["7.1c", "7.1d", "8.2"].includes(id)) return "";
+    const W = { sju: 7, tio: 10, fjorton: 14, femton: 15, tjugo: 20, trettio: 30, sextio: 60, nittio: 90 };
+    const m = e.quote.toLowerCase().match(/(\d{1,3}|sju|tio|fjorton|femton|tjugo|trettio|sextio|nittio)\s*(?:\(\d+\)\s*)?dagar/);
+    if (!m) return "";
+    const N = /^\d+$/.test(m[1]) ? +m[1] : W[m[1]];
+    if (!N || (id !== "8.2" && N >= 14)) return "";  // a longer time than the requirement is not the breach
+    const d = (day) => new Date(2026, 4, day).toLocaleDateString("sv-SE", { day: "numeric", month: "long" });
+    if (id === "7.1d") return `Exempel: varan kommer 1 maj, kunden ångrar sig 13 maj. Enligt köpvillkoren: skicka senast ${d(1 + N)}. Enligt kravet: senast ${d(13 + 14)}.`;
+    if (id === "7.1c") { const fromOrder = /beställ|köpet|köpdag|order/.test(e.quote.toLowerCase()) && !/tar emot|tagit emot|mottag|hämta/.test(e.quote.toLowerCase());
+      const own = (fromOrder ? 1 : 5) + N; if (own === 19) return "";
+      return `Exempel: kunden beställer 1 maj, varan kommer 5 maj. Enligt köpvillkoren: ångra senast ${d(own)}. Enligt kravet: senast ${d(19)}.`; }
+    return `Exempel: kunden upptäcker ett fel ${N + 10} dagar efter leveransen. Enligt köpvillkoren: för sent. Enligt kravet: kunden kan reklamera i tre år.`;
+  }
+  function bristCard(r) {
+    const ev = r.evidence || [];
+    /* only a quote that breaks the requirement is shown as what the shop writes; a brist for missing information
+       shows what was searched, and the shop's related text (e.g. öppet köp) as context, never as the breach */
+    const k = ev.findIndex((e) => e.role === "brist" && e.quote);
+    const e = ev[k], alt = e && ev.find((x, i) => i !== k && x.role !== "stöd" && !x.same && x.quote && x.page !== e.page);
+    const ctx = e ? [] : ev.filter((x) => x.quote).slice(0, 2);
+    const ref = (r.sh || "") + " " + (r.label || "");
+    const fix = mp(r.id).fix;
+    const read = [...new Set((r.pages_read || []).filter((n) => pages[n]).map(pageName))];
+    const shot = evShot(r);
+    const urlOf = (x) => x.url || (pages[x.page] || {}).url;
+    /* wrong quote on one page, right quote on another → the shop contradicts itself */
+    const contra = e && alt && e.role === "brist" && Number.isInteger(e.page) && Number.isInteger(alt.page) && e.page !== alt.page;
+    const nmA = contra ? shortPage(e.page) : "", nmB = contra ? shortPage(alt.page) : "";
+    const ex = deadlineExample(r, e);
+    const quoteCol = contra
+      ? `<div class="vs">
+          <div><p class="k">${esc(path(urlOf(e)))} <span class="tf">Fel</span></p><blockquote>${underlineKeys(e.quote, ref)}</blockquote></div>
+          <div><p class="k">${esc(path(urlOf(alt)))} <span class="tr">Rätt</span></p><blockquote class="ok">${underlineKeys(alt.quote, ref)}</blockquote></div>
+        </div>
+        <p class="why2">${(pages[e.page] || {}).kind === "villkor" ? "Kunden kan inte veta vilken som gäller. Köpvillkoren är det kunden godkänner." : "Butiken ger två olika besked."}</p>`
+      : null;
+    const visa = e && Number.isInteger(e.page) ? `<button class="lnk" data-page="${e.page}" data-q="${esc(e.quote)}">Visa på sidan ${ICON.arrow}</button>` : "";
+    const src = e ? `<p class="src"><span class="path">${esc(path(urlOf(e)))}</span>${visa}</p>` : "";
+    const shots = shotStrip(r) || (shot && !checkoutCase(r) ? `<button class="shotmini" data-img="${esc(shot)}" data-cap="${esc(r.id + " " + r.label)}" aria-label="Visa skärmbild"><img alt="" src="${esc(shot)}" loading="lazy"></button>` : "");
+    const evidence = quoteCol ? quoteCol + (visa ? `<p class="src">${visa}</p>` : "")
+      : (e ? `<blockquote>${underlineKeys(e.quote, ref)}</blockquote>${src}`
+           : r.unclear && ctx.length ? "" : `<p class="miss">Inget hittat på ${plural(read.length || nRead, "läst sida", "lästa sidor")}${read.length ? ": " + esc(read.join(", ")) : ""}.</p>`)
+        + (alt ? `<p class="k2">Men ${esc(path(urlOf(alt)))} skriver</p><blockquote class="alt">${underlineKeys(alt.quote, ref)}</blockquote>` : "")
+        + ctx.map((x) => `<p class="k2">${r.unclear ? "Oklar text" : "Butiken skriver bara"} · ${esc(path(urlOf(x)))}</p><blockquote class="alt">${esc(x.quote)}</blockquote>`).join("");
+    return `<article class="card bc" id="p-${esc(r.id)}">
+      <div class="bh">${chip(kOf(r))}${contra ? `<span class="tag-m">Motsägelse</span>` : ""}<span class="pid">${esc(r.id)} · ${esc(r.label)}</span></div>
+      <h3>${contra && nmA !== nmB ? `${esc(nmA)} och ${esc(nmB.charAt(0).toLowerCase() + nmB.slice(1))} säger olika` : contra ? "Två sidor säger olika" : esc(r.summary || r.label)}</h3>
+      <div class="ev">${evidence}${shots}</div>
+      ${checkoutCase(r) ? `<div class="cobox">${checkoutCase(r)}</div>` : ""}
+      ${ex ? `<p class="ex">${esc(ex)}</p>` : ""}
+      <dl class="kv2"><div><dt>Krav</dt><dd>${esc(shortReq(r.sh))}</dd></div>${fix ? `<div><dt>Åtgärd</dt><dd>${esc(fix)}</dd></div>` : ""}</dl>
+    </article>`;
+  }
+  function row(r) {
+    const k = kOf(r), e = (r.evidence || []).find((x) => x.quote);
+    const extra = k === "intyg" || k === "testkop" ? mp(r.id).need : "";
+    return `<li id="p-${esc(r.id)}"><details><summary>${chip(k)}<span class="id num">${esc(r.id)}</span>
+      <span class="lb"><b>${esc(r.label)}${r.method === "regel + AI" ? ` <span class="ai-tag">Full granskning</span>` : ""}</b><span>${esc(r.summary || "")}</span></span><span class="caret">${ICON.caret}</span></summary>
+      <div class="body">${r.why ? `<p>${esc(r.why)}</p>` : ""}
+        ${e ? `<blockquote>${underlineKeys(e.quote, (r.sh || "") + " " + r.label)}</blockquote>` : ""}
+        ${shotStrip(r)}${checkoutCase(r)}
+        ${extra ? `<p><b style="color:var(--text);font-weight:600">Behövs:</b> ${esc(extra)}</p>` : ""}
+        ${e && Number.isInteger(e.page) ? `<div class="acts"><button class="lnk" data-page="${e.page}" data-q="${esc(e.quote)}">Visa på ${esc(path(e.url || (pages[e.page] || {}).url))} ${ICON.arrow}</button></div>` : ""}</div></details></li>`;
+  }
+  const list = (k) => RES.filter((r) => kOf(r) === k && !r._follow);
+  const followed = RES.filter((r) => r._follow);
+  const fold = (k, title) => { const L = list(k); return L.length ? `<details class="card fold" data-k="${k}"><summary>${chip(k, title)}<span class="n num">${L.length}</span><span class="caret">${ICON.caret}</span></summary><ul class="rows">${L.map(row).join("")}</ul></details>` : ""; };
+
+  /* page → points */
+  const prow = pages.map((p, i) => { const L = links.filter((l) => l.p === i); return { i, p, L, b: L.filter((l) => l.k === "brist").length, o: L.filter((l) => l.k === "osaker").length }; })
+    .filter((x) => x.L.length);
+  prow.sort((a, b) => b.b - a.b || b.o - a.o || b.L.length - a.L.length);
+  const noQuote = pages.filter((p, i) => p.kind !== "kassa" && !links.some((l) => l.p === i)).length;
+  const rank = (k) => ORDER.indexOf(k);
+  const pcBtn = (id, k) => `<button class="pc st-${k}" data-jump="${esc(id)}" title="${esc(id + " " + (byId[id] || {}).label + " · " + ST[k][0])}">${icon(k)}${esc(id)}</button>`;
+
+  /* time per part */
+  const ph = rep.phases || {}, tm = rep.timing || {};
+  const tStart = tm.start || 0;
+  const parEnd = Math.max(tStart, ...["sidor", "produkter", "kassa"].map((k) => (ph[k] || {}).finished || 0));
+  const gRows = [["Startsidan", 0, tStart], ...LANES.filter(([k]) => ph[k]).map(([k]) => [PHASE_NAME[k], ph[k].started, ph[k].finished]),
+    ["Bedömning", total != null && tm.regler != null ? Math.max(parEnd, total - tm.regler) : parEnd, total != null ? total : parEnd + (tm.regler || 0)]];
+  const TT = Math.max(1, ...gRows.map((g) => g[2] || 0));
+
+  document.title = `${host(rep.url)} – Scanningsverktyg prototyp 1`;
+  const v = C.brist;
+  $("#app").innerHTML = `
+  <div class="rhead"><div><h1>${esc(host(rep.url) || rep.shop)}</h1>
+      <p class="meta num">${esc(date)} · ${plural(nRead, "sida", "sidor")} · ${plural(steps.length, "kassasteg", "kassasteg")}${total != null ? ` · ${total} s` : ""} · <span class="mode">${esc(aiMode(rep.ai))}</span></p></div>
+    <a class="lnk play" href="#/scan/${encodeURIComponent(id)}/replay">${ICON.play}Spela upp granskningen</a></div>
+  <section class="card sum">
+    <div class="verdict${v ? "" : " clean"}"><div class="big num ${v ? "c-brist" : "c-ok"}">${v}</div><div class="lbl">${v === 1 ? "brist" : "brister"}</div>
+      ${v ? "" : `<p class="lead">Inga brister i det vi kunde läsa.</p>`}
+      <div class="vrows">${[["osaker", "osäkra att titta på"]].filter(([k]) => C[k]).map(([k, t]) =>
+        `<button data-goto="${k}"><span class="c-${k}">${icon(k)}</span><b class="num">${C[k]}</b><span>${t}</span></button>`).join("")}</div></div>
+    <div class="overview">
+      <div class="legend" id="legend">${ORDER.filter((k) => C[k]).map((k) => `<button aria-pressed="true" data-k="${k}">${chip(k, null, C[k])}</button>`).join("")}</div>
+      ${stackHtml(C)}
+      <div class="board" id="rboard">${Object.entries(bySection(RES.map((r) => ({ id: String(r.id), label: r.label })))).map(([s, L]) =>
+        `<div class="sec"><span class="lab">${s} ${esc(SECTIONS[s])}</span><div class="row">${L.map((p) => pcBtn(p.id, kOf(byId[p.id]))).join("")}</div></div>`).join("")}</div>
+      <div class="caption" id="cap"></div>
+    </div>
+  </section>
+
+  ${C.brist ? `<h2 id="sec-brist">Brister <span class="n num">${C.brist}</span></h2>${list("brist").map(bristCard).join("")}` : ""}
+  ${C.granska ? `<h2 id="sec-granska">Granska <span class="n num">${C.granska}</span></h2>${list("granska").map(bristCard).join("")}` : ""}
+  ${C.osaker ? `<h2 id="sec-osaker">Osäkra <span class="n num">${C.osaker}</span></h2><ul class="rows card">${list("osaker").map(row).join("")}</ul>` : ""}
+
+  <h2>Underlaget</h2>
+  <div class="tiles">
+    <div class="card tile"><b class="num">${nRead}</b><span>sidor lästa</span></div>
+    <div class="card tile"><b class="num">${nProd}</b><span>produkt och kampanj</span><small>${rep.sampling && rep.sampling.tried ? `stickprov av ${rep.sampling.tried} provade` : "stickprov"}</small></div>
+    <div class="card tile"><b class="num">${steps.length}</b><span>kassasteg</span><small>${co ? (reached ? "stannade före köpknappen" : esc(co.reached || "")) : "kassan lästes inte"}</small></div>
+    <div class="card tile"><b class="num">${gallery.length}</b><span>skärmbilder</span></div>
+    <div class="card tile"><b class="num">${nQuotes}</b><span>citat</span></div>
+  </div>
+  <div class="dash">
+    <section class="card widget"><p class="k"><span>Tid per del</span></p>
+      <div class="gantt">${gRows.map(([l, a, b]) => `<span>${esc(l)}</span><span class="tr"><i style="left:${(a || 0) / TT * 100}%;width:${Math.max(1, ((b || 0) - (a || 0)) / TT * 100)}%"></i></span><span class="s num">${secs((b || 0) - (a || 0))}</span>`).join("")}
+        <span></span><span class="ax num"><span>0 s</span><span>${Math.round(TT / 2)} s</span><span>${Math.round(TT)} s</span></span><span></span></div></section>
+    <section class="card widget"><p class="k"><span>Sida → krav</span></p>
+      <table class="p2p">${prow.map((x) => `<tr><td><button class="pg" data-page="${x.i}"><b>${esc(x.p.kind === "kassa" ? "Kassan" : KIND[x.p.kind] || x.p.kind)}</b><span>${esc(path(x.p.final_url || x.p.url))}</span></button></td>
+        <td><div class="ch">${x.L.slice().sort((a, b) => rank(a.k) - rank(b.k)).map((l) => pcBtn(l.id, l.k)).join("")}</div></td></tr>`).join("")}
+        ${noQuote ? `<tr><td colspan="2" class="note">+ ${plural(noQuote, "läst sida", "lästa sidor")} utan citat</td></tr>` : ""}</table></section>
+  </div>
+
+  ${gallery.length ? `<h2>Skärmbilder <span class="n num">${gallery.length}</span></h2><div class="gallery">${gallery.map((g) =>
+    `<button data-img="${esc(g.src)}" data-cap="${esc(g.cap)}"><img alt="" src="${esc(g.src)}" loading="lazy"><span>${esc(g.cap)}</span></button>`).join("")}</div>` : ""}
+
+  <h2>Övrigt</h2>
+  ${fold("ok", "Uppfyllda")}${fold("intyg", "Kräver intyg")}${fold("testkop", "Kräver testköp")}${fold("na", "Ej tillämpliga")}${fold("kik", "Ej kontrollerade")}
+  ${followed.length ? `<section class="card fold follow"><p class="fh">${chip("kik", "Följs upp över tid")}</p><ul class="flw">${followed.map((r) =>
+    `<li id="p-${esc(r.id)}"><span class="id num">${esc(r.id)}</span> ${esc(r.label)}: kontrolleras i kommande skanningar${r._first ? ` (första ${esc(r._first)})` : ""}</li>`).join("")}</ul></section>` : ""}`;
+
+  /* interactions */
+  const app = $("#app");
+  app.onclick = (ev) => {
+    const t = ev.target.closest("[data-page],[data-img],[data-jump],[data-goto]");
+    if (!t) return;
+    if (t.dataset.jump) { jumpTo(t.dataset.jump); return; }
+    if (t.dataset.goto) { const k = t.dataset.goto; const el = $("#sec-" + k) || $(`.fold[data-k="${k}"]`); if (el) { if (el.tagName === "DETAILS") el.open = true; el.scrollIntoView({ behavior: RM ? "auto" : "smooth", block: "start" }); } return; }
+    if (t.dataset.img) { openImage(t.dataset.img, t.dataset.cap); return; }
+    if (t.dataset.page != null) openPage(rep, Number(t.dataset.page), t.dataset.q || null, links, byId);
+  };
+  const cap = $("#cap");
+  $$("#rboard .pc").forEach((b) => {
+    const show = () => { const r = byId[b.dataset.jump], k = kOf(r); cap.innerHTML = `<span class="c-${k}">${ST[k][0]}</span> · <b>${esc(r.id)} ${esc(r.label)}</b>${r.summary ? " · " + esc(r.summary) : ""}`; };
+    b.onmouseenter = show; b.onfocus = show;
+  });
+  $$("#legend button").forEach((b) => b.onclick = () => {
+    b.setAttribute("aria-pressed", b.getAttribute("aria-pressed") === "true" ? "false" : "true");
+    const on = $$("#legend button[aria-pressed=true]").map((x) => x.dataset.k);
+    $$("#rboard .pc").forEach((c) => c.classList.toggle("dimmed", !on.includes(kOf(byId[c.dataset.jump]))));
+  });
+}
+function jumpTo(pid) {
+  const el = document.getElementById("p-" + pid); if (!el) return;
+  closeDrawer();
+  const f = el.closest("details.fold"); if (f) f.open = true;
+  const d = el.querySelector("details"); if (d) d.open = true;
+  el.scrollIntoView({ behavior: RM ? "auto" : "smooth", block: "center" });
+  el.classList.remove("hl"); void el.offsetWidth; el.classList.add("hl");
+}
+
+/* ================= drawer: the page as we read it, quote marked ================= */
+const pageCache = {};
+let lastFocus = null;
+function showDrawer(title, link, body) {
+  lastFocus = document.activeElement;
+  $("#dr-title").textContent = title;
+  const a = $("#dr-link");
+  if (link) { a.hidden = false; a.href = safeUrl(link); a.innerHTML = `${esc(link)} ${ICON.ext.replace("<svg", '<svg width="11" height="11"')}`; } else a.hidden = true;
+  $("#dr-body").innerHTML = body;
+  $("#drawer").hidden = false; $("#scrim").hidden = false;
+  $("#dr-x").focus();
+}
+function closeDrawer() {
+  if ($("#drawer").hidden) return;
+  $("#drawer").hidden = true; $("#scrim").hidden = true;
+  if (lastFocus && document.contains(lastFocus)) lastFocus.focus();
+}
+$("#dr-x").onclick = closeDrawer;
+$("#scrim").onclick = closeDrawer;
+document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeDrawer(); });
+$("#dr-body").addEventListener("click", (e) => {
+  const t = e.target.closest("[data-jump]"); if (t) jumpTo(t.dataset.jump);
+});
+function openImage(src, cap) {
+  showDrawer(cap || "Skärmbild", null, `<img class="full" alt="${esc(cap || "Skärmbild")}" src="${esc(src)}">`);
+}
+async function openPage(rep, n, quote, links, byId) {
+  const meta = (rep.pages || [])[n] || {};
+  const title = `${meta.kind === "kassa" ? "Kassan" : KIND[meta.kind] || "Sida"} · ${path(meta.final_url || meta.url)}`;
+  showDrawer(title, meta.final_url || meta.url, `<p class="dim">Hämtar sidans text …</p>`);
+  const key = rep.id + "/" + n;
+  let page;
+  try { page = pageCache[key] = pageCache[key] || await api(`/api/scans/${encodeURIComponent(rep.id)}/pages/${n}`); }
+  catch (e) { $("#dr-body").innerHTML = `<p class="err">Kunde inte hämta sidan: ${esc(e.message)}</p>`; return; }
+  if ($("#drawer").hidden) return;
+  const text = page.text || "", span = quote ? locate(text, quote) : null;
+  const rel = links.filter((l) => l.p === n).sort((a, b) => ORDER.indexOf(a.k) - ORDER.indexOf(b.k));
+  const fetched = rep.finished ? new Date(rep.finished).toLocaleDateString("sv-SE", { day: "numeric", month: "short", year: "numeric" }) : "";
+  $("#dr-body").innerHTML = `
+    <p class="hit">${quote ? (span ? "Citatet är markerat." : "Citatet hittades inte exakt i texten.") : "Sidans text som vi läste den."} Hämtad ${esc(fetched)}.</p>
+    <div class="ptext">${renderText(text, span)}</div>
+    ${rel.length ? `<div class="rel"><p class="k">Krav som bygger på sidan</p><div class="row">${rel.map((l) =>
+      `<button class="pc st-${l.k}" data-jump="${esc(l.id)}" title="${esc(l.id + " " + (byId[l.id] || {}).label)}">${icon(l.k)}${esc(l.id)}</button>`).join("")}</div></div>` : ""}`;
+  const m = $("#dr-body mark");
+  if (m) requestAnimationFrame(() => { const b = $("#dr-body"); b.scrollTop += m.getBoundingClientRect().top - b.getBoundingClientRect().top - b.clientHeight / 3; });
+}
+</script>
+<script>document.getElementById("theme").onclick=()=>{const d=document.documentElement;const dark=d.dataset.theme!=="dark";if(dark)d.dataset.theme="dark";else delete d.dataset.theme;try{localStorage.setItem("theme",dark?"dark":"light")}catch(e){}};</script>
+</body>
+</html>

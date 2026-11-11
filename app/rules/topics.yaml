@@ -1,0 +1,69 @@
+# Ämnen per mening (app/text/topics.py). En mening får ämnet om meningen själv eller rubriken
+# närmast ovanför innehåller ett av orden. Varje värde är en lista med alternativ (sätts ihop med |).
+#
+# Öppet köp och ångerrätt hålls isär: en mening som handlar om öppet köp (i texten eller under en
+# rubrik om öppet köp) och inte själv nämner ångerrätten räknas inte till ångerrätten.
+# "Utöver ångerrätten erbjuder vi 30 dagars öppet köp" handlar om öppet köp.
+
+ångerrätt:
+  - 'ånger'
+  - 'ångra'
+  - 'frånträd'
+öppet köp:
+  - 'öppet köp'
+  - 'öppna köp'
+  - 'bytesrätt'
+  - 'returrätt'
+reklamation:
+  - 'reklam'
+  - 'fel i vara'
+  - 'fel på varan'
+  - 'felaktig'
+  - 'defekt'
+  - 'transportskad'
+  - 'dold\w* (fel|skad)'
+garanti:
+  - 'garanti'
+leverans:
+  - 'leverans'
+  - 'levere'
+  - 'frakt'
+  - 'skickas'
+  - 'ombud'
+  - 'utlämning'
+återbetalning:
+  - 'återbetal'
+  - 'krediter'
+  - 'pengarna tillbaka'
+personuppgifter:
+  - 'personuppgift'
+  - 'integritet'
+  - 'dataskydd'
+  - 'gdpr'
+  - '\bcookie'
+företag:
+  - 'organisationsnummer'
+  - '\borg\.? ?nr'
+  - 'momsreg'
+  - '\bsäte\b'
+  - 'bolagsnamn'
+företagskund:
+  - 'företagskund'
+  - 'näringsidkare'
+  - 'juridisk person'
+  - '\bB2B\b'
+ARN:
+  - '\bARN\b'
+  - 'reklamationsnämnd'
+betalning:
+  - 'betalning'
+  - 'betalsätt'
+  - 'betala'
+  - 'faktura'
+  - 'delbetal'
+  - '\bswish\b'
+  - '\bklarna\b'
+  - 'kortbetal'
+
+# Den del av en mening som nämner ångerrätten bara för att ställa något annat bredvid den.
+ånger_bredvid: 'utöver (den lagstadgade |vår )?ångerrätt\w*( i [§\d.]+)?'

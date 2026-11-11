@@ -1,0 +1,27 @@
+[
+ {
+  "kind": "fall",
+  "shop": "exempelbutiken.example",
+  "quote": "När du har meddelat att du ångrar dig har du 14 dagar på dig att skicka tillbaka varan.",
+  "page": "02_retur.txt",
+  "quote_checked": true,
+  "state": "uppfyllt",
+  "why": "Returtiden är 14 dagar räknat från ångermeddelandet, som kravet säger.",
+  "source": "Fiktivt exempel",
+  "status": "godkänd",
+  "certainty": "granskare"
+ },
+ {
+  "kind": "fall",
+  "shop": "exempelhandeln.example",
+  "quote": "Returen ska ha kommit fram till vårt lager senast 10 dagar efter att du tog emot varan.",
+  "page": "01_villkor.txt",
+  "quote_checked": true,
+  "state": "brist",
+  "why": "Tiden räknas från leveransen och gäller när returen ska vara framme, så kunden får inte 14 dagar efter ångermeddelandet.",
+  "source": "Fiktivt exempel",
+  "status": "utkast",
+  "certainty": "forslag_godkant",
+  "kommentar": "Utkast: når inte AI-domaren förrän status är godkänd."
+ }
+]

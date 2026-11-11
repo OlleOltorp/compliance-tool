@@ -1,0 +1,169 @@
+{
+ "general": [
+  "Motsägelse: bryter en sida som kunden når (villkor, retursida, FAQ, kundtjänst, hjälp, PDF) mot kravet är det brist, även om en annan sida är rätt. Citera den felaktiga sidan. En sida som bara nås via sitemap räknas inte.",
+  "Bestäm där bevisen är tydliga. Osäker bara när texten verkligen inte räcker eller principen säger gråzon."
+ ],
+ "unread": [
+  "En rubrik eller länk vars text inte går att läsa (hopfälld sektion, tom under rubriken) är inget belägg. Svara aldrig brist på bara en rubrik; svara kunde inte kontrolleras.",
+  "Finns rubriken för det som krävs (t.ex. Tvist, Ångerrätt) men texten under den saknas även efter hämtning, och uppgiften finns inte på någon annan sida: kunde inte kontrolleras, aldrig brist.",
+  "Visar en sida bara botspärr, väntesida eller felmeddelande: den säger inget om vad butiken har. Svara kunde inte kontrolleras om ingen annan läst sida avgör punkten, inte ej tillämplig eller uppfyllt.",
+  "Uppfyllt får inte bygga på att inget säger emot Svensk Handel när butikens eget avsnitt om ämnet (t.ex. Reklamation, Ångerrätt) inte gick att läsa: svara kunde inte kontrolleras eller behåll regelmotorns beslut."
+ ],
+ "points": {
+  "7.2": [
+   "Brist: texten säger uttryckligen att ångerrätten kräver oanvänd vara, oöppnad (obruten) förpackning eller originalskick (även om det bara står på en annan sida, t.ex. retursida eller gammal PDF). Obruten förpackning betyder oöppnad; krav på originalförpackning eller originalemballage bedöms enligt raden om originalförpackning nedan.",
+   "Värdeminskningsavdrag för hantering är tillåtet om kunden informerats före köpet.",
+   "Bruten försegling är lagligt undantag bara för varor som förseglats av hälso- eller hygienskäl eller för ljud/bild/datorprogram. Ett undantag för \"varor med bruten försegling\" utan den avgränsningen och utan hälso- eller hygiengrund, i en butik som också säljer annat (kläder, leksaker, böcker, köksredskap), är bredare än lagen: brist. Det gäller också när huvudvillkoren är rätt men en sida kunden når är fel. Villkor som uttryckligen gäller öppet köp ger inte brist.",
+   "Bruten försegling eller förpackning med hälso- eller hygiengrund i samma eller nästa mening (\"Sådana varor kan inte returneras på grund av hälso- och/eller hygienskäl\") är lagens undantag: ingen brist under 7.2. Hela varugrupper (livsmedel, dagligvaror) bedöms under 7.1a. Säljer butiken bara förseglade förbrukningsvaror (snus, vape/e-cigaretter, livsmedel, kosmetika) är krav på oöppnad vara lagens undantag: ingen brist, om texten inte också kräver oanvänd vara eller originalskick i allmänhet.",
+   "Krav på oanvänd vara under rubriken Ångerrätt, som kunden rimligen läser som ångerrätt: brist. Står kravet i ett returavsnitt som nämner varken ångerrätt eller öppet köp: brist om butiken inte erbjuder öppet köp (då är returen ångerrätten), annars inte brist.",
+   "Villkor för företagskunder räknas inte.",
+   "En avgift eller ett avdrag för att förpackningen eller varan inte är i ursprungligt skick nekar inte ångerrätten. Brist kräver att texten säger att returen nekas eller inte krediteras på grund av varans eller förpackningens skick, eller att ångerrätten upphör eller gäller bara oanvända varor. Krav i ett avsnitt som själv hänvisar till öppet köp-fristen (\"inom de 30 dagarna som öppet köp-regeln gäller\") eller till köp i butik gäller inte ångerrätten.",
+   "Undantag för en hel varugrupp eller produkttyp utan villkor om varans skick (färskvara, livsmedel, produkter mot vägglöss, reavaror, beställningsvaror) bedöms under 7.1a, inte 7.2: inte brist här.",
+   "Ett hygienundantag för en namngiven varutyp (strumpor, underkläder, badkläder, örhängen, parfym) som kräver obruten förpackning/försegling eller oanvänd vara är en fråga om lagens förseglingsundantag och bedöms under 7.1a, inte 7.2. Utan hygiengrund är ett skickvillkor för en produkttyp brist under 7.2 (t.ex. \"ångerrätt gäller endast skärmskydd som inte än använts\").",
+   "Citera inte stycken om reklamation eller saknade varor. Att returen nekas för vara som \"använts\" eller ligger i \"bruten förpackning\" utan hälso- eller hygiengrund går utöver lagens förseglingsundantag: brist. Bruten försegling eller förpackning med hälso- eller hygienskäl är ingen brist.",
+   "Ett krav eller en uppmaning om originalförpackning/originalemballage där samma eller nästa mening anger ett avdrag eller delåterbetalning som följd (\"kan du endast få en del av köpbeloppet tillbaka\", \"kan leda till en minskning av varans värde\") är värdeminskningsavdrag, inte nekad ångerrätt: inte brist. \"Var uppmärksam på att\" och \"vi rekommenderar\" är råd, inte villkor. \"Returer utan originalförpackning godkänns inte\" är brist.",
+   "När ångerrättsavsnittet hänvisar till ett returavsnitt bara för praktiska frågor (returporto, returalternativ, hur returen görs) blir det avsnittets skickvillkor inte villkor för ångerrätten. Erbjuder butiken öppet köp eller längre returrätt och står skickvillkoret utan ångerrättsord: inte brist. Säger ångerrättsavsnittet att returavsnittets villkor gäller vid ångerrätt är skickvillkoret där brist."
+  ],
+  "7.1a": [
+   "Brist: undantag från ångerrätten som inte finns bland distansavtalslagens undantag (beloppsgräns, rea/outlet, begagnat, hela varugrupper utan försegling, en produkttyp utan grund).",
+   "Varor tillverkade eller anpassade efter kundens mått eller anvisningar (måttbeställt, specialtillverkat, gravyr) är lagens undantag: inte brist. \"Specialbeställda varor\" eller \"beställningsvaror\" utan mer kan betyda sådana varor: inte brist. Brist bara när texten säger att varan är en vanlig vara som tas hem särskilt (t.ex. \"varor som inte finns i lager\").",
+   "Meningar om öppet köp eller returfrakt är inga undantag. Saknad undantagslista är ingen brist om inget undantaget säljs.",
+   "Ingen information om att ångerrätt finns: brist.",
+   "Hygien- eller förseglingsundantag för en namngiven varutyp bedöms här.",
+   "Ett undantag på en sida kunden når (produktsida, kampanjsida) räknas som villkorens, även när huvudvillkoren är rätt.",
+   "En varutyp som undantas helt \"av hygienskäl\" utan att undantaget knyts till bruten försegling är brist, även om en senare mening ställer krav på obruten förpackning eller oanvänd vara vid retur (t.ex. \"Av hygienskäl är produkter som strumpor undantagna från ångerrätten\").",
+   "Skälet ska nämna bara de undantag som faktiskt står i texten (t.ex. \"begagnade varor\"), inte en hel lista av möjliga undantag. Beskriver texten ångerrätt men undantar varor, skriv att ångerrätten undantar varor som lagen inte undantar, inte att information om ångerrätt saknas."
+  ],
+  "6.2": [
+   "Brist: uttrycklig friskrivning från förseningar, även via fraktbolaget/transportören, eller generellt utesluten ersättning vid försening.",
+   "Force majeure för händelser utanför butikens kontroll är ingen friskrivning.",
+   "\"Vi reserverar oss för förseningar som beror på yttre omständigheter som vi inte kan påverka\" är force majeure, ingen friskrivning, så länge transportör eller leverantör inte nämns som orsak.",
+   "\"Om inte annat avtalats\" plus rätt till ersättning vid försening: inte brist. En fotnot som bara säger varifrån leveranstiderna kommer (t.ex. \"togs från PostNords och UPS webbsidor och beror inte på oss\"), utan ord om ansvar, ersättning eller försening, är ingen friskrivning. Ger villkoren rätt att häva köpet vid försening, eller nämns ingen friskrivning, är det uppfyllt.",
+   "Förbehåll att ändra leveranstiden där kunden då får ändra eller annullera ordern är ingen friskrivning.",
+   "Uttrycklig friskrivning kräver ord som tar bort ansvar eller rättighet: ansvarar inte/inget ansvar, reserverar oss/förbehåller oss (för förseningar), friskriver, ersätter/kompenserar inte, (leverans)ansvaret övergår till/ligger hos transportören, befrias. \"Vi kan inte garantera leveranstiden\", \"detta beror på transportören\", \"detta är tyvärr inget vi kan påverka\" utan sådana ord är information, inte friskrivning: uppfyllt när villkoren lovar kontakt eller hävning vid försening. Hävningsrätt med förbehåll (\"kan ha rätt att häva\", \"i vissa situationer\", \"vid väsentlig försening\") räknas som hävningsrätt; lagen kräver själv väsentlig försening.",
+   "En force majeure-klausul där händelserna ges som exempel på omständigheter utanför säljarens kontroll (\"som säljaren inte kunnat råda över, exempelvis …\") är force majeure även om listan nämner tekniska problem, driftstörningar eller transportproblem. Underleverantörens fel eller försening är tillåtet när det självt ska bero på en sådan omständighet (\"på grund av omständighet som här angivits eller som denne inte kunnat råda över\"). Brist bara när leverantörens eller transportörens uteblivna leverans räknas som befrielsegrund i sig."
+  ],
+  "8.2": [
+   "Brist om information om reklamationsrätten saknas eller tydligt motsäger Svensk Handel (t.ex. kortare tid än tre år, fel information om tiden).",
+   "Exemplen (3 år, skälig tid/2 månader, rättigheter vid fel) är inte tvingande var för sig; liten avvikelse när huvudinformationen följer SH: inte brist.",
+   "Fast frist för att anmäla synliga transportskador (t.ex. \"inom 4 dagar\") utan uttalad förlust av rättighet: inte brist. Detsamma gäller uppmaning till snabb kontakt (\"genast\").",
+   "Brist: kort frist för dolda fel eller saknade varor (t.ex. 48 timmar) som säger emot skälig tid, eller en frist som säger att rätten går förlorad.",
+   "En sida som bara nås via sitemap räknas inte.",
+   "Kortare tid än tre år för reklamationsrätten på en sida kunden når är brist även med ”minst” eller ”enligt lag” (t.ex. ”enligt lag minst två års reklamationsrätt”), och även om villkoren anger tre år.",
+   "Skriv bara att rätten går förlorad om texten säger det (\"kan inte\", \"förlorar\", \"ersätts inte\", \"regleras inte\"). En fast frist räknad från upptäckt (t.ex. 7 dagar) är kortare än skälig tid (normalt två månader): brist.",
+   "Saknas information om vad reklamationsrätten innebär (tre år, skälig tid) och står bara \"kontakta oss omgående\": skälet är att informationen saknas; \"omgående\" är ett tilläggsfel.",
+   "\"Kontakta oss omedelbart/omgående\" vid fel eller skada utan uttalad rättsförlust är en uppmaning, inte brist, när villkoren anger tre år och skälig tid (eller två månader). Brist bara när uppmaningen ersätter skälig tid (ingen annan information om tiden) eller kommer med att rätten går förlorad, t.ex. en transportörs sjudagarsregel med att skadan annars inte ersätts; nämn de orden i skälet."
+  ],
+  "8.3": [
+   "Butikens egen garanti som inte är mer fördelaktig än lagen (t.ex. 12 månader eller 1-2 år utan något utöver reklamationsrätten): brist.",
+   "\"X års garanti\" i villkoren eller på en produktsida räknas som butikens egen garanti om inte tillverkaren uttryckligen anges som den som lämnar garantin.",
+   "Brist om garantitexten ersätter eller begränsar reklamationsrätten, t.ex. att reklamationsrätten förverkas vid ägarbyte, inte kan överlåtas eller upphör på villkor som lagen inte ställer. Läs hela garantistycket, inte bara garantins omfattning; en bra garanti väger inte upp en begränsad reklamationsrätt. Fel i reklamationsstycket (frist, bevisbörda, \"efter sex månader ska du bevisa\") bedöms under 8.2, inte 8.3, om inte samma mening nämner garantin. Garantitext som sätter villkor på åtgärder under den lagstadgade reklamationstiden (kostnadsförbehåll, 'förutsatt att … utan extra utlägg för oss', säljaren väljer 'efter egen bedömning', kunden debiteras) begränsar reklamationsrätten: brist, även om garantin i övrigt är bra och sägs gälla utöver lagen. Villkor för tiden efter reklamationsrätten ('Efter utgången av den lagenliga reklamationsrätten … bekostas inte') är garantins egna begränsningar och är tillåtna.",
+   "Tillverkarens garanti som villkoren själva beskriver (garantigivare, längd eller vad den gäller): omfattning och begränsningar ska framgå; beskrivs de: uppfyllt, annars brist. Villkor som bara säger hur garantiärenden hanteras (\"Om produkten har garanti, kontakta oss; vi skickar den till berörd leverantör\") beskriver ingen garanti: ej tillämplig, inte brist. Kravet att vara bättre än lagen gäller butikens egen garanti.",
+   "Ingen garanti nämns alls: ej tillämplig.",
+   "En garanti som bara står som kort etikett på en produktsida (\"3-års garanti\", \"Robert Welchs livstidsgaranti\") när villkoren hänvisar garantiärenden till tillverkaren eller inte ger någon egen garanti är tillverkarens: ej tillämplig, inte brist.",
+   "\"Garantin täcker endast ursprungliga fabrikationsfel\" utan angiven tid över tre år ger inget utöver reklamationsrätten: brist.",
+   "Samma text på två sidor (villkorssida och PDF) är ingen motsägelse."
+  ],
+  "9a": [
+   "SH kräver en rutin; utifrån kan vi bara se om villkoren säger emot den.",
+   "Brist: fast regel om längre tid än 14 dagar (t.ex. 30 dagar), även på retursidan; utfrakt återbetalas aldrig; återbetalning bara som presentkort vid ånger.",
+   "Brist: fristen räknas från mottagen retur (\"inom 14 dagar efter att vi mottagit returen\", \"från det att returen mottagits och godkänts\") i stället för från ångermeddelandet. Att butiken håller inne pengarna tills varan eller bevis om retur kommit är tillåtet, om fristen ändå räknas från ångermeddelandet. Avdrag för returfrakt som anges i förväg: inte brist.",
+   "Brist också när återbetalningen villkoras av ett steg efter mottagandet (\"så snart en godkänd retur mottagits\", \"efter att vi hanterat er retur\", \"när varan mottagits och registrerats\") och ingen frist räknad från ångermeddelandet anges på samma sida. Bara \"när vi fått tillbaka varan\" (butiken håller inne pengarna) är inte brist.",
+   "Tystnad om utfrakten är inte brist. \"Summan för de returnerade varorna\" i text om delretur är inte brist när samma sida säger att beloppet återbetalas.",
+   "Gäller inte öppet köp, outhämtade paket eller delretur.",
+   "Avdrag för varans eller förpackningens skick bedöms under 7.2, inte 9a, när återbetalningens tid och belopp i övrigt följer kravet.",
+   "Brist: i ångerdelen återbetalas bara varans pris (\"det du betalat för varan\", \"varans pris\") eller en fast frakt behålls för ett leveranssätt (\"Vid hemleverans tillkommer frakten på 59 kr\"), utan att texten säger att det bara är merkostnaden för ett dyrare val. \"Inklusive frakt\" under reklamation (9b) gäller inte ånger; läs stycket under ångerrubriken."
+  ],
+  "14a": [
+   "Brist bara om ingen information om personuppgifter finns, om texten är mycket knapp (ett par meningar) eller om texterna säger emot varandra.",
+   "GDPR:s innehållslista (ändamål, lagringstid m.m.) är inte SH:s krav; ofullständighet är inte brist. Ingen kryssruta krävs.",
+   "Texterna säger emot varandra också när villkor och integritetspolicy anger olika bolag (olika AB-namn) som ansvariga för personuppgifterna: brist. Ett varumärke utan bolagsform, en betal- eller fraktpartner eller uttryckligt gemensamt ansvar är ingen motsägelse."
+  ],
+  "7.1d": [
+   "Informationen ska säga att varan skickas tillbaka inom 14 dagar från ångermeddelandet.",
+   "Brist: ingen returtid för ångerrätten alls, även om öppet köp eller en lång returrätt (t.ex. 365 dagar) har en egen tid. Öppet köp-tiden räknas inte som information om ångerrätten.",
+   "Brist: kortare tid än 14 dagar, eller en frist som kan bli kortare än 14 dagar från ångermeddelandet.",
+   "Returtid för ångerrätten räknad från mottagandet som aldrig blir kortare än 14 dagar från ångermeddelandet (t.ex. minst 28 dagar från mottagandet) ger kunden minst lagens tid: uppfyllt.",
+   "Citera inte meningar om reklamation eller saknade varor i leveransen; de gäller inte ångerrättens återbetalning. \"14 dagar från det att du fått varan\" räknar från mottagandet, inte från ångermeddelandet: brist.",
+   "En tid för när varan ska ha kommit fram till butiken (tillhanda, finnas på lagret, ha inkommit) eller en tid räknad från butikens godkännande av returen, returnummer eller ärende är inte information om att varan får skickas inom 14 dagar från ångermeddelandet. Uppfyllt bara om tiden är minst 28 dagar; kortare: brist. Anta aldrig normal frakttid, och likställ inte butikens godkännande med ångermeddelandet.",
+   "En avgift för sen retur (t.ex. ”om returen kommer senare än 14 dagar tillkommer 195 kr”) minskar återbetalningen och bedöms under 9a, inte 7.1d."
+  ],
+  "5a": [
+   "Köpknappen är den sista knappen i kassan som slutför köpet, även när den står i betalföretagets ram. Läs Köpknapp och Text vid knappen i checkout.md.",
+   "Uppfyllt: knapptexten visar att beställningen kostar pengar, t.ex. Köp, Slutför köp, Betala, Betala nu, Betala köp, Köp och betala, \"Betala 382 kr\". Bedöms på betydelse, inte exakt ordlista.",
+   "Brist: knapptext som inte visar att beställningen kostar pengar, t.ex. Beställ, Skicka beställning, Lägg order, Fortsätt, Registrera. Svensk Handels FAQ: \"Beställ nu\" räcker normalt inte.",
+   "Säger kassans text vad köpknappen heter (\"Genom att klicka på ”Betala köp” ...\") räknas det namnet när knappen själv inte syntes.",
+   "En knapp som står på flera produktkort (t.ex. \"Köp\" under Andra köpte även) är inte kassans köpknapp."
+  ],
+  "5b": [
+   "Kravet gäller butikens egna allmänna villkor i samband med beställningen, t.ex. kryssruta eller länk vid köpknappen. Läs Villkorslänkar i checkout.md, framför allt i steget med köpknappen.",
+   "Uppfyllt: kryssruta eller länk till butikens villkor i kassan före köpknappen, eller direkt vid knappen i samma formulär eller betalram (inom ett par hundra px, t.ex. \"Genom att slutföra köpet godkänner jag ... butikens allmänna villkor\" under knappen).",
+   "Uppfyllt: kassans egen sidfot direkt under köpknappen med en länk till butikens villkor (t.ex. Shopify-kassans rad \"Återbetalningspolicy · Frakt · Integritetspolicy · Användarvillkor\" under \"Köp nu\") räknas som visad vid beställningen. Kryssruta eller text vid knappen krävs inte.",
+   "Brist: villkorslänken finns bara i webbplatsens sidfot, meny eller sidhuvud (inte kassans egen sidfot), eller långt nedanför köpknappen efter annat innehåll.",
+   "Brist: inga allmänna villkor vid beställningen, bara betalföretagets villkor (Klarna, Kustom, Qliro, Svea m.fl.), eller en villkorslänk som inte leder till villkoren (felsida, startsidan, integritetspolicyn, ingen villkorstext)."
+  ],
+  "3.2a": [
+   "Priser räknas som inklusive moms om inget annat anges; saknad märkning \"inkl. moms\" är ingen brist (Svensk Handels FAQ). Visade priser för privatpersoner inklusive moms: uppfyllt.",
+   "Brist: konsumentpriset visas bara exklusive moms, eller en avgift syns först efter köpet.",
+   "Totalen före köpknappen ska innehålla moms, skatter och avgifter. Är totalen högre än produktpriset: räkna efter med prisraderna i checkout.md (frakt, fraktval, tillval, avgifter). Förklaras skillnaden av rader som syns i kassan: uppfyllt. Frakt och avgifter som egna rader bedöms under 3.2b."
+  ],
+  "3.2b": [
+   "I kassan, före köpknappen, ska tillkommande avgifter, total leveranskostnad, fakturaavgift och eventuell rabatt synas. Läs Prisrader, Vald frakt och Betalsätt i checkout.md.",
+   "Uppfyllt: frakten syns som egen rad eller som valt fraktalternativ med pris (0 kr eller fri frakt räknas), och avgifter som tillkommer syns som egna rader.",
+   "Brist: en avgift eller leveranskostnad som bara står i villkoren och inte syns i kassan.",
+   "Avgift för outhämtat paket hör inte hit (6.1a)."
+  ],
+  "3.2c": [
+   "Gäller bara minsta ordervärde för leverans eller krav på handpenning. Sök i villkor, FAQ, leveranssidor och kassan (minsta ordervärde, minimiorder, lägsta ordervärde, handpenning, förskott). Inget sådant krav: ej tillämplig.",
+   "\"Fri frakt över X kr\" är inget minsta ordervärde.",
+   "Uppfyllt: kravet visas tidigt i beställningen. Visas det först i varukorgen räknas det som tidigt.",
+   "Brist: kravet står bara i villkoren och visas inte i beställningen.",
+   "Ett minsta ordervärde på några kronor, under varje varas pris (t.ex. 1 kr), är inget krav i praktiken: ej tillämplig."
+  ],
+  "12a": [
+   "Gäller betalsätt som kostar extra (fakturaavgift, delbetalningsavgift, kortavgift, administrationsavgift, aviavgift, ränta) eller har en annan begränsning (t.ex. kreditprövning, åldersgräns). Läs Betalsätt öppnade, Betalsätt, Avgifter, Prisrader och Total per valt betalsätt i checkout.md.",
+   "Betalsätt öppnade visar vad varje betalsätt själv visade när skriptet öppnade det. Det är där konsumenten väljer betalsättet och där avgiften ska uppmärksammas.",
+   "Uppfyllt: avgiften anges vid betalsättet (när det öppnas) eller som egen rad i kassan. Betalsätt som uttryckligen är avgiftsfria (\"0 kr\", \"utan avgift\") är uppfyllt.",
+   "Brist: villkoren anger en avgift för ett betalsätt som, öppnat i kassan, inte visar den; eller avgiften är inbakad i totalen utan egen rad.",
+   "Kassan nåddes inte, checkout.md saknas eller betalsättet med avgiften kunde inte öppnas (personnummer, inloggning, minsta ordervärde, spärr): svara kunde inte kontrolleras, aldrig brist bara för att kassan inte syntes.",
+   "Ränta och avgifter i betalföretagets egna kreditvillkor (Klarna/Walley/Qliro kontovillkor, SEKKI, kreditavtal) är inte en avgift butiken lägger på. Visar kassan vid delbetalningen \"Att låna kostar pengar\" eller ränta, eller väljs krediten hos betalföretaget efter omdirigering, är delbetalningen uppfyllt.",
+   "Samma total för alla betalsätt i kassan och ingen avgift i butikens egna texter: uppfyllt.",
+   "Ingen avgift för något betalsätt i kassan eller villkoren: uppfyllt.",
+   "Kassan stannade före betalsteget (leveransval, ålderskontroll med BankID) och inga betalsätt eller betalram syntes: kunde inte kontrolleras."
+  ],
+  "1": [
+   "Brist: olika bolagsnamn på olika sidor (kontaktsida, integritetspolicy, köpvillkor) utan förklaring, så det inte framgår vem kunden avtalar med.",
+   "Andra bolagsnamn i integritetspolicy, medlemsvillkor eller tvistavsnitt är ingen brist på 1 när säljarens namn, org.nr och kontaktuppgifter finns. Olika personuppgiftsansvariga bedöms under 14a."
+  ],
+  "4a": [
+   "Brist: en kampanj eller rea som kunden når från startsidan saknar giltighetstid eller begränsningar, även om andra kampanjer anger sin period.",
+   "En startsidesbanner, rabattkod eller produktsida som leder in i en kampanj (kampanjsidan eller dess undersidor, t.ex. /kampanj-1/massagebadkar) omfattas av den period kampanjsidan anger. ”Även om andra kampanjer anger sin period” gäller en egen, separat kampanj som inte anger sin period på någon sida kunden når.",
+   "Rea kräver ett nedsatt pris eller en rabatt: jämförpris (överstruket, ord. pris, tidigare pris), procent eller belopp. En ensam etikett som ”REA-pris” eller ”Försäljningspris” vid ett enda pris, utan jämförpris, är temats prisetikett: ingen rea, ej tillämplig.",
+   "Följ banners via links/NN.json innan du kräver ett eget datum.",
+   "Paketpris: ett paket som visar delarnas värde (\"Värde X kr\", \"Paketet innehåller\", \"köpt separat\") med procent eller \"Spara\" mot det värdet är ett stående paketpris, ingen rea, och kräver ingen giltighetstid, om inte sidan eller villkoren kallar det kampanj eller tidsbegränsat. Utan ett sådant värde gäller det inte: ett paket eller kit med överstruket jämförpris och procentmärke som listas under en flik eller rubrik som heter Erbjudanden, Rea eller Kampanj är ett erbjudande som kräver giltighetstid. Att villkorens prisgaranti nämner \"paketpriser\" för sig gör det inte till ett stående pris.",
+   "En nedräkning (\"15 dagar kvar\", \"slutar om 3 dagar\") anger giltighetstid, även när texten sitter ihop med rubriken.",
+   "Gåva vid köp omfattas av villkorens allmänna regel om gåvor (\"Samtliga gåvor gäller så länge lagret räcker\").",
+   "En kampanj som nås via en bildbanner på startsidan (länktext saknas eller bara ”Se utbud”, ”Läs mer”) kan ange sin period i bilden. Saknas datum i texten och har du inte sett bannerns bild (start.png) eller alt-text är det inte brist: behåll regelmotorns beslut och skriv i why att perioden kan stå i bilden.",
+   "En enskild nedsatt produkt (prisruta med gammalt och nytt pris, utan rea- eller kampanjrubrik) omfattas av villkorens allmänna regel om nedsatta priser (”tills produkten är slutsåld”, ”så länge lagret räcker”), även på startsidan. Ett tillägg som ”eller andra faktorer” tar inte bort det. Bara en namngiven rea eller kampanj på startsidan kräver egen period.",
+   "”Veckans deal” eller rea utan datum är uppfyllt när villkoren anger att erbjudanden gäller så länge lagret räcker, även ”under en begränsad period eller så länge lagret räcker”."
+  ],
+  "9b": [
+   "Brist: vid reklamation ersätts bara billigaste standardfrakt, eller en avgift (t.ex. rengöringsavgift) kan dras, så hela beloppet ersätts inte.",
+   "Inte brist: ersättning/avdrag för värdeminskning när varan hanterats mer än nödvändigt (t.ex. smutsats ner, använts mer än för att fastställa egenskaperna) är ångerrättens regel och bedöms under 7.2, även om meningen står under reklamationsrubriken; den säger inget om återbetalning för en felaktig vara. Brist bara när ett avdrag uttryckligen tas på den reklamerade felaktiga varan eller frakten undantas.",
+   "Inte brist: tystnad. Villkor som inte nämner frakten eller tiden ('utan onödigt dröjsmål') vid reklamation säger inte emot kravet.",
+   "Inte brist: en uppräkning av konsumentköplagens påföljder (reparera, ny vara, nedsättning av priset, återbetala varan/kostnaden för varan), särskilt i en mening som hänvisar till konsumentköplagen, är ingen uteslutning av frakten.",
+   "Brist: texten utesluter frakten uttryckligen ('frakten återbetalas inte', 'exkl. frakt'), eller räknar upp kostnader som ersätts och utelämnar utfrakten ('återbetalar vi returfrakten samt vad du betalat för varan')."
+  ],
+  "7.1e": [
+   "Uppfyllt: Konsumentverkets standardformulär ges på sajten före köpet: som text eller fil (PDF/Word), eller genom en fungerande länk till formuläret hos Konsumentverket, antingen PDF:en eller Konsumentverkets sida för ångerblanketten (t.ex. publikationer.konsumentverket.se/.../angerblankett). Ett eget webbformulär eller en egen returportal bredvid ändrar inte detta.",
+   "En länk som ger felsvar (404) ger inte formuläret.",
+   "En länk till Konsumentverket som inte gäller ångerblanketten (t.ex. anmalan.konsumentverket.se) ger inte formuläret.",
+   "Brist: formuläret nämns bara (standardblanketten, ångerblanketten) och ges inte på sajten. Att det skickas med orderbekräftelsen räcker inte.",
+   "Brist: butikens eget webbformulär, returportal eller RMA-formulär (även med ett val som \"Köpet har ångrats\") i stället för standardformuläret.",
+   "Är villkorens avsnitt om ångerrätt hopfällt eller oläst: hämta villkorssidan innan du svarar brist.",
+   "Citera bara meningar om ångerrätten (ångerrätt, ångra, frånträda), inte om reklamation. Uppfyllt kräver ett standardformulär för utövande av ångerrätt på sajten; finns det inte: brist.",
+   "Innan du svarar brist: läser du bara en hjälpcenters eller FAQ:s startsida och den länkar en kategori eller artikel om retur eller ångerrätt (links/NN.json) som inte finns i pages/, hämta den; standardblanketten länkas ofta därifrån. Har butikens artiklar om retur och ångerrätt lästs och saknar formuläret står brist. En hämtad kategori- eller sektionssida som bara listar artikelrubriker räknas inte som lästa artiklar: öppna artiklarna om retur och ångerrätt först."
+  ]
+ },
+ "open": []
+}

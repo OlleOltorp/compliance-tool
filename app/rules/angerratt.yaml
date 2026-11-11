@@ -1,0 +1,617 @@
+# 7.1a–7.2 Ångerrätten.
+# Ett värde är ett reguljärt uttryck eller en lista med alternativ (de sätts ihop med |).
+# {NUM} betyder ett tal i siffror eller ord.
+
+EXCL:
+  - 'gäller (heller |dock |däremot |tyvärr )?(ej|inte|aldrig)'
+  - 'undantag'
+  - 'undantas'
+  - 'omfattas (ej|inte|heller inte)'
+  # ”Ångerrätten omfattar inte livsmedel”
+  - '(ånger\w*|ångra\w*) (\w+ )?omfattar (heller )?(ej|inte)'
+  - 'kan (ej|inte) ångras'
+  - 'återtas (ej|inte)'
+  - 'ingen ångerrätt'
+  - 'ej ångerrätt'
+  - 'ångerrätt\w* (gäller )?(ej|inte)'
+  - 'tar (ej|inte) emot retur'
+  - 'går (inte|ej) att (ångra|returnera)'
+  - 'gäller vare sig'
+  # ”Vi tar inte emot livsmedel i retur”
+  - '\btar (vi )?(ej|inte|aldrig) emot\b[^.]{0,60}?\bi retur'
+VALUE:
+  - '(understig\w*|överstig\w*|under|över|mindre än|högre än|lägre än)\s+[^.]{0,30}?\d[\d  .]*\)?\s*(kr|kronor|sek)\b'
+  - '(orderbelopp|ordervärde|beställningsvärde)\w*\s+(under|över|understig|överstig|är lägre|är högre)'
+USED:
+  - 'begagnad'
+  - 'begagnat'
+  - '\bdemo\b'
+  - 'demoex'
+  - 'demo-ex'
+  - 'demonstrationsex'
+  - 'utställningsex'
+  - '\bbeg\.'
+  - 'fyndhörn'
+SEAL:
+  - 'försegl'
+  - 'plomber'
+  - 'bruten'
+  - 'brutits'
+  - 'öppnad'
+  - 'öppnat'
+  - 'obruten'
+  - 'skyddsfilm'
+  - 'förpackning'
+REA:
+  - '\brea\b'
+  - '\brean\b'
+  - 'reavar\w*'
+  - 'reapris\w*'
+  - 'rea-?produkt\w*'
+  - 'realisation'
+  - 'nedsatt\w* (pris|vara|varor|produkt)'
+  - '\boutlet\w*'
+  - 'kampanjvar\w*'
+  - 'kampanjpris\w*'
+FREE_RET:
+  - 'returfrakt'
+  - 'returkostnad'
+  - 'returavgift'
+  - 'fri retur'
+  - 'fria returer'
+  - 'gratis retur'
+  - 'kostnadsfri retur'
+  - 'retursedel'
+  - 'returetikett'
+  - 'fri frakt'
+  - 'fraktkostnad'
+SPECIAL:
+  - 'beställningsvar'
+  - 'specialbeställ'
+  - 'specialorder'
+  - 'utanför (vårt )?ordinarie sortiment'
+  - '(inte|ej) ingår i (vårt )?ordinarie sortiment'
+  - 'ej lagerförd'
+  - 'begränsad returrätt'
+# En vara eller varutyp som undantas från ångerrätten. LAWFUL: lagens skäl för undantag; utan något av dem blir det osäker.
+NAMED_EXCL:
+  - 'ångerrätt\w*\s+(gäller|omfattar)\s+(heller\s+)?(inte|ej|aldrig)\s+(alls\s+)?(för\s+)?(?P<x>[^.:;]{3,80}?)\s*(?=[.!?]|$)'
+  - '^(?P<y>[^.:;]{3,80}?)\s+omfattas\s+(inte|ej)\s+av\s+ångerrätt'
+LAWFUL:
+  - 'tillverk'
+  - 'anvisning'
+  - 'önskemål'
+  - 'personlig'
+  - 'kundunik'
+  - 'profil'
+  - 'kundanpass'
+  - 'anpassa'
+  - 'måttbeställ'
+  - 'skräddarsy'
+  - 'special'
+  - 'förädl'
+  - 'graver'
+  - 'försegl'
+  - 'plomber'
+  - 'hygien'
+  - 'hälso'
+  - 'försämras'
+  - 'färskvar'
+  - 'kylvar'
+  - 'frysvar'
+  - 'oupplösligt'
+  - 'levande'
+  - 'för gammal'
+  - 'hållbarhet'
+  - 'bäst före'
+  - 'presentkort'
+  - 'tjänst'
+  - 'digital'
+  - 'licens'
+  - 'e-bok'
+  - 'gåvokort'
+  - '\btryck'
+  - 'brodera'
+  - 'monogram'
+  - '(ditt|eget|ert) namn'
+  - 'egen (text|design|bild)'
+  - '\bhyr'
+  - 'uthyrning'
+  - 'bokning'
+  - 'nedladd'
+  - 'tidning'
+  - 'tidskrift'
+  - 'biljett'
+  - 'evenemang'
+  - 'alkohol'
+  - 'auktion'
+  - 'ljud'
+  - 'bild'
+  - 'program'
+  - 'läkemedel'
+  - 'recept'
+  - 'företag'
+  - 'förening'
+  - 'myndighet'
+  - 'näringsidkare'
+  - 'juridisk'
+  - 'lag\b'
+  - 'lagen'
+  - 'lagstiftning'
+START:
+  - 'mottar'
+  - 'mottag'
+  - 'tagit emot'
+  - 'tar emot'
+  - 'ta emot'
+  - 'fått'
+  - 'erhåll'
+  - 'levere'
+  - 'ankomst'
+  - 'köpdatum'
+  - 'köptillfälle'
+  - 'kommit fram'
+  - 'mottog'
+  - 'tog emot'
+  - 'leveransdag'
+  - 'utlämn'
+  - 'hämtat ut'
+  - 'hämtar ut'
+  - 'hämtade ut'
+  # ”Ångerfristen löper ut 100 dagar efter dagen då du … tar varan i fysisk besittning” (Konsumentverkets mall)
+  - 'besittning'
+  # ”30 dagars ångerrätt från leveransen”: the delivery is the receipt
+  - '(från|efter)\s+(den\s+)?leveransen\b'
+  # ”från den dag du fick ditt första tidningsexemplar”: för prenumerationer räknas fristen från första leveransen
+  - 'fick (du |ni )?(ditt|din|dina|varan|varorna|paketet|leveransen)\b'
+  - 'först\w* (tidnings)?exemplar'
+# Ångerfristens längd (faktatabellen, 7.1c). START: från när den räknas.
+FRIST:
+  - '{NUM}\s*dagars\s*(lagstadgad\s+)?(ånger|ångerrätt|ångerfrist)'
+  - '(ångerrätt\w*|ångerfrist\w*)\s+(är\s+|gäller\s+)?(i|inom|på|under)\s+{NUM}\s*dagar'
+  - 'ångra\w*\s+(\w+\s+){0,4}?(inom|i)\s+{NUM}\s*dagar'
+  - 'rätt att ångra[^.]{0,90}?inom\s+{NUM}\s*dagar'
+  # Konsumentverkets mall: ”rätt att frånträda detta avtal … inom 14 dagar”, ”Ångerfristen löper ut 14 dagar efter …”
+  - 'rätt att frånträda[^.]{0,60}?(inom|senast)\s+{NUM}\s*dagar'
+  # ”Ångerrättsperioden upphör 14 dagar efter den dag när du: a) har mottagit din vara”
+  - '(ångerfrist|ångerrättsperiod|ångerperiod|ångertid)\w*\s+(löper ut|går ut|upphör)\s+{NUM}\s*dagar'
+  # ”Ångerfristen är 14 dagar och räknas från …”, ”Ångerrätten gäller 14 dagar från orderdatum”
+  - '(ångerrätt\w*|ångerfrist\w*)\s+(är|gäller|löper)\s+{NUM}\s*dagar'
+  # ”Du har 14 dagar på dig att ångra ditt köp”, ”Ångerrätt: 14 dagar från leveransdagen”, ”Ångerrätt 14 dagar från …”
+  - '{NUM}\s*dagar\s+på\s+dig\s+att\s+ångra'
+  - '(ångerrätt|ångerfrist)\w*\s*:\s*{NUM}\s*dagar'
+  - '^\W*(ångerrätt|ångerfrist)\w*\s+{NUM}\s*dagar'
+# Fristen räknas från köpet eller ordern (7.1c, 7.1d): för varor ska ångerfristen räknas från mottagandet och returtiden
+# från ångermeddelandet. Nämns mottagandet eller leveransen också blir startpunkten oklar.
+PURCHASE:
+  - 'köpdatum\w*'
+  - 'köptillfälle\w*'
+  - 'inköpsdatum\w*'
+  - 'inköpsdag\w*'
+  - 'beställningsdag\w*'
+  - 'beställningsdatum\w*'
+  - 'orderdag\w*'
+  - 'orderdatum\w*'
+  - 'beställning(en)? gjordes'
+  - 'från (det att |att |då )?(du |ni )?(har )?(handla|beställ|köpt\b|köpte\b)\w*'
+  - 'dagar\w*\s+(räknat\s+|räknas\s+)?(från|efter)\s+(och med\s+)?(dagen för\s+|datumet för\s+)?(köpet|ordern|beställningen)\b'
+  - '(räknas|räknat|gäller)\s+från\s+(det\s+)?(att|då)\s+(du\s+|ni\s+)?(har\s+)?(lagt|gjort|skickat)\s+(din\s+|er\s+)?(order|beställning)'
+  # ”från det att du lagt din order”, ”från att ordern lagts”, ”räknat från köpdagen”
+  - 'köpdag\w*'
+  - '(från|efter)\s+(det\s+)?(att|då)\s+(du\s+|ni\s+)?(har\s+)?(lagt|lade|gjort|gjorde)\s+(din\s+|er\s+)?(order|beställning)'
+  - '(från|efter)\s+(det\s+)?(att|då)\s+(ordern|beställningen)\s+(har\s+)?(lagts|lades|gjorts|gjordes)'
+# ”Meddelande om detta ska lämnas … senast inom fjorton (14) dagar från det att varan mottagits”; räknas bara i text om ångerrätten
+FRIST_NOTICE: '(meddelande|anmälan)\s[^.]{0,60}?(inom|senast)\s+{NUM}\s*dagar'
+# Fristen för ångermeddelandet med sin startpunkt i samma mening (7.1c), i ord som FRIST inte läser: ”Du har 14 dagar på
+# dig från mottagande av varorna att meddela oss att du ångrar”, ”kontaktar du vår kundtjänst … inom 14 dagar från
+# mottagande av produkten”, ”Du ska inom 14 dagar från mottagandet ge oss beskedet”. Räknas bara när meningen också
+# säger från när (START eller PURCHASE) och inget returverb står inne i träffen (då är det returtiden, 7.1d).
+FRIST_START:
+  - '{NUM}\s*dagar\s+(på\s+dig\s+)?(räknat\s+)?(från|efter)\s+[^.]{0,60}?\batt\s+(\w+\s+){0,2}?(meddela|ångra|underrätta|kontakta|frånträda|utöva|nyttja|utnyttja)\w*'
+  - '(meddela\w*|besked\w*|ångra\w*|kontakta\w*|frånträd\w*|underrätta\w*|anmäl\w*)\b[^.]{0,80}?(inom|senast)\s+{NUM}\s*dagar\s+(räknat\s+)?(från|efter)'
+  - '(inom|senast)\s+{NUM}\s*dagar\s+(räknat\s+)?(från|efter)\s+[^.]{0,60}?(meddela\w*|besked\w*|ångermeddelande\w*|ångra\w*|frånträda)'
+RET:
+  - 'skicka\w*'
+  - 'sänd\w*'
+  - 'returnera\w*'
+  - 'återlämna\w*'
+  - 'lämna\w* tillbaka'
+  - 'återsänd\w*'
+  - 'åter till oss'
+  - 'tillbaka till oss'
+  # ”Returen ska vara oss tillhanda senast 14 dagar efter …”
+  - 'oss tillhanda'
+# Returtiden (faktatabellen, 7.1d): RET skicka tillbaka, PER inom N dagar, NOTICE från ångermeddelandet, RECEIPT från mottagandet.
+# ”Du har sen 14 dagar på dig”, ”Du har 14 dagar från …”, ”inom två veckor” (veckor räknas om till dagar i faktatabellen)
+PER: '(inom|senast|i vart fall|har du|(?:du|ni|kunden|konsumenten) har|har\s+(?:du\s+)?(?:sen|sedan|därefter|då)|senare än)\s+(inom\s+|senast\s+|ytterligare\s+)?(?:en\s+)?{NUM}\s*(/\s*\d+\s*)?(?:kalender|arbets|bank)?(dagar|dagars|veckor|veckors|-dagars\w*)'
+NOTICE:
+  - '(från|efter)[^.]{0,30}?(meddela\w*|underrätt\w*|ångermeddelande\w*|anmäl\w*|frånträda|ångerbesked\w*|ångerärende\w*)'
+  # ”inom 14 dagar från det datum då du informerade oss om att du önskade nyttja ångerrätten”
+  - '(från|efter)[^.]{0,30}?\b(du|ni|jag|kunden|konsumenten|köparen)\s+(har\s+)?(informera|kontakta|mejla|maila|e-posta)\w*\s+(till\s+)?(oss|kundtjänst|kundservice|säljaren|butiken)'
+  - '(från|efter)\s+(det\s+)?(att\s+|då\s+)?(du|ni|jag|kunden|konsumenten|köparen)\s+(har\s+)?(ångrat|ångrar|ångrade|ångra|utövat|utövar|utövade|utnyttjat|utnyttjar|utnyttjade|frånträtt|frånträdde|frånträder)\b'
+  # ”Efter att man har åberopat sin ångerrätt ska man skicka tillbaka varan inom 60 dagar”
+  - '(från|efter)\s+(det\s+)?(att\s+|då\s+)?(du|ni|man|kunden|konsumenten)\s+(har\s+)?(åberopat|åberopar|åberopade)\b'
+  - '(från|efter)\s+(det\s+)?(att\s+|då\s+)?man\s+(har\s+)?(ångrat|ångrade|utövat|utövade|utnyttjat|utnyttjade|meddelat)\b'
+  # passive and noun forms: ”senast 14 dagar efter att ångerrätten har åberopats”, ”från den dag ångerrätten utövades”,
+  # ”från ångerdagen”, ”efter beskedet om ånger”
+  - '(från|efter)\s+(det\s+att\s+|att\s+|den\s+dag\s+(då\s+|när\s+)?|dagen\s+(då\s+)?)?(ångerrätten|ångern|köpet|avtalet)\s+(har\s+)?(utövats|utövades|utnyttjats|utnyttjades|åberopats|åberopades|meddelats|meddelades|anmälts|anmäldes|ångrats|ångrades|frånträtts|frånträddes)\b'
+  - '(från|efter)\s+(den\s+)?(ångerdag|ångerdatum)\w*'
+  - '(från|efter)\s+(beskedet|meddelandet|anmälan)\s+om\s+(ånger\b|ångerrätt|att\s+(du|ni)\s+(vill\s+)?ångra)'
+  # ”inom 14 dagar efter Exempelhandeln.se (556000-0000) fått anmälan om ångerrätt”
+  - '(från|efter)\s+(att\s+|det\s+att\s+)?[^,;]{0,60}?(fått|mottagit|tagit emot)\s+(din\s+|ditt\s+|er\s+|kundens\s+)?(anmälan|meddelande|besked)'
+  # ”När du har meddelat oss att du vill ångra ditt köp ska varan skickas tillbaka … senast inom 14 dagar”
+  # ”När konsument meddelat ånger ska varan skickas tillbaka senast inom 14 dagar”
+  - '\bnär\s+(du|ni|kunden|konsument|konsumenten)\s+(har\s+)?(meddelat|underrättat|anmält|informerat|meddelar|underrättar|informerar)\b'
+  # ”När vi hanterat ditt ärende får du en returfraktsedel …”, ”inom 14 dagar efter din kontakt med kundtjänst”
+  - '\b(när|efter att|sedan)\s+vi\s+(har\s+)?(hanterat|registrerat|behandlat|tagit emot|mottagit)\s+(ditt|din)\s+(ärende|ångerärende|returärende|anmälan|meddelande|ånger)\w*'
+  - '(från|efter)\s+(din|er)\s+kontakt\b'
+# ”Meddela oss att du ångrar dig. Därefter har du ytterligare 14 dagar på dig att skicka tillbaka varan.”
+THEN: '\b(därefter|sedan|efter det|efter detta|från och med då)\b[^.]{0,60}\bytterligare\b'
+RECEIPT: '(från|efter)\s+(det att|den dag|att)?\s*(då\s+)?(du\s+)?(har\s+)?(fått|mottagit|mottog|tagit emot|tog emot|erhållit|fick)'
+# Returtiden räknas från leveransen eller uthämtningen: ”inom 30 dagar från det att varan levererats”, ”efter att du hämtat
+# ut paketet”, ”från mottagandet”. Samma startpunkt som RECEIPT.
+DELIVERED: '(från|efter)\s+(det\s+att\s+|att\s+|då\s+|den\s+dag\s+(då\s+)?|dagen\s+(då\s+)?)?[^.,;]{0,30}?(levererats|levererades|leveransen\b|leveransdag\w*|leveransdatum|hämta\w*\s+ut|uthämtning\w*|mottagande\w*|mottagits|ankomst\w*|kommit fram)'
+# Ångerrätten faller om varan inte skickas tillbaka genast (7.1d brist): ”Rätten att frånträda avtalet gäller inte om
+# varan … inte returneras omgående”, ”Skickas varan inte tillbaka direkt förlorar du ångerrätten”.
+LATE_LOSS: '(inte|ej)\s+(\w+\s+){0,3}?(returneras|skickas\s+(tillbaka|åter|i\s+retur)|återsänds|återlämnas|sänds\s+tillbaka)\s+(till\s+oss\s+)?(omgående|direkt|omedelbart|genast|med\s+en\s+gång)|(returneras|skickas\s+(tillbaka|åter|i\s+retur)|återsänds|återlämnas)\s+(\w+\s+){0,2}?(inte|ej)\s+(\w+\s+){0,2}?(omgående|direkt|omedelbart|genast)'
+LOSS: 'gäller\s+(heller\s+)?(inte|ej)|upphör|bortfaller|förfaller|faller\s+bort|förlora\w*|går\s+förlorad|nekas|neka\b'
+# Ett returfönster på 28 dagar eller mer från mottagandet räcker till 14 dagars ångerfrist och 14 dagars returtid efter
+# ångermeddelandet; utan text om returtiden blir 7.1d då osäker, inte brist. Räknas bara när meningen eller rubriken
+# närmast ovanför ger fönstret som ångerrätten (app/text/facts.py returfonster); öppet köp vid sidan av räknas inte.
+WINDOW: '{NUM}\s*dagar\w*\s+(fri\w*\s+|full\w*\s+)?(öppet köp|öppna köp|returrätt|bytes-? och returrätt|retur\w*)|(öppet köp|öppna köp|returrätt\w*|returnera\w*|skicka\w* tillbaka|retur\w*)[^.]{0,90}?(inom|i|under|på)\s+{NUM}\s*dagar'
+# Butikens eget webbformulär för att ångra eller returnera (7.1e): inte standardformuläret, men det kan innehålla samma
+# uppgifter, så det ger osäker (granskningsriktlinje: eget formulär → osäker).
+OWN_FORM: 'fyll\w*\s+i\s+(dina\s+|era\s+|alla\s+)?(uppgifter\w*|formulär\w*|fälten)\s+(nedan|här nedan|här|ovan)|(genom|via|i|med)\s+(vårt\s+|det\s+|detta\s+)?(webb)?formulär\w*\s+(nedan|ovan|här nedan|på (denna|den här) sida)|fyll\w*\s+i\s+(vårt\s+|det\s+)?(digitala\s+)?(ånger|retur|webb)formulär\w*'
+FORM:
+  - 'standardblankett'
+  - 'standardformulär'
+  - 'ångerblankett'
+  - 'blankett för (utövande av )?ångerrätt'
+  - 'formulär för (utövande av )?ångerrätt'
+  - 'konsumentverkets blankett'
+  # Blanketten under andra namn: ”Konsumentverkets mall för att ångra”, ”standardmallen”, ”ångermall”, ”en mall finns på
+  # Konsumentverkets webbplats”, ”blankett som Konsumentverket tillhandahåller”. Den nämns, så den saknas inte; om den
+  # ges behöver läsas (osäker, inte brist).
+  - 'ångermall\w*'
+  - 'standardmall\w*'
+  - 'konsumentverkets\s+(\w+\s+)?mall\w*'
+  - '\bmall\w*\s+[^.]{0,60}?konsumentverket\w*'
+  - '(blankett|formulär)\w*\s+[^.]{0,30}?konsumentverket\s+(tillhandahåller|har tagit fram|tagit fram|ger ut)'
+FORM_HREF:
+  - 'anger-?blankett'
+  - '%c3%a5ngerblankett'
+  - 'ångerblankett'
+  - 'angerformular'
+  - 'standardformular'
+  - 'standardblankett'
+  - 'withdrawal-?form'
+  - 'angra-?kop.*\.pdf'
+COND_STRONG:
+  - 'oanvänd\w*'
+  # ”i ett skick som är oanvänt”, ”i perfekt oanvänt skick”
+  - 'oanvänt\b'
+  - 'originalförpackning\w*'
+  - 'originalkartong\w*'
+  - 'originalemballage\w*'
+  - 'obrut\w*'
+  - 'oöppnad\w*'
+  - 'oöppnat'
+  - 'nyskick'
+  - 'originalskick'
+  - 'ursprungligt skick'
+  - '(inte|ej) (får )?(ha )?(skadats eller )?(på något sätt )?använts'
+  - 'har använts'
+  # not ”Om du inte använder vår returfraktsedel”: the customer using something, not the goods being used
+  - '(inte|ej) (än |ännu )?(har )?(är |blivit |varit )?(använd(a|as|es|t)?\b|använts)'
+  - 'bruten förpackning'
+  - 'brutna förpackning'
+  - 'bruten plombering'
+  - '(inte|ej) kan sälja (den |varan |produkten )?vidare'
+  - 'säljas vidare'
+  - 'samma skick som (de|den) var i'
+  - 'samma skick som (vid|när) (leverans|du (fick|tog emot|mottog))'
+  - 'oskadad förpackning'
+  - 'oskadad originalförpackning'
+  - 'oförändrat skick (inklusive|med|och i) (original)?förpackning'
+  - 'samma skick och mängd'
+# 7.2, skicket som nekas, inte bara skicket som krävs: ”Är varan använd … godkänns inte returen”, ”… får inte vara använd”,
+# ”Använd eller monterad vara omfattas inte av ångerrätten”, ”Har du monterat skärmskyddet …”. Inte ”Produkten skall vara
+# använd med gott omdöme”. Läses som COND_STRONG i 7.2; i 7.1a är montering och bruten förpackning egna undantag.
+COND_REFUSED:
+  - '^\W*(är|har) (varan|produkten|varorna|produkterna) (varit )?använ[dt]\w*\b'
+  - '\bom (varan|produkten|varorna|produkterna) (är|har varit|blivit|har) använ[dt]\w*\b'
+  # ”Använda produkter kan inte returneras”, ”Varor med saknade etiketter eller skadad förpackning återbetalas inte”
+  - '\banvända\s+(varor|produkter|artiklar|plagg|kläder|skor)\b'
+  - '(saknade|saknar|borttagna|avklippta|avtagna)\s+(\w+\s+)?(etiketter|prislappar|lappar|taggar)\b'
+  - '(?<![oO])skadad\w*\s+(original)?(förpackning|kartong|emballage)\w*'
+  - '\b(inte|ej) (\w+ )?(vara|ha varit) använd\w*\b'
+  - '\banvänd(a|t)?\s*(eller|och|/)\s*(monterad|monterat|monterade|skadad|öppnad)\w*'
+  - '\b(har|som) (\w+ )?monterat?s?\b'
+  - '\bmonterade? (vara|varor|produkt\w*|möbler)\b'
+  - 'förpackning\w* (är|har) (bruten|brutits|öppnats|öppnad)'
+  - '(?<![oO])öppnade förpackning\w*'
+  # ”Har du tagit bort prislappen …”, ”Monterade eller tvättade varor accepteras inte”
+  - '(tagit|tar|klippt|klipper|plockat|plockar) (bort|av) (\w+ ){0,2}(etikett|prislapp|lapp|tagg|märkning)\w*'
+  # ”… och varan får inte vara skadad eller använd”
+  - '\b(inte|ej) (vara|ha varit) [\wåäö]+ (eller|och) (använd|monterad|tvättad)\w*'
+  - '\b(monterade|tvättade|provade|använda)\s+(eller|och)\s+[\wåäö]+\s+(vara|varor|produkt\w*|möbler|plagg|kläder|skor|artiklar)\b'
+COND_WEAK:
+  - 'oförändrat skick'
+  - 'säljbart skick'
+  - 'oskadad\w*'
+  - 'oskadat'
+  - 'komplett'
+  - 'samma skick'
+  - 'oförändrad\w*'
+  - 'slitage'
+  - '(har|är) skadats?\b'
+  - 'kartong\w* (är )?skadad'
+  - '(sitta|sitter) kvar'
+  # ”med alla etiketter intakta”
+  - '(etikett|prislapp|lapp|tagg)\w* (\w+ )?intakt\w*'
+  - 'bruten försegling'
+REFUSE_STRONG:
+  - 'godkänns (inte|ej)'
+  - 'godkänna (inte|ej)'
+  - 'gäller (inte|ej)'
+  - 'förutsättning'
+  - 'krediteras (inte|ej)'
+  - '(ej|inte) kreditera'
+  - 'nekas'
+  - 'neka\b'
+  - '(inte|ej) (att )?godkänna'
+  - 'kan vi (inte|ej) (godkänna|ta emot|ta tillbaka)'
+  - 'återtas (inte|ej)'
+  - 'tas (inte|ej) emot'
+  - 'skicka tillbaka (varan|skorna|produkten)'
+  - '(inte|ej) återbetal'
+  - 'ingen återbetalning'
+  - 'så länge (varan|produkten)'
+  - 'gäller endast'
+  - 'kan du (inte|ej) ångra'
+  # ”Ångerrätten förutsätter att …”, ”… gäller bara om varan är oanvänd”, ”… omfattas inte av ångerrätten”
+  - 'förutsätter'
+  - 'gäller (bara|enbart)'
+  - 'omfattas (inte|ej)'
+  - 'vägra\w*'
+  - 'upphör'
+  # ”För att kunna returneras ska …”, ”… för att du ska få pengarna tillbaka”
+  - 'för att [^.]{0,40}?(ska|skall) (kunna )?(godkänn\w*|gälla|returnera\w*|ångra\w*|få (pengarna|återbetalning|tillbaka)|(bli|vara) godkän\w*)'
+  # passive refusals: ”Använda produkter kan inte returneras”, ”… återbetalas inte”, ”Returer … accepteras inte”
+  - 'kan (den |de |varan |produkten |varorna )?(inte|ej) (returneras|ångras|återlämnas|skickas tillbaka|lämnas tillbaka)'
+  - 'återbetalas (den |de |varan )?(inte|ej)'
+  - 'accepteras (inte|ej)'
+  - '(inte|ej) (att )?accepter\w*'
+  # the refund waits for a check of the goods' state: ”En återbetalning kan ske efter att varan … befunnits vara i nyskick”
+  - '(befunnits|bedömts|bedöms|anses|konstaterats|konstateras)\s+vara\b'
+  - 'för att (kunna )?(returnera\w*|godkänn\w*|ångra\w*)'
+  # active refusals: ”Vi krediterar inte varor som …”, ”… kan vi tyvärr inte ta emot returen”, ”ångerrätten inte gäller om …”
+  - '(krediterar|återbetalar|godkänner|accepterar) (vi )?(tyvärr |dessvärre )?(inte|ej)\b'
+  - 'kan vi (tyvärr |dessvärre )(inte|ej) (godkänna|ta emot|ta tillbaka|kreditera|återbetala)'
+  - '\b(inte|ej) gäller\b'
+  # the refund waits for a check of the state: ”Pengarna betalas tillbaka när vi har kontrollerat att varan är i nyskick”
+  - '(kontrollerat|konstaterat|säkerställt|granskat) att (varan|produkten|varorna|produkterna|den|de) är'
+REFUSE_WEAK:
+  - '\bska\b'
+  - '\bskall\b'
+  - 'måste'
+  - 'behöver'
+  - '\bkrav\b'
+  - 'får (inte|ej)'
+  - 'inte får'
+  - 'endast'
+  - 'förutsatt'
+  - '\bkrävs\b'
+  - '\bkräver\b'
+NOT_A_RULE:
+  - 'rekommender'
+  - 'inget krav'
+  - '\bbör\b'
+  - 'gärna'
+  - 'om möjligt'
+  - 'helst'
+  # ”Du kan använda den bifogade mallen, men du måste inte använda den”: om blanketten, inte varans skick
+  - '(måste|behöver) (inte|ej)'
+  - '\bmall(en)?\b'
+  - 'blankett'
+DEDUCT:
+  - 'värdeminsk'
+  - 'avdrag'
+  - 'reducer'
+  - 'debiter'
+  - 'avgift'
+  - 'fullständig kreditering'
+  - 'full återbetalning'
+  - 'fullständig återbetalning'
+  - 'fullt belopp'
+  - 'hela beloppet'
+# Text that ties the condition to ångerrätten itself, not to the return in general: ”För att ångerrätten ska gälla måste
+# varan …”, ”… eller i vissa fall neka ångerrätt helt”. Svensk Handel §7.2: ångerrätten nekas inte även om varan inte är i
+# ursprungligt skick; only a value deduction is allowed.
+DENY_ANG:
+  - 'för att (din |er )?ångerrätt(en)? ska (gälla|godkännas|kunna utnyttjas)'
+  - 'neka\w*\s+(\w+\s+){0,2}ångerrätt'
+  - 'förlora\w*\s+(?!((du|ni)\s+)?(inte|ej)\b)(\w+\s+){0,2}ångerrätt'
+  - 'ångerrätt(en)?\s+(upphör|bortfaller|förfaller)'
+  - 'ångerrätt\w*\s+(inte|ej)\s+gäller'
+  # ”Ångerrätten förutsätter att varan kan returneras i väsentligen samma skick”, ”Ångerrätten gäller bara om …”,
+  # ”Du har 14 dagars ångerrätt på oöppnade förpackningar”, ”… kan du inte längre använda ångerrätten”
+  - 'ångerrätt\w*\s+(\w+\s+){0,2}förutsätter'
+  - 'ångerrätt\w*\s+gäller\s+(bara|endast|enbart|under förutsättning|förutsatt|på villkor)'
+  - 'ångerrätt\w*\s+(gäller\s+)?(bara\s+|endast\s+|enbart\s+)?(på|för)\s+(\w+\s+)?(oöppn|oanvänd|obrut)\w*'
+  - 'kan (du|ni) (inte|ej) (längre )?(använda|utnyttja|nyttja) (din |er )?ångerrätt'
+  - 'för att (du |ni )?(ska )?(få|kunna få) (pengarna|dina pengar|beloppet) tillbaka'
+# 7.2: the text takes ångerrätten away outright (”… har brukats så att ångerrätten ej kan tillämpas”, ”Ångerrätten upphör
+# om varan har monterats”, ”förverkar du din ångerrätt”). Read together with GOODS_USED in the same sentence.
+ANG_GONE:
+  - 'ångerrätt\w*\s+(\w+\s+){0,3}?(ej|inte)\s+((längre|kan|får|går att)\s+)?(tillämpas|tillämpa|gäller|gälla|utnyttjas|utnyttja|användas|åberopas|göras gällande|nyttjas)\b'
+  - 'ångerrätt\w*\s+(\w+\s+){0,2}?(kan|får|går)\s+(\w+\s+)?(ej|inte)\s+(längre\s+)?(tillämpas|utnyttjas|användas|åberopas|göras gällande|nyttjas)\b'
+  - 'ångerrätt\w*\s+(\w+\s+){0,3}?(upphör|bortfaller|förfaller|faller bort|förverkas|går förlorad|gäller\s+(heller\s+)?(inte|ej))'
+  - '(förverka|förlora|mista)\w*\s+(du\s+|ni\s+|kunden\s+|konsumenten\s+)?(din\s+|er\s+|sin\s+)?ångerrätt'
+  - '\b(ingen|ej|inte)\s+ångerrätt'
+  - 'kan\s+(du|ni)\s+(inte|ej)\s+(längre\s+)?(tillämpa|utnyttja|använda|åberopa|nyttja)\s+(din\s+|er\s+)?ångerrätt'
+  - '(omfattas|täcks)\s+(\w+\s+)?(inte|ej)\s+(\w+\s+){0,2}?(av\s+)?ångerrätt'
+# 7.2: the goods were used, mounted, assembled or opened beyond inspection (”har brukats”, ”returnerats skadad”, ”när
+# varan monterats”, ”hanterats mer än vad som behövs för att fastställa dess egenskaper”)
+GOODS_USED:
+  - '\b(brukats|brukad\w*|använts|monterats|installerats|tagits i bruk|ihopsatts|sammansatts|hopsatts|bearbetats)\b'
+  - '\btagit\s+(\w+\s+){0,2}i bruk\b'
+  - '\b(satts|skruvats|monterats|byggts)\s+ihop\b'
+  - '\b(har|är|blivit|varit|returnerats|returneras|levereras tillbaka)\s+(\w+\s+){0,3}?(använd|använt|monterad|monterat|installerad|installerat|ihopsatt|ihopmonterad|hopmonterad|sammansatt|sammanfogad|skadad|skadat|bearbetad|bearbetat|kapad|kapat|målad|målat|tvättad|tvättat)\b'
+  - '\b(använda|monterade|installerade|ihopsatta|ihopmonterade|sammansatta|skadade|bearbetade)\s+(varor|produkter|artiklar|möbler|plagg)\b'
+  - '\b(öppnats|öppnad|öppnat|uppackad|uppackat)\b[^.]{0,40}?\bmer än\b'
+  - '\bmer än (vad )?(som )?(är )?(nödvändigt|behövs|krävs)\b'
+# Goods sold sealed for health or hygiene reasons (the law's exception for sealed goods); a demand that they are unopened
+# may be lawful, so it is read as osäker, not brist.
+SEALED_GOODS:
+  - '\bsnus\w*'
+  - 'tobak\w*'
+  - 'nikotin\w*'
+  - 'e-cigarett\w*'
+  - '\bvape\w*'
+  - '\bvejp\w*'
+  - 'e-juice'
+HYGIENE:
+  - 'hygien'
+  - 'hälso'
+  - 'läkemedel'
+  - 'livsmedel'
+  - 'kosttillskott'
+MEDIA:
+  - '\b(tv-|data|video|pc-|konsol)?spel(et|en|skiva|skivor)?\b'
+  - '\bfilm(er|en|erna)?\b'
+  - '\bdvd\w*'
+  - 'blu-?ray'
+  - '\bcd\b'
+  - '\bcd-\w+'
+  - '\bvinyl\w*'
+  - '\bskivor\b'
+  - 'programvar\w*'
+  - 'mjukvar\w*'
+  - 'datorprogram\w*'
+  - '\bsoftware\b'
+  - 'ljudinspelning\w*'
+  - 'bildinspelning\w*'
+  - 'ljudbok\w*'
+  - '\bmusik\b'
+# 7.1a, fler sätt att säga att något undantas: ”… samt metervaror återköps inte”, ”(ex. färskvara … kan vi inte ta i retur)”.
+EXCL_MORE:
+  - 'återköps (inte|ej)'
+  - 'kan vi (tyvärr |dessvärre )?(inte|ej) ta (emot |tillbaka )?(i )?retur'
+  - 'kan vi (inte|ej) ta (emot|tillbaka)\b'
+  - 'tar vi (tyvärr |dessvärre )?(inte|ej) (emot )?(i )?retur'
+  - 'tar (vi )?(inte|ej) emot returer'
+  - 'kan (ej|inte) (ångras|returneras|återlämnas)'
+  # ”Begagnade varor och demoexemplar returneras ej.”, ”Kosttillskott och livsmedel tar vi inte tillbaka.”
+  - '\b(returneras|ångras|återlämnas|återköps) (ej|inte|aldrig)\s*\W*$'
+  - '\btar vi (tyvärr |dessvärre )?(inte|ej|aldrig) (tillbaka|i retur)\b'
+  - '\btas (tyvärr |dessvärre )?(inte|ej|aldrig) (tillbaka|i retur)\b'
+  # ”Returer av … kommer inte att godkännas eller återbetalas”, ”… godkänns inte”
+  - '(inte|ej) (att )?godkännas'
+  - 'godkänns (inte|ej)'
+  # ”Ångerrätten upphör för krympplastade artiklar …”, ”Ångerrätten kan frångås genom överenskommelse”
+  - 'ångerrätt\w*\s+(\w+\s+){0,2}(upphör|bortfaller|förfaller|frångås)'
+  - '(upphör|bortfaller|förfaller)\s+(\w+\s+)?ångerrätt'
+  - 'returrätt\w* (gäller )?(ej|inte)'
+  # ”Vi accepterar inte retur av batterier”, ”Av hygieniska skäl accepteras inte returer av silikonprodukter”
+  - 'accepter\w* (vi )?(tyvärr )?(inte|ej) (\w+ ){0,2}retur\w*'
+  - '(inte|ej) accepter\w* (\w+ ){0,2}retur\w*'
+  - 'retur\w* av [^.]{0,60}?(accepteras|godkänns|tas emot) (inte|ej)'
+  # ”Ångerrätten gäller endast ordrar över 500 kr”: en beloppsgräns skriven som begränsning
+  - '(ångerrätt\w*|ångra\w*)\s+(\w+\s+){0,2}(enbart|endast|bara)\s+(för\s+|vid\s+|på\s+)?(\w+\s+){0,2}(över|under|från)\s+\d'
+# 7.1a, en mening som fortsätter ett undantag i meningen före: ”Vissa varor är undantagna från ångerrätten. Det gäller tex
+# hygienartiklar, …”, ”… gäller inte ångerrätten. Detta är produkter som …”.
+EXCL_CONT: '^\W*(det|detta|dessa|de|exempel\w*)\s+(gäller|är|avser|omfattar|kan vara)\b|^\W*(t\.?\s?ex\.?|exempelvis|till exempel)\b'
+# 7.1a, ångerrätten undantas när annat avtalats: ångerrätten kan inte avtalas bort (tvingande lag).
+AGREED:
+  - '(om|har) (inte )?annat (har )?(överenskommits|avtalats|avtalas|överenskoms|överenskommes)'
+  - 'kommit överens om (något )?annat'
+  - '(frångås|avtalas bort|avstås)\b[^.]{0,40}?(överenskommelse|avtal)'
+  - 'genom (särskild |skriftlig )?överenskommelse'
+# 7.1a, försegling eller etiketter som grund. Lagens undantag gäller förseglade varor som av hälso- eller hygienskäl inte kan
+# återlämnas, och förseglade ljud- och bildupptagningar och datorprogram. Ett undantag för bruten försegling utan den
+# begränsningen, eller för borttagna etiketter och lappar, är bredare än lagen och ger osäker.
+SEAL_ONLY: 'försegl\w*|plomber\w*'
+LABELS: '\btagg(ar|arna|en)?\b|etikett\w*|prislapp\w*|lappar(na)?\b'
+# 7.1a, ångerrätten begränsas till vissa varor: ”Ångerrätten gäller enbart för standardstorlekar”.
+LIMIT: '(ångerrätt\w*|ångra)[^.]{0,30}?\bgäller\s+(enbart|endast|bara)\s+(för|vid|på)\s+(?!(privat|konsument|dig som|kunder? som|köp (på|via|över|enligt)|distans|avtal|varor som (köp|beställ)|beställningar (på|via|över)))'
+# 7.1a, sakuppgifter om ett undantag. Ett led (”läkemedel, kylvaror … och livsmedel”) bedöms för sig.
+# FOOD: livsmedel som hel grupp. Lagens undantag gäller bara varor som snabbt försämras eller blir för gamla, och förseglade
+# varor av hälso- eller hygienskäl; ”livsmedel, även oöppnade” är bredare än lagen (Svensk Handel §7.1: korrekt information
+# om undantagen). PERISH: ord som ger livsmedlet lagens skäl.
+FOOD:
+  - 'livsmedel\w*'
+  - '\bmat\b'
+  - 'kosttillskott\w*'
+  - 'matvar\w*'
+  - 'måltidsersättning\w*'
+  - 'vitamin\w*'
+  - '\bgodis\b'
+  - 'konfektyr\w*'
+  - '\bdryck\w*'
+PERISH:
+  - 'färsk\w*'
+  - 'blomm\w*'
+  - '\bväxt\w*'
+  - 'kyl(var|d|t|da|vara|produkt)\w*'
+  - 'frys\w*'
+  - 'fryst\w*'
+  - 'kort hållbarhet'
+  - 'snabbt'
+  - 'försämras'
+  - 'bli för gamla'
+  - 'bäst före'
+  - 'utgångsdatum'
+# Samma skäl skrivet som villkor för hela ledet (”livsmedel med kort hållbarhet”), inte som en egen varugrupp.
+PERISH_QUAL:
+  - 'kort hållbarhet'
+  - 'snabbt'
+  - 'försämras'
+  - 'bli för gamla'
+  - 'bäst före'
+  - 'utgångsdatum'
+# Försegling eller förpackning som villkor; ”oöppnade”/”obrutna” (även oöppnade varor undantas) räknas inte.
+SEAL_COND:
+  # ”bruten” bara om förpackningen: ”bruten färg” är brytfärg
+  - '(förpackning|kartong|emballage|plast|film|sigill|lock|kapsyl)\w*\s+(\w+\s+){0,2}(bruten|brutits|brutit|bryts|öppnad|öppnats|öppnas)\b'
+  - '(?<![oO])(bruten|brutna|brutit|öppnad|öppnade|öppnat)\s+(\w+\s+)?(förpackning|kartong|emballage|plast|film|sigill)\w*'
+  - 'försegl\w*'
+  - 'plomber\w*'
+  - 'skyddsfilm\w*'
+  - 'plastfilm\w*'
+  - 'krympplast\w*'
+  - '(plast|förpackning)\w* (har )?(tagits bort|avlägsnats)'
+  # ”elektronik som har packats upp”
+  - '(packats|packat|packas) upp'
+  - 'uppackad\w*'
+  - 'uppackat'
+# Montering: inget av lagens skäl (högst värdeminskningsavdrag), utom varor som oupplösligt blandats med annat.
+MOUNTED:
+  - 'monter(at|ats|ad|ade|ar|a)\b'
+  - 'installer(at|ats|ad|ade|a)\b'
+  - '(satt|sätter) ihop'
+  - 'monterat ihop'
+# Ett led som nämner en vara eller varugrupp (för osäker utan grund).
+GOODS: '\b[\wåäö-]*(varor|varan|vara|produkter|produkten|artiklar|medel|tillbehör|delar|tabletter|ersättningar|kort|möbler|plagg)\b'
+# 7.1a och 7.2, en mening som syftar tillbaka på varor i meningen före: ”För sådana varor gäller inte ångerrätten …”,
+# ”Dessa varor kan inte returneras”. Skälet till undantaget står då i en av de 1–2 meningarna före i samma avsnitt.
+BACKREF:
+  - '\b(sådana|sådan|sådant|dessa|denna|detta|de)\s+(\w+\s+)?(varor|vara|varan|varorna|produkter|produkt|produkterna|artiklar|plagg|köp)\b'
+  - '^\W*(för\s+)?(dessa|sådana|detta)\b'
+# 7.1a och 7.2, lagens skäl för undantag från ångerrätten (distansavtalslagen 2 kap. 11 §), sökta i meningen och de 1–2
+# meningarna före när meningen syftar tillbaka (BACKREF). Ett av dem ger lagens eget undantag, inte en brist.
+LAWFUL_GROUND:
+  # förseglade varor av hälso- eller hygienskäl (p. 5)
+  - '(hälso|hygien)\w*[\s\S]{0,250}?(försegl|plomber|skyddsförsegl)\w*'
+  - '(försegl|plomber)\w*[\s\S]{0,250}?(hälso|hygien)\w*'
+  # tillverkad efter kundens anvisningar eller tydligt personlig prägel (p. 3)
+  - 'tillverka\w*\s+(\w+\s+){0,4}(efter|enligt)\s+(\w+\s+){0,4}(anvisning|specifikation|mått|önskemål|beställning)\w*'
+  - 'specialtillverk\w*|måttbeställ\w*|måttanpassa\w*|personlig\w*\s+prägel|personanpassa\w*|gravyr\w*|graverad\w*'
+  # varor som snabbt försämras eller blir för gamla (p. 4)
+  - 'snabbt\s+(\w+\s+)?(försämras|förstörs|blir för gamla|kan bli för gamla)|kort\s+hållbarhet|begränsad\s+hållbarhet|färskvar\w*'
+  # förseglade ljud- och bildupptagningar och datorprogram (p. 7)
+  - '(ljud|bild|video|film|musik|dataprogram|datorprogram|programvar|datorspel)\w*[\s\S]{0,200}?(försegl|plomber|bruten|brutits|öppnad|öppnats)\w*'
+  # varor som oupplösligt blandats med annat (p. 6), alkoholhaltiga drycker med marknadspris (p. 8), tidningar (p. 9)
+  - 'oupplösligt\s+blanda\w*|blanda\w*\s+oupplösligt'
+  - 'alkoholhaltig\w*\s+dryck\w*[\s\S]{0,250}?(marknad|30 dagar|trettio dagar)'
+  - '\b(dagstidning|tidskrift|tidning)\w*'

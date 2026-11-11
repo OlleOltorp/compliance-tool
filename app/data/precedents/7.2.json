@@ -1,0 +1,40 @@
+[
+ {
+  "kind": "fall",
+  "shop": "exempelbutiken.example",
+  "quote": "Hygienartiklar som örhängen och underkläder kan inte returneras om förseglingen har brutits.",
+  "page": "02_retur.txt",
+  "quote_checked": true,
+  "state": "uppfyllt",
+  "why": "Varor som av hygienskäl inte kan återlämnas när förseglingen brutits är lagens undantag, inte nekad ångerrätt.",
+  "source": "Fiktivt exempel",
+  "status": "godkänd",
+  "certainty": "granskare",
+  "kommentar": "Exempel på formatet. Gäller bara när en hälso- eller hygienskäl nämns."
+ },
+ {
+  "kind": "fall",
+  "shop": "exempelhandeln.example",
+  "quote": "Varan måste returneras i oöppnad originalförpackning för att ångerrätten ska gälla.",
+  "page": "01_villkor.txt",
+  "quote_checked": true,
+  "state": "brist",
+  "why": "Texten kräver oöppnad förpackning för alla varor, inte bara förseglade hygienvaror, och nekar därmed ångerrätten på grund av skick.",
+  "source": "Fiktivt exempel",
+  "status": "godkänd",
+  "certainty": "forslag_godkant"
+ },
+ {
+  "kind": "fallgrop",
+  "shop": "provbutiken.example",
+  "quote": "Använd gärna originalförpackningen när du skickar tillbaka varan.",
+  "page": "03_retur.txt",
+  "quote_checked": true,
+  "state": "uppfyllt",
+  "why": "En rekommendation om förpackningen är inget krav på varans skick.",
+  "wrong": "Ett verktyg kan läsa ”originalförpackningen” som ett krav och ge brist, men ”gärna” gör meningen till en rekommendation.",
+  "source": "Fiktivt exempel",
+  "status": "godkänd",
+  "certainty": "forslag_godkant"
+ }
+]

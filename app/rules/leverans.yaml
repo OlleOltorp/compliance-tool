@@ -1,0 +1,202 @@
+# 6.2 Friskrivning från förseningar.
+# Ett värde är ett reguljärt uttryck eller en lista med alternativ (de sätts ihop med |).
+# {NUM} betyder ett tal i siffror eller ord.
+
+THIRD:
+  - 'leverantör'
+  - 'fraktbolag'
+  - 'transportör'
+  - 'speditör'
+  - 'postnord'
+  - '\bdhl\b'
+  - 'budfirma'
+  - 'utomstående'
+  - 'tredje part'
+  - 'underleverantör'
+  - 'tillverkare'
+  # carriers and partners named the way shops write them
+  - 'fraktföretag'
+  - 'fraktfirma'
+  - '(frakt|transport|logistik)partner'
+  - '\bposten\b'
+  - 'budbee'
+  - 'instabox'
+  - 'instabee'
+  - '\bbring\b'
+  - 'schenker'
+  - '\bups\b'
+  - 'airmee'
+  - 'early bird'
+FM_LIST:
+  - 'krig'
+  - 'eldsvåda'
+  - 'brand'
+  - 'naturkatastrof'
+  - 'strejk'
+  - 'arbetskonflikt'
+  - 'blixtnedslag'
+  - 'myndighetsbeslut'
+  - 'pandemi'
+  - 'översvämning'
+  # standard force majeure lists that name no war or strike: "transportförhinder, myndighetsåtgärder"
+  - 'transportförhinder'
+  - 'myndighetsåtgärd'
+NO_DISCLAIM:
+  - '(friskriv\w*|reserverar|förbehåller)\s+(vi\s+)?(oss|sig)\s+(aldrig|inte|ej)\b'
+  - '\b(aldrig|inte|ej)\s+(kan\s+|får\s+|att\s+)?(friskriva|friskriver|reservera)'
+  - '\b(kan|får)\s+(vi\s+|butiken\s+)?(aldrig|inte|ej)\s+friskriva'
+# Rights at a delay given up through silence, or costs at a delay excluded (osäker, never brist alone).
+DELAY_WAIVER:
+  - 'passivt godkännande'
+  - '(anses|betraktas)\s+(du\s+)?(som\s+)?(ha\s+)?(godkänt|godkänna|accepterat)'
+  - '\b(anser|räknar|ser)\s+vi\s+(det\s+som\s+)?(att\s+)?(du|kunden)\s+(har\s+)?(godkänt|accepterat|godtagit)'
+  - '(räknas|ses|anses|betraktas)\s+som\s+(ett\s+)?(passivt\s+|tyst\s+)?(godkännande|accepterande|accept)\b'
+  # "Hör du inte av dig … räknas det som att du accepterat den nya leveranstiden". Konsumentköplagen 13 § lets a
+  # buyer who does not answer the seller's question about a late delivery lose the right to häva, so silence as
+  # consent can be lawful: osäker, never brist.
+  - '(räknas|ses|anses|betraktas)\s+(det\s+)?som\s+(att|om)\s+(du|kunden)\s+(har\s+)?(godkänt|accepterat|godtagit)'
+  - '(står|betalar|ersätter|svarar)\s+(\S+\s+){0,2}(inte|ej|aldrig)\s+(för\s+)?(\w+\s+){0,2}(kompensation\w*|ersättning\w*|merkostnad\w*)'
+  # "Vi kompenserar inte för aviserade leveransförseningar", "Försenade leveranser ersätts inte", "Skulle försening
+  # ske … står X inte för eventuella kompensationer för kostnader av hantverkare": these name a cost or a delay that is
+  # not compensated, which shops also write about costs the law does not cover; on the validation shops the same
+  # wording was judged both ways, so a person decides.
+  - '\b(kompenserar|kompenseras|ersätter|ersätts)\s+(\S+\s+)?(inte|ej|aldrig)\b[^.]{0,60}försen'
+  - 'försen\w*[^.]{0,80}\b(kompenserar|kompenseras|ersätter|ersätts)\s+(\S+\s+)?(inte|ej|aldrig)\b'
+  - '\b(står|betalar|svarar)\s+(?!(du|ni|kunden)\b)(\S+\s+){0,2}(inte|ej|aldrig)\s+(för\s+|ut\s+)?(\w+\s+){0,2}(kompensation\w*|ersättning\w*|merkostnad\w*|kostnad\w*|skadestånd)'
+# Compensation at a delay excluded outright with the words of a friskrivning (brist when no force majeure wording):
+# "Vi förbehåller oss rätten att undanta oss från eventuella krav på ersättning … vid leveransförseningar".
+# "Vi förbehåller oss rätten att avvisa krav på ersättning vid leveransförseningar" is the same exclusion.
+DELAY_EXCL: '(undanta\w*|friskriva|friskriver|avvisa|avvisar|avslå|avslår|neka|nekar)\s+(?!(aldrig|inte|ej)\b)((oss|sig)\s+från\s+)?[^.]{0,30}(krav\s+på\s+)?(ersättning|kompensation)[^.]{0,60}försen'
+# Compensation at a delay refused in plain words, in a sentence about a delay (brist when no force majeure
+# wording and the delay is not the customer's doing): "Vid förseningar utgår ingen annan ersättning än att du kan
+# avbryta köpet", "Ersättning för försenad leverans lämnas inte". Konsumentköplagen 6 kap. gives the consumer a right
+# to skadestånd at a delay; Svensk Handel: ni kan inte friskriva er från leveransförseningar.
+DELAY_NOCOMP:
+  - 'försen\w*[^.]{0,80}\b(ingen|inte|ej)\s+((annan|någon|några|extra|ytterligare|övrig|form\s+av|rätt\s+till|ut)\s+){0,3}(ersättning|kompensation|skadestånd)'
+  - '\b(ersättning|kompensation|skadestånd)\w*\b[^.]{0,60}\b(utgår|ges|betalas|lämnas|utbetalas)\s+(\w+\s+){0,2}(inte|ej|aldrig)\b'
+# Compensation at a delay refused outright, in the words of the "ingen ersättning" clauses:
+# "Kunden har ingen rätt till kompensation vid försenad leverans". Brist only when the sentence names an actual delay
+# (försen, dröjsmål) and no force majeure, customer cause, B2B or saving clause for the consumer's rights.
+# "ersätter inte merkostnader … leveransförsening" and "står X inte för kompensation … hantverkare" stay osäker
+# (DELAY_WAIVER): on the validation shops the same wording was judged both ways.
+DELAY_NOCOMP_VERB:
+  - '\b(ingen|inte|ej)\s+(rätt\s+till\s+)?(någon\s+|några\s+)?(annan\s+)?(kompensation|skadestånd)\w*[^.]{0,80}(försen|dröjsmål)'
+# The consumer's rights at a delay kept in words ("utöver vad som följer av konsumentköplagen", "dina rättigheter
+# enligt konsumentköplagen påverkas inte"): then a disclaimer is not plainly a friskrivning, so osäker. A blanket
+# "i den grad som är tillåten enligt lag" keeps nothing and does not count.
+LAW_KEEP: 'utöver vad som (följer av|anges i|gäller enligt)|(rättigheter|påföljder)\s+(som\s+följer\s+av|enligt)|\btvingande\b(?![^.]{0,40}tillåt)|(påverkar|inskränker)\s+inte\s+(\w+\s+){0,2}(rättigheter|rätt)\b'
+# Business customers only: Svensk Handel's points are about consumers.
+B2B_ONLY: 'företagskund|näringsidkare|\bB2B\b|företagsköp|\b(för|till)\s+företag\b'
+# Words that tie a handover of the delivery responsibility to the delivery time (same or next sentence, or the
+# heading): "levererar din order inom utsatt tid", "vi kan inte påverka den faktiska frakttiden", "Min leverans
+# är försenad". Without one the sentence may only say who carries the parcel (osäker).
+TRANSFER_DELAY: 'försen|leveranstid|frakttid|transporttid|leveransdatum|dröjsmål|leveransgaranti|förseningsgaranti|utsatt tid|\bi tid\b|inte (kan )?påverka|kontakta\w*\s+(dem|transportören|fraktbolaget|speditören)\s+direkt|vänd\w*\s+(dig|du)\s+(direkt\s+)?till\s+(transportören|fraktbolaget|speditören)'
+# A reservation for longer delivery times at peak periods ("reserverar vi oss för något längre leveranstider"): a
+# notice, not a friskrivning, when the terms give the right to häva at a delay.
+LONGER_TIME: '(reserverar|förbehåller)\s+(vi\s+)?(oss|sig)\s+(för|mot)\s+(\w+\s+){0,2}(längre|förlängd\w*|ändrad\w*)\s+leveranstid'
+HAVA_DELAY: '\bhäv\w*|avbryta (köpet|beställningen|ordern)|annullera'
+# Force majeure that frees the shop because its own supplier failed to deliver: "uteblivna leveranser från
+# underleverantörer … befrias från sina förpliktelser att fullgöra ingångna avtal". The supplier's failure is the
+# shop's own sphere, so it is the friskrivning from a supplier's delays Svensk Handel does not allow (brist), unless it
+# is tied to an event in the list ("som har sin grund i sådan omständighet"). Also in the order "uteblivna leveranser av
+# underleverantör … kan inte X hållas ansvariga i de fall de ej kan fullgöra ingångna avtal"; "som gör att vi ej kan
+# hålla nämnda avtal" ties the release to the listed event.
+SUPPLIER_FAIL: '(uteblivn\w*|utebliven|försenad\w*|försening\w*)\s+((eller|och)\s+\w+\s+)?(av\s+)?leverans(er)?\s+(från|av)\s+(våra\s+|vår\s+|vårt\s+|en\s+|sina\s+)?(under)?leverantör\w*'
+SUPPLIER_EXCUSE: '\bbefri\w*|(inte|ej)\s+(\w+\s+){0,2}?(hållas|göras)\s+ansvarig\w*|(inte|ej) skyldig\w* att (fullgöra|leverera)|(vi|säljaren|butiken|företaget)\s+(har|äger)\s+rätt\s+att\s+häva|(har|äger)\s+(vi|säljaren|butiken|företaget)\s+rätt\s+att\s+häva'
+SUPPLIER_TIED: '(sin )?grund i (sådan|en sådan)|orsaka\w*\s+av\s+(en\s+)?sådan|på grund av omständighet|som gör att (\w+\s+){0,3}?(ej|inte) kan (hålla|fullgöra)|förhindrar|försvårar|hindrar'
+# Words of a disclaimer of responsibility ("ansvarar inte", "kan inte hållas ansvariga", "tar inget ansvar").
+DISCLAIM:
+  - 'friskriv\w*'
+  - 'reserverar\s+(vi\s+)?(oss|sig)'
+  # "måste reservera oss mot eventuella förseningar"
+  - '\breservera\s+(oss|sig)\s+(mot|för)'
+  - 'förbehåller oss'
+  - 'ansvarar (inte|ej)'
+  - 'ansvarar\s+(vi|butiken|företaget)\s+(inte|ej|aldrig)\b'
+  - 'ansvar\w* (inte|ej)'
+  - 'inget ansvar'
+  - '(inte|ej) ansvarig'
+  - '\b(inte|ej|aldrig)\s+(kan\s+)?ansvara\b'
+  - '(inte|ej|aldrig) (hållas|göras) (\w+ )?ansvarig'
+  - '\btar\s+(\S+\s+)?(inte|ej|aldrig)\s+(något\s+)?ansvar'
+  - '\b(inte|ej|aldrig)\s+(kan\s+)?ta\s+(något\s+)?ansvar'
+  - '(utanför|utom)\s+(vårt|butikens|företagets)\s+ansvar'
+  - 'avsäger (oss|sig)'
+  # "Vi kan inte lastas för förseningar hos transportören"
+  - '\b(inte|ej|aldrig)\s+(kan\s+)?lastas\s+för'
+# Delays that are not deliveries to the customer (newsletters, e-mail, refunds through the bank or payment
+# provider): no 6.2 brist when the sentence names nothing about the delivery.
+OTHER_DELAY: 'nyhetsbrev|e-?post|utskick|mejl|\bsms\b|återbetalning|kreditering|betalleverantör|betalningsleverantör|\bbank'
+DELIVERY_WORD: 'leverans|paket|försändelse|sändning|frakt|transport|\border|beställning|\bvar(a|an|or|orna)\b'
+# A delay the customer causes (wrong address, a parcel not collected): no friskrivning.
+CUSTOMER_CAUSE: '(inte|ej)\s+(hämtas|har hämtats|hämtats|löses|lösts)\s+ut|(fel|felaktig\w*|ofullständig\w*|bristfällig\w*)\s+(angiv\w+\s+|angett\s+|uppgiv\w+\s+)?(leverans)?(adress|uppgift\w*|kontaktuppgift\w*)|(du|kunden)\s+(själv\s+)?(väljer|har\s+valt|valt|begär|önskar)\s+att\b|på\s+(din|kundens)\s+(egen\s+)?begäran|(du|kunden)\s+(själv\s+)?(har\s+)?(angett|angivit|uppgett|lämnat)|(du|kunden)\s+(inte|ej)\s+(hämtar|hämtat|löser ut)|outhämtad|(ej|inte)\s+uthämtad'
+# Softer reservations about the delivery time (osäker, never brist).
+DELAY_SOFT:
+  - '\b(kan|kunna)\s+(vi\s+)?(aldrig|inte|ej)\s+garantera\s+(\w+\s+)?leverans\w*[^.]{0,80}(transportör|fraktbolag|speditör|leverantör|postnord)'
+  - 'förbehåller\s+sig\s+(\S+\s+){0,3}rätt\w*\s+att\s+ändra[^.]{0,30}(i efterhand|leveranstid)|leveranstid[^.]{0,80}förbehåller\s+sig\s+(\S+\s+){0,3}rätt\w*\s+att\s+ändra'
+  - '(ansvarar|ansvar)\s+(inte|ej)\s+för\s+[^.]{0,40}(förlust|kostnad|skad)\w*[^.]{0,80}(leveransdatum|leveranstid|försen)'
+  # No promise on the delivery time at all, carrier named or not: "dock kan vi aldrig garantera leveranstid",
+  # "Leveranstiden kan inte garanteras", "Angivna leveranstider är ungefärliga och inte bindande"
+  - '\b(kan|kunna)\s+(vi\s+)?(aldrig|inte|ej)\s+garantera\s+(\w+\s+){0,2}?leveranstid\w*'
+  - '\bleveranstid\w*\s+(\S+\s+){0,3}?(kan|går)\s+(aldrig|inte|ej)\s+(att\s+)?garantera\w*'
+  - '\bleveranstid\w*\s+(\S+\s+){0,3}?är\s+(\w+\s+)?(ungefärlig|preliminär|uppskattad|beräknad)\w*\s+och\s+(är\s+)?(inte|ej)\s+bindande'
+  - '\bleveranstid\w*\s+(\S+\s+){0,3}?är\s+(inte|ej)\s+bindande'
+# The shop may cancel the order when its supplier fails to deliver ("förbehåller sig att ensidigt avbryta din beställning
+# i de fall då varan är slutsåld hos underleverantör"): the supplier's problem moved onto the customer, osäker.
+SUPPLIER_CANCEL: '(förbehåller|reserverar)\s+(vi\s+)?(oss|sig)\s+(\w+\s+){0,2}?(rätt\w*\s+)?(att|till)\s+(\w+\s+){0,2}?(avbryta|annullera|häva|makulera|avboka)\w*[^.]{0,100}(under)?leverantör'
+# A force majeure list that also names the carrier, and the wording that ties a third party's failure to an event
+# in the list (then it stays ordinary force majeure).
+FM_CARRIER: 'transportproblem|transportör\w*|fraktbolag\w*|speditör\w*|postnord'
+FM_TIED: '(sin )?grund i (sådan|en sådan)|orsaka\w*\s+av\s+(en\s+)?sådan|på grund av (sådan|omständighet)|(som|vilka) (här )?angivits|ovan nämnd|förhindrar|försvårar|hindrar'
+# Words that name an actual delay, not only the delivery time ("leveranstiden är 2–5 dagar"). A brist needs one of
+# them in the sentence: a reservation that only stands next to the delivery time ("Leveranstiden är 2–5 dagar och vi
+# reserverar oss för slutförsäljning hos leverantören") is about something else.
+DELAY_EXPLICIT: '(levereras|levererar|levererat|kommer fram|anländer)\s+(\w+\s+){0,2}för sent\b|försen|dröjsmål|\bdröj(er|a|t)\b|leveranstid\w*\s+(\w+\s+)?(överskrids|överskrida|inte\s+(kan\s+)?hålls|inte\s+(kan\s+)?hållas)|(levereras|levererar|levererat|kommer fram|anländer|når dig|når fram)\s+(\w+\s+){0,2}i tid\b'
+# The shop disclaims the delay itself in the words of a friskrivning, with or without naming the carrier: "Vi
+# friskriver oss från ansvar för leveransförseningar", "Vi ansvarar inte för förseningar", "Förseningar ligger
+# utanför vårt ansvar", "Vi kompenserar inte för förseningar". Svensk Handel: ni kan inte friskriva er från
+# leveransförseningar. Brist only with no force majeure wording, customer cause, B2B or saving clause. "Vi kompenserar
+# inte för förseningar" stays osäker (DELAY_WAIVER): that wording can be judged both ways.
+DELAY_DISCLAIM:
+  - '(friskriv\w*\s+(oss|sig)|avsäger\s+(oss|sig))\s+(\w+\s+){0,3}?(från|mot)\s+(\w+\s+){0,4}?(eventuell\w*\s+)?(leverans)?försen\w*'
+  - '\bansvarar\s+(\w+\s+)?(inte|ej|aldrig)\s+för\s+(\w+\s+){0,1}?(eventuell\w*\s+|några\s+)?((leverans)?försen\w*|dröjsmål)'
+  - '\b(inget|något)\s+ansvar\s+för\s+(\w+\s+){0,1}?(eventuell\w*\s+|några\s+)?((leverans)?försen\w*|dröjsmål)'
+  - '\b(inte|ej|aldrig)\s+(\w+\s+)?(hållas\s+|göras\s+)?ansvarig\w*\s+för\s+(\w+\s+){0,1}?(eventuell\w*\s+|några\s+)?(leverans)?försen\w*'
+  - '(leverans)?försen\w*[^.]{0,60}\b(ligger|är)\s+(\w+\s+)?(utanför|utom)\s+(vårt|butikens|företagets)\s+ansvar'
+  - '\b(ingen|inte|ej)\s+((annan|någon|några|extra)\s+){0,2}(ersättning|kompensation|skadestånd)\w*\s+(\w+\s+){0,2}(om|när|ifall)\s+(leveransen|paketet|ordern|beställningen|varan)\s+(\w+\s+)?dröjer'
+# A delay notified in advance ("aviserade leveransförseningar") or costs beyond the delay itself (merkostnader,
+# hantverkare): the law gives indirect losses only at fault, so these can be judged both ways (osäker).
+DELAY_INDIRECT: 'aviserad\w*|meddelad\w*|merkostnad\w*|hantverkar\w*|följdskad\w*|indirekt\w*|kostnad\w*'
+# General liability exclusions that reach direct damages or cap the shop's liability at the order value, and delivery
+# problems the shop reserves itself against. They can cover a delay without naming it: manual reading (osäker).
+LIABILITY_CAP:
+  - '\b(aldrig|inte|ej)\s+(\w+\s+)?(ansvarig\w*|ansvara|ansvarar|svarar)\s+för\s+(\w+\s+){0,2}?direkta\s+(eller|och)\s+indirekta\s+skad'
+  - '\bansvar\w*\s+(.{0,140}?\s)?(är|blir)\s+(\w+\s+)?begränsa\w*\s+till\s+(\w+\s+){0,3}?(belopp\w*|ordervärde\w*|köpesumm\w*|köpeskilling\w*|totala\s+belopp\w*|priset|det\s+pris)'
+DELIVERY_PROBLEM: '(reserverar|förbehåller)\s+(vi\s+)?(oss|sig)\s+(\w+\s+){0,2}(för|mot)\s+[^.]{0,50}?\b(leveransproblem|leveranssvårighet\w*|leveransstörning\w*)'
+# Force majeure the shop defines itself ("omständigheter som vi anser vara bortom vår kontroll"), and delivery deemed
+# done after a set time without contact ("betraktar vi leveransen som lyckad efter fem vardagar"): osäker.
+FM_SELF: '(som|vilka)\s+(vi|säljaren|butiken|företaget)\s+(själva\s+)?(anser|bedömer|bedömt|anser\s+oss)\s+(\w+\s+){0,2}(utanför|utom|bortom)\s+(vår|\w+s)\s+kontroll'
+DEEMED_DELIVERED: '(betraktar|anser|räknar)\s+(vi|\w+)\s+(leveransen|paketet|försändelsen|varan|ordern|beställningen)\s+som\s+(lyckad|levererad|mottagen|utlämnad|slutförd)'
+# The delivery time put outside the shop's reach because the carrier or supplier handles it ("vi inte kan påverka
+# leveranstiderna", "Vi kan tyvärr inte påverka transportörens tider och kördagar", "vi kan inte undvika eventuella
+# förseningar hos speditören"). r_62 also needs a carrier or supplier (THIRD) in the sentence.
+CARRIER_NO_INFLUENCE:
+  - '\b(inte|ej)\s+(kan\s+|kunna\s+)?(påverka|styra\s+över)\s+(\w+\s+){0,3}?(leveranstid\w*|frakttid\w*|transporttid\w*|leveransdag\w*|tider|kördagar|leveranser\w*)'
+  - '\b(kan|kunna)\s+(vi\s+)?(inte|ej)\s+(påverka|styra\s+över)\s+(\w+\s+){0,3}?(leveranstid\w*|frakttid\w*|transporttid\w*|leveransdag\w*|tider|kördagar|leveranser\w*)'
+  - '\b(kan|kunna)\s+(vi\s+)?(inte|ej)\s+undvika\s+(\w+\s+){0,2}?(leverans)?försen\w*'
+  # "Vi kan inte påverka hur snabbt Budbee levererar", "Vi har ingen möjlighet att påverka transportörens leveranstider"
+  - '\b(inte|ej)\s+(kan\s+)?påverka\s+(hur\s+snabbt|när)\b'
+  - '\bingen\s+möjlighet\s+att\s+(påverka|styra\s+över)\s+(\w+\s+){0,3}?(leveranstid\w*|frakttid\w*|transporttid\w*|tider|kördagar|leveranser\w*)'
+# The shop still helps or answers at a carrier's delay ("men vi hjälper dig", "kontakta oss så löser vi det"): no
+# friskrivning in the same sentence, manual reading.
+CARRIER_HELP: '\b(hjälper|hjälpa)\s+(vi\s+)?(dig|till)|\b(vi|butiken)\s+(ansvarar|står|svarar)\s+(\w+\s+)?för|kontakta\w*\s+oss'
+# Costs from a delay excluded: "ersätter inte merkostnader som uppstått på grund av leveransförsening", "står X inte
+# för eventuella kompensationer för kostnader av hantverkare", "Vi ersätter inte kostnader som uppstår till följd av
+# en försenad leverans". r_62 needs an actual delay (DELAY_EXPLICIT) in the same sentence and gives osäker: excluded
+# costs can be judged both ways. Brist only when the delay is tied to the carrier or supplier.
+DELAY_COST_EXCL:
+  - '\b(ersätter|ersätts|kompenserar|kompenseras|betalar|bekostar)\s+(\S+\s+){0,2}?(inte|ej|aldrig)\s+(för\s+|ut\s+)?(\w+\s+){0,2}?(merkostnad\w*|kostnad\w*|utgift\w*)'
+  - '\b(står|svarar)\s+(?!(du|ni|kunden)\b)(\S+\s+){0,2}?(inte|ej|aldrig)\s+för\s+(\w+\s+){0,2}?(merkostnad\w*|kostnad\w*|kompensation\w*|ersättning\w*)'
+  - '\b(inga|ej|inte)\s+(\w+\s+)?(merkostnad\w*|kostnad\w*)\s+(\w+\s+){0,3}?(ersätts|kompenseras|betalas)'
+  # "Vi kompenserar inte för förseningar orsakade av vår leverantör" (brist only with a carrier or supplier named)
+  - '\b(kompenserar|ersätter)\s+(\S+\s+)?(inte|ej|aldrig)\s+(för\s+)?(\w+\s+){0,2}?(leverans)?försen\w*'

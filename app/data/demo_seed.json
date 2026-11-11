@@ -1,0 +1,1273 @@
+{
+ "about": "Påhittade exempel. Butiker, domäner, adresser, citat och siffror är uppdiktade för demon.",
+ "points": [
+  {
+   "id": "1",
+   "label": "Företagsuppgifter",
+   "group": 1
+  },
+  {
+   "id": "2a",
+   "label": "Svar inom 48 timmar",
+   "group": 4
+  },
+  {
+   "id": "2b",
+   "label": "Fungerande kundservice",
+   "group": 5
+  },
+  {
+   "id": "3.1",
+   "label": "Produktinformation",
+   "group": 2
+  },
+  {
+   "id": "3.2a",
+   "label": "Totalpris",
+   "group": 2
+  },
+  {
+   "id": "3.2b",
+   "label": "Kostnader i kassan",
+   "group": 2
+  },
+  {
+   "id": "3.2c",
+   "label": "Minsta ordervärde, handpenning",
+   "group": 2
+  },
+  {
+   "id": "3.3",
+   "label": "Orderbekräftelse",
+   "group": 4
+  },
+  {
+   "id": "4a",
+   "label": "Villkor för erbjudanden",
+   "group": 2
+  },
+  {
+   "id": "4b",
+   "label": "Reans längd",
+   "group": 3
+  },
+  {
+   "id": "5a",
+   "label": "Köpknappen",
+   "group": 2
+  },
+  {
+   "id": "5b",
+   "label": "Villkor vid beställningen",
+   "group": 2
+  },
+  {
+   "id": "6.1a",
+   "label": "Leveransinformation",
+   "group": 1
+  },
+  {
+   "id": "6.1b",
+   "label": "Rutin vid förseningar",
+   "group": 5
+  },
+  {
+   "id": "6.2",
+   "label": "Ingen friskrivning från förseningar",
+   "group": 1
+  },
+  {
+   "id": "6.2b",
+   "label": "Inga rutiner som inskränker rätten vid försening",
+   "group": 5
+  },
+  {
+   "id": "6.3",
+   "label": "Bruksanvisning",
+   "group": 4
+  },
+  {
+   "id": "7.1a",
+   "label": "Ångerrätt finns",
+   "group": 1
+  },
+  {
+   "id": "7.1b",
+   "label": "Hur ångerrätten utövas",
+   "group": 1
+  },
+  {
+   "id": "7.1c",
+   "label": "Ångerfristen",
+   "group": 1
+  },
+  {
+   "id": "7.1d",
+   "label": "Returtid",
+   "group": 1
+  },
+  {
+   "id": "7.1e",
+   "label": "Standardformulär",
+   "group": 1
+  },
+  {
+   "id": "7.1f",
+   "label": "Returfrakt",
+   "group": 1
+  },
+  {
+   "id": "7.2",
+   "label": "Ingen nekad ångerrätt",
+   "group": 1
+  },
+  {
+   "id": "8.1",
+   "label": "Reklamationshantering",
+   "group": 5
+  },
+  {
+   "id": "8.2",
+   "label": "Information om reklamationsrätten",
+   "group": 1
+  },
+  {
+   "id": "8.3",
+   "label": "Garantier",
+   "group": 1
+  },
+  {
+   "id": "9a",
+   "label": "Återbetalning vid ånger",
+   "group": 1
+  },
+  {
+   "id": "9b",
+   "label": "Återbetalning vid reklamation",
+   "group": 1
+  },
+  {
+   "id": "9c",
+   "label": "Rutiner för återbetalning",
+   "group": 5
+  },
+  {
+   "id": "10a",
+   "label": "Information om ARN",
+   "group": 1
+  },
+  {
+   "id": "10b",
+   "label": "Information om ODR",
+   "group": 1
+  },
+  {
+   "id": "10c",
+   "label": "Följer ARN:s rekommendationer",
+   "group": 3
+  },
+  {
+   "id": "11a",
+   "label": "Rutiner för minderåriga",
+   "group": 5
+  },
+  {
+   "id": "11b",
+   "label": "Inga köpuppmaningar till barn",
+   "group": 2
+  },
+  {
+   "id": "11c",
+   "label": "Ansvarsfull marknadsföring mot barn",
+   "group": 5
+  },
+  {
+   "id": "12a",
+   "label": "Betalsätt med avgift",
+   "group": 2
+  },
+  {
+   "id": "12b",
+   "label": "SSL",
+   "group": 1
+  },
+  {
+   "id": "12c",
+   "label": "PCI DSS",
+   "group": 5
+  },
+  {
+   "id": "13a",
+   "label": "Prenumeration: information",
+   "group": 1
+  },
+  {
+   "id": "13b",
+   "label": "Prenumeration: ingen fälla",
+   "group": 2
+  },
+  {
+   "id": "13c",
+   "label": "Prenumeration: uppsägning efter förlängning",
+   "group": 1
+  },
+  {
+   "id": "14a",
+   "label": "Information om personuppgifter",
+   "group": 1
+  },
+  {
+   "id": "14b",
+   "label": "Rutiner för rättigheter",
+   "group": 5
+  },
+  {
+   "id": "14c",
+   "label": "Rutiner för dataskydd",
+   "group": 5
+  }
+ ],
+ "batch": {
+  "listed": 120,
+  "scanned": 112,
+  "brist_per_point": {
+   "1": 6,
+   "4a": 41,
+   "6.2": 18,
+   "7.1a": 22,
+   "7.1c": 12,
+   "7.1d": 27,
+   "7.1e": 24,
+   "7.2": 45,
+   "8.2": 21,
+   "8.3": 30,
+   "9a": 33,
+   "9b": 9,
+   "12a": 7,
+   "13a": 3,
+   "13b": 2,
+   "13c": 3,
+   "14a": 11
+  },
+  "unknown_per_point": {
+   "1": 2,
+   "4a": 9,
+   "6.2": 4,
+   "7.1a": 5,
+   "7.1c": 3,
+   "7.1d": 6,
+   "7.1e": 5,
+   "7.2": 7,
+   "8.2": 4,
+   "8.3": 6,
+   "9a": 8,
+   "9b": 5,
+   "12a": 14,
+   "13a": 2,
+   "13b": 2,
+   "13c": 2,
+   "14a": 3
+  },
+  "unknown_default": 4
+ },
+ "shops": [
+  {
+   "id": "exempel-friluft",
+   "name": "Exempel Friluft",
+   "domain": "exempel-friluft.se",
+   "kind": "Friluft och camping",
+   "scanned": "2026-01-15 10:00",
+   "pages_read": 31,
+   "pages": [
+    {
+     "path": "/",
+     "title": "Exempel Friluft"
+    },
+    {
+     "path": "/kopvillkor",
+     "title": "Köpvillkor"
+    },
+    {
+     "path": "/retur",
+     "title": "Retur och ångerrätt"
+    },
+    {
+     "path": "/leverans",
+     "title": "Leverans"
+    },
+    {
+     "path": "/reklamation",
+     "title": "Reklamation"
+    },
+    {
+     "path": "/garanti",
+     "title": "Garanti"
+    },
+    {
+     "path": "/betalning",
+     "title": "Betalning"
+    },
+    {
+     "path": "/integritetspolicy",
+     "title": "Integritetspolicy"
+    },
+    {
+     "path": "/kontakt",
+     "title": "Kontakta oss"
+    },
+    {
+     "path": "/fragor-och-svar",
+     "title": "Frågor och svar"
+    },
+    {
+     "path": "/om-oss",
+     "title": "Om oss"
+    },
+    {
+     "path": "/rea",
+     "title": "Rea"
+    },
+    {
+     "path": "/prenumeration",
+     "title": "Prenumeration"
+    },
+    {
+     "path": "/produkt/exempelvara",
+     "title": "Exempelvara"
+    }
+   ],
+   "states": {
+    "1": "uppfyllt",
+    "2a": "kräver testköp",
+    "2b": "kräver intyg",
+    "3.1": "uppfyllt",
+    "3.2a": "uppfyllt",
+    "3.2b": "uppfyllt",
+    "3.2c": "ej tillämplig",
+    "3.3": "kräver testköp",
+    "4a": "brist",
+    "4b": "kunde inte kontrolleras",
+    "5a": "uppfyllt",
+    "5b": "uppfyllt",
+    "6.1a": "uppfyllt",
+    "6.1b": "kräver intyg",
+    "6.2": "brist",
+    "6.2b": "kräver intyg",
+    "6.3": "kräver testköp",
+    "7.1a": "brist",
+    "7.1b": "uppfyllt",
+    "7.1c": "uppfyllt",
+    "7.1d": "uppfyllt",
+    "7.1e": "brist",
+    "7.1f": "uppfyllt",
+    "7.2": "uppfyllt",
+    "8.1": "kräver intyg",
+    "8.2": "uppfyllt",
+    "8.3": "uppfyllt",
+    "9a": "brist",
+    "9b": "uppfyllt",
+    "9c": "kräver intyg",
+    "10a": "uppfyllt",
+    "10b": "ej tillämplig",
+    "10c": "uppfyllt",
+    "11a": "kräver intyg",
+    "11b": "ej tillämplig",
+    "11c": "kräver intyg",
+    "12a": "uppfyllt",
+    "12b": "uppfyllt",
+    "12c": "kräver intyg",
+    "13a": "ej tillämplig",
+    "13b": "ej tillämplig",
+    "13c": "ej tillämplig",
+    "14a": "uppfyllt",
+    "14b": "kräver intyg",
+    "14c": "kräver intyg"
+   },
+   "findings": [
+    {
+     "pid": "4a",
+     "label": "Villkor för erbjudanden",
+     "sh": "särskilda krav för erbjudanden som Trygg E-handlare lämnar vid reor. Det måste exempelvis vara tydligt hur länge ett erbjudande gäller och om det finns begränsningar för erbjudandet",
+     "summary": "Det framgår inte hur länge rean gäller.",
+     "quote": "Mellansäsongsrea: upp till 40 % på utvalda varor!",
+     "page": "/rea",
+     "fix": "Rean pågår till och med den 31 mars 2026 och gäller varor märkta med rea.",
+     "prio": 3,
+     "sha256": "014a4c70ff326f32059d9e6641f61f7c1318bd18a8724926e317e88148ba930f"
+    },
+    {
+     "pid": "6.2",
+     "label": "Ingen friskrivning från förseningar",
+     "sh": "kan ni inte friskriva er från leveransförseningar … oavsett de villkor som ni har med er speditör",
+     "summary": "Villkoren friskriver butiken från förseningar hos fraktbolaget.",
+     "quote": "Vi ansvarar inte för förseningar som orsakas av fraktbolaget.",
+     "page": "/kopvillkor",
+     "fix": "Vi ansvarar för varan tills du har tagit emot den. Blir leveransen försenad har du rätt att häva köpet om förseningen är av väsentlig betydelse för dig.",
+     "prio": 2,
+     "sha256": "3589c99a4db40aa52822b184d47bbeca9d8a1e7d24f6418c12b3a265a721f21e"
+    },
+    {
+     "pid": "7.1a",
+     "label": "Ångerrätt finns",
+     "sh": "Att det finns en ångerrätt och under vilka förutsättningar denna gäller samt om eventuella undantag",
+     "summary": "Villkoren undantar reavaror från ångerrätten.",
+     "quote": "Varor köpta på rea omfattas inte av ångerrätten.",
+     "page": "/kopvillkor",
+     "fix": "Ångerrätten gäller även varor som du har köpt på rea.",
+     "prio": 1,
+     "sha256": "13b3861a2951fe254bce7882ebb34bdc656e7488a02e8bab3a2a2c8dfc883d66"
+    },
+    {
+     "pid": "7.1e",
+     "label": "Standardformulär",
+     "sh": "Trygg E-handlare ska ge formuläret till konsumenten, t.ex. genom att ladda upp formuläret på sin webbsida",
+     "summary": "Konsumentverkets standardformulär för ånger finns inte på webbplatsen.",
+     "quote": "Vill du ångra ditt köp, mejla oss ditt ordernummer.",
+     "page": "/retur",
+     "fix": "Vill du ångra köpet kan du mejla oss eller använda Konsumentverkets standardformulär för ånger, som du laddar ner här på sidan.",
+     "prio": 1,
+     "sha256": "70bc43e828716e21b5acb68ad105698e428f5611af9fef5638ec6f1c50f0ede8"
+    },
+    {
+     "pid": "9a",
+     "label": "Återbetalning vid ånger",
+     "sh": "ska återbetalning normalt sett ske inom 14 dagar från den dag då företaget mottagit konsumentens ångermeddelande. I detta fall ska hela beloppet betalas tillbaka, inklusive kostnader för utfrakt, dock minus ev. returfraktkostnader (beroende på vilken information som lämnats)",
+     "summary": "Villkoren för återbetalning vid ånger följer inte Trygg E-handels krav.",
+     "quote": "Återbetalning sker inom 30 dagar efter att vi har tagit emot och kontrollerat returen.",
+     "page": "/retur",
+     "fix": "Vi betalar tillbaka hela beloppet, inklusive den ursprungliga frakten, senast 14 dagar från att vi fått ditt ångermeddelande. Vi får vänta tills varan kommit tillbaka eller du visat att den är skickad.",
+     "prio": 1,
+     "sha256": "a2b06d5c22bbd3700f0ca552c848119cb139c2a31c04dd748c1191070c0ef927"
+    }
+   ]
+  },
+  {
+   "id": "exempel-present",
+   "name": "Exempel Present",
+   "domain": "exempel-present.se",
+   "kind": "Upplevelser och presenter",
+   "scanned": "2026-01-15 10:17",
+   "pages_read": 22,
+   "pages": [
+    {
+     "path": "/",
+     "title": "Exempel Present"
+    },
+    {
+     "path": "/kopvillkor",
+     "title": "Köpvillkor"
+    },
+    {
+     "path": "/retur",
+     "title": "Retur och ångerrätt"
+    },
+    {
+     "path": "/leverans",
+     "title": "Leverans"
+    },
+    {
+     "path": "/reklamation",
+     "title": "Reklamation"
+    },
+    {
+     "path": "/garanti",
+     "title": "Garanti"
+    },
+    {
+     "path": "/betalning",
+     "title": "Betalning"
+    },
+    {
+     "path": "/integritetspolicy",
+     "title": "Integritetspolicy"
+    },
+    {
+     "path": "/kontakt",
+     "title": "Kontakta oss"
+    },
+    {
+     "path": "/fragor-och-svar",
+     "title": "Frågor och svar"
+    },
+    {
+     "path": "/om-oss",
+     "title": "Om oss"
+    },
+    {
+     "path": "/rea",
+     "title": "Rea"
+    },
+    {
+     "path": "/prenumeration",
+     "title": "Prenumeration"
+    },
+    {
+     "path": "/produkt/exempelvara",
+     "title": "Exempelvara"
+    }
+   ],
+   "states": {
+    "1": "uppfyllt",
+    "2a": "kräver testköp",
+    "2b": "kräver intyg",
+    "3.1": "uppfyllt",
+    "3.2a": "uppfyllt",
+    "3.2b": "uppfyllt",
+    "3.2c": "ej tillämplig",
+    "3.3": "kräver testköp",
+    "4a": "brist",
+    "4b": "kunde inte kontrolleras",
+    "5a": "uppfyllt",
+    "5b": "uppfyllt",
+    "6.1a": "uppfyllt",
+    "6.1b": "kräver intyg",
+    "6.2": "uppfyllt",
+    "6.2b": "kräver intyg",
+    "6.3": "kräver testköp",
+    "7.1a": "uppfyllt",
+    "7.1b": "uppfyllt",
+    "7.1c": "brist",
+    "7.1d": "brist",
+    "7.1e": "uppfyllt",
+    "7.1f": "uppfyllt",
+    "7.2": "uppfyllt",
+    "8.1": "kräver intyg",
+    "8.2": "uppfyllt",
+    "8.3": "uppfyllt",
+    "9a": "uppfyllt",
+    "9b": "uppfyllt",
+    "9c": "kräver intyg",
+    "10a": "uppfyllt",
+    "10b": "ej tillämplig",
+    "10c": "uppfyllt",
+    "11a": "kräver intyg",
+    "11b": "ej tillämplig",
+    "11c": "kräver intyg",
+    "12a": "uppfyllt",
+    "12b": "uppfyllt",
+    "12c": "kräver intyg",
+    "13a": "brist",
+    "13b": "brist",
+    "13c": "ej tillämplig",
+    "14a": "uppfyllt",
+    "14b": "kräver intyg",
+    "14c": "kräver intyg"
+   },
+   "findings": [
+    {
+     "pid": "4a",
+     "label": "Villkor för erbjudanden",
+     "sh": "särskilda krav för erbjudanden som Trygg E-handlare lämnar vid reor. Det måste exempelvis vara tydligt hur länge ett erbjudande gäller och om det finns begränsningar för erbjudandet",
+     "summary": "Det framgår inte hur länge rean gäller.",
+     "quote": "Rea på upplevelser: 25 % rabatt på utvalda presentkort.",
+     "page": "/rea",
+     "fix": "Rean pågår till och med den 31 mars 2026 och gäller varor märkta med rea.",
+     "prio": 3,
+     "sha256": "9316faca714dbfcf8d15e1a013bcea02c70fbb041b13b405b7a5f2fc78945e71"
+    },
+    {
+     "pid": "7.1c",
+     "label": "Ångerfristen",
+     "sh": "Det ska framgå hur lång ångerfristen är och från vilken tidpunkt den beräknas",
+     "summary": "Ångerfristen räknas från beställningen, inte från den dag kunden tar emot varan.",
+     "quote": "Du har 14 dagars ångerrätt från den dag du lade din beställning.",
+     "page": "/kopvillkor",
+     "fix": "Du har rätt att ångra köpet inom 14 dagar från den dag du tog emot varan.",
+     "prio": 1,
+     "sha256": "a9aec290c3f2eb9e951fe04d0eca7c117f22a929ce901af02bc8704b9feb8d84"
+    },
+    {
+     "pid": "7.1d",
+     "label": "Returtid",
+     "sh": "skicka tillbaka varan … inom 14 dagar från konsumentens ångermeddelande",
+     "summary": "Det framgår inte att kunden har 14 dagar på sig att skicka tillbaka varan efter sitt ångermeddelande.",
+     "quote": "Returen ska vara oss tillhanda senast 14 dagar efter att du tog emot varan.",
+     "page": "/retur",
+     "fix": "Efter att du har meddelat att du ångrar köpet har du 14 dagar på dig att skicka tillbaka varan.",
+     "prio": 1,
+     "sha256": "e1761aeed7b35e19d4e8970939e2aa1c1d01558b7baa6cd43510043014069225"
+    },
+    {
+     "pid": "13a",
+     "label": "Prenumeration: information",
+     "sh": "information om hur lång tid som prenumerationen löper och villkoren för att säga upp avtalet. Det måste vara extra tydligt … om prenumerationen förnyas per automatik",
+     "summary": "Det framgår inte vad prenumerationen kostar per leverans eller hur ofta den kommer.",
+     "quote": "Prenumerera och spara 15 % på varje leverans.",
+     "page": "/prenumeration",
+     "fix": "Prenumerationen kostar 249 kr per leverans och kommer en gång i månaden. Du kan säga upp den när som helst inför nästa leverans.",
+     "prio": 2,
+     "sha256": "aa5669a6b42ab78bd5c376aae974844ff85552d5fadf99863507665efe285653"
+    },
+    {
+     "pid": "13b",
+     "label": "Prenumeration: ingen fälla",
+     "sh": "tillämpar dock aldrig ett förfarande som innebär att ett prenumerationserbjudande, exempelvis ett gratis Prova på-erbjudande, per automatik förnyas när standardavgiften för prenumerationen är väsentligt mycket högre än avgiften för erbjudandet",
+     "summary": "Att provmånaden blir en prenumeration för 399 kr/mån står bara i det finstilta.",
+     "quote": "Prova första månaden för 1 kr. Därefter förnyas prenumerationen automatiskt till 399 kr/mån.",
+     "page": "/prenumeration",
+     "fix": "Provmånaden kostar 1 kr och blir sedan en prenumeration för 399 kr/mån tills du säger upp den. Du kan säga upp den när som helst på Mina sidor.",
+     "prio": 2,
+     "sha256": "ed1fffc675d439758e98c2d14d0998a8c56089d4a0a046354886076a997b3b8a"
+    }
+   ]
+  },
+  {
+   "id": "exempel-lampor",
+   "name": "Exempel Lampor",
+   "domain": "exempel-lampor.se",
+   "kind": "Inredning och belysning",
+   "scanned": "2026-01-15 11:34",
+   "pages_read": 28,
+   "pages": [
+    {
+     "path": "/",
+     "title": "Exempel Lampor"
+    },
+    {
+     "path": "/kopvillkor",
+     "title": "Köpvillkor"
+    },
+    {
+     "path": "/retur",
+     "title": "Retur och ångerrätt"
+    },
+    {
+     "path": "/leverans",
+     "title": "Leverans"
+    },
+    {
+     "path": "/reklamation",
+     "title": "Reklamation"
+    },
+    {
+     "path": "/garanti",
+     "title": "Garanti"
+    },
+    {
+     "path": "/betalning",
+     "title": "Betalning"
+    },
+    {
+     "path": "/integritetspolicy",
+     "title": "Integritetspolicy"
+    },
+    {
+     "path": "/kontakt",
+     "title": "Kontakta oss"
+    },
+    {
+     "path": "/fragor-och-svar",
+     "title": "Frågor och svar"
+    },
+    {
+     "path": "/om-oss",
+     "title": "Om oss"
+    },
+    {
+     "path": "/rea",
+     "title": "Rea"
+    },
+    {
+     "path": "/prenumeration",
+     "title": "Prenumeration"
+    },
+    {
+     "path": "/produkt/exempelvara",
+     "title": "Exempelvara"
+    }
+   ],
+   "states": {
+    "1": "brist",
+    "2a": "kräver testköp",
+    "2b": "kräver intyg",
+    "3.1": "uppfyllt",
+    "3.2a": "uppfyllt",
+    "3.2b": "uppfyllt",
+    "3.2c": "ej tillämplig",
+    "3.3": "kräver testköp",
+    "4a": "uppfyllt",
+    "4b": "kunde inte kontrolleras",
+    "5a": "uppfyllt",
+    "5b": "uppfyllt",
+    "6.1a": "uppfyllt",
+    "6.1b": "kräver intyg",
+    "6.2": "uppfyllt",
+    "6.2b": "kräver intyg",
+    "6.3": "kräver testköp",
+    "7.1a": "uppfyllt",
+    "7.1b": "uppfyllt",
+    "7.1c": "uppfyllt",
+    "7.1d": "brist",
+    "7.1e": "uppfyllt",
+    "7.1f": "uppfyllt",
+    "7.2": "uppfyllt",
+    "8.1": "kräver intyg",
+    "8.2": "uppfyllt",
+    "8.3": "brist",
+    "9a": "brist",
+    "9b": "uppfyllt",
+    "9c": "kräver intyg",
+    "10a": "uppfyllt",
+    "10b": "ej tillämplig",
+    "10c": "uppfyllt",
+    "11a": "kräver intyg",
+    "11b": "ej tillämplig",
+    "11c": "kräver intyg",
+    "12a": "uppfyllt",
+    "12b": "uppfyllt",
+    "12c": "kräver intyg",
+    "13a": "ej tillämplig",
+    "13b": "ej tillämplig",
+    "13c": "ej tillämplig",
+    "14a": "uppfyllt",
+    "14b": "kräver intyg",
+    "14c": "kräver intyg"
+   },
+   "findings": [
+    {
+     "pid": "1",
+     "label": "Företagsuppgifter",
+     "sh": "tydlig och lättillgänglig information om bl.a. företagets fullständiga namn, organisationsnummer och kontaktuppgifter varigenom konsumenten på ett enkelt och effektivt sätt kan ta kontakt med Trygg E-handlaren och/eller framställa eventuella klagomål",
+     "summary": "Organisationsnumret står inte på webbplatsen.",
+     "quote": "Exempel Lampor · Lampgränd 7, 345 67 Exempelstad · kundservice@exempel-lampor.se",
+     "page": "/kontakt",
+     "fix": "Exempel Lampor AB · org.nr 559100-1250 · Lampgränd 7, 345 67 Exempelstad · kundservice@exempel-lampor.se",
+     "prio": 2,
+     "sha256": "e51250659f9000e98826b9ffbfad3c2c4bdcf5e219e42354e82ec1debc4c24b9"
+    },
+    {
+     "pid": "7.1d",
+     "label": "Returtid",
+     "sh": "skicka tillbaka varan … inom 14 dagar från konsumentens ångermeddelande",
+     "summary": "Det framgår inte att kunden har 14 dagar på sig att skicka tillbaka varan efter sitt ångermeddelande.",
+     "quote": "Varan ska vara tillbaka hos oss inom 14 dagar från leveransdagen.",
+     "page": "/retur",
+     "fix": "Efter att du har meddelat att du ångrar köpet har du 14 dagar på dig att skicka tillbaka varan.",
+     "prio": 1,
+     "sha256": "593c0cc157b9775b8b3d2a1f8873b0bf7a106ccf88b7a313602a3bf071d69f03"
+    },
+    {
+     "pid": "8.3",
+     "label": "Garantier",
+     "sh": "tydlig information om vad garantin eller serviceåtagandets omfattar och om ev. begränsningar … Garantin ska vara utformad på ett sätt som är mer fördelaktigt för konsumenten än vad som följer av lag",
+     "summary": "Det framgår inte vad garantin omfattar.",
+     "quote": "Alla våra produkter har 5 års garanti.",
+     "page": "/garanti",
+     "fix": "Tillverkaren lämnar 5 års garanti mot material- och tillverkningsfel. Garantin gäller inte skador av olyckshändelser eller normalt slitage, och den begränsar inte din reklamationsrätt enligt lag.",
+     "prio": 2,
+     "sha256": "121d3b4906fe82d4f5cd1691e58078f9d3d552023c945aa135c336b4866fff18"
+    },
+    {
+     "pid": "9a",
+     "label": "Återbetalning vid ånger",
+     "sh": "ska återbetalning normalt sett ske inom 14 dagar från den dag då företaget mottagit konsumentens ångermeddelande. I detta fall ska hela beloppet betalas tillbaka, inklusive kostnader för utfrakt, dock minus ev. returfraktkostnader (beroende på vilken information som lämnats)",
+     "summary": "Villkoren för återbetalning vid ånger följer inte Trygg E-handels krav.",
+     "quote": "Pengarna betalas tillbaka när returen har kommit fram och godkänts av vårt lager.",
+     "page": "/retur",
+     "fix": "Vi betalar tillbaka hela beloppet, inklusive den ursprungliga frakten, senast 14 dagar från att vi fått ditt ångermeddelande. Vi får vänta tills varan kommit tillbaka eller du visat att den är skickad.",
+     "prio": 1,
+     "sha256": "c619d24382e266af0733e0f91413d02df291568998ef3540848e2ebfd23e7579"
+    }
+   ]
+  },
+  {
+   "id": "exempel-tradgard",
+   "name": "Exempel Trädgård",
+   "domain": "exempel-tradgard.se",
+   "kind": "Lantbruk och trädgård",
+   "scanned": "2026-01-15 11:51",
+   "pages_read": 40,
+   "pages": [
+    {
+     "path": "/",
+     "title": "Exempel Trädgård"
+    },
+    {
+     "path": "/kopvillkor",
+     "title": "Köpvillkor"
+    },
+    {
+     "path": "/retur",
+     "title": "Retur och ångerrätt"
+    },
+    {
+     "path": "/leverans",
+     "title": "Leverans"
+    },
+    {
+     "path": "/reklamation",
+     "title": "Reklamation"
+    },
+    {
+     "path": "/garanti",
+     "title": "Garanti"
+    },
+    {
+     "path": "/betalning",
+     "title": "Betalning"
+    },
+    {
+     "path": "/integritetspolicy",
+     "title": "Integritetspolicy"
+    },
+    {
+     "path": "/kontakt",
+     "title": "Kontakta oss"
+    },
+    {
+     "path": "/fragor-och-svar",
+     "title": "Frågor och svar"
+    },
+    {
+     "path": "/om-oss",
+     "title": "Om oss"
+    },
+    {
+     "path": "/rea",
+     "title": "Rea"
+    },
+    {
+     "path": "/prenumeration",
+     "title": "Prenumeration"
+    },
+    {
+     "path": "/produkt/exempelvara",
+     "title": "Exempelvara"
+    }
+   ],
+   "states": {
+    "1": "uppfyllt",
+    "2a": "kräver testköp",
+    "2b": "kräver intyg",
+    "3.1": "uppfyllt",
+    "3.2a": "uppfyllt",
+    "3.2b": "uppfyllt",
+    "3.2c": "ej tillämplig",
+    "3.3": "kräver testköp",
+    "4a": "brist",
+    "4b": "kunde inte kontrolleras",
+    "5a": "uppfyllt",
+    "5b": "uppfyllt",
+    "6.1a": "uppfyllt",
+    "6.1b": "kräver intyg",
+    "6.2": "uppfyllt",
+    "6.2b": "kräver intyg",
+    "6.3": "kräver testköp",
+    "7.1a": "uppfyllt",
+    "7.1b": "uppfyllt",
+    "7.1c": "brist",
+    "7.1d": "uppfyllt",
+    "7.1e": "uppfyllt",
+    "7.1f": "uppfyllt",
+    "7.2": "brist",
+    "8.1": "kräver intyg",
+    "8.2": "uppfyllt",
+    "8.3": "uppfyllt",
+    "9a": "uppfyllt",
+    "9b": "brist",
+    "9c": "kräver intyg",
+    "10a": "uppfyllt",
+    "10b": "ej tillämplig",
+    "10c": "uppfyllt",
+    "11a": "kräver intyg",
+    "11b": "ej tillämplig",
+    "11c": "kräver intyg",
+    "12a": "uppfyllt",
+    "12b": "uppfyllt",
+    "12c": "kräver intyg",
+    "13a": "ej tillämplig",
+    "13b": "ej tillämplig",
+    "13c": "ej tillämplig",
+    "14a": "uppfyllt",
+    "14b": "kräver intyg",
+    "14c": "kräver intyg"
+   },
+   "findings": [
+    {
+     "pid": "7.2",
+     "label": "Ingen nekad ångerrätt",
+     "sh": "nekar inte konsumenten att utnyttja ångerrätten även om varan inte är i ursprungligt skick. Trygg E-handlare får dock ta ut ett värdeminskningsavdrag för den minskning av varans värde som uppstått till följd av konsumentens hantering av varan, förutsatt att konsumenten fått information om detta innan köpet",
+     "summary": "Villkoren kräver obruten förpackning för att kunden ska få ångra köpet.",
+     "quote": "Varan ska returneras oanvänd och i obruten originalförpackning för att ångerrätten ska gälla.",
+     "page": "/retur",
+     "fix": "Du har ångerrätt även om du öppnat förpackningen. Har varan hanterats mer än som behövs för att undersöka den kan vi göra avdrag för värdeminskningen.",
+     "prio": 1,
+     "sha256": "0c5b70c33cf7975388ada6227684852edba0563b55923c5e50bb407cc61ccd10"
+    },
+    {
+     "pid": "7.1c",
+     "label": "Ångerfristen",
+     "sh": "Det ska framgå hur lång ångerfristen är och från vilken tidpunkt den beräknas",
+     "summary": "Ångerfristen räknas från beställningen, inte från den dag kunden tar emot varan.",
+     "quote": "Ångerfristen är 14 dagar och räknas från orderdatum.",
+     "page": "/kopvillkor",
+     "fix": "Du har rätt att ångra köpet inom 14 dagar från den dag du tog emot varan.",
+     "prio": 1,
+     "sha256": "b95861e90545f62519b09bdc1fce4151855faa820052784547acb8af4d59cb5f"
+    },
+    {
+     "pid": "9b",
+     "label": "Återbetalning vid reklamation",
+     "sh": "hela beloppet, inklusive ev. fraktkostnader, återbetalas … utan onödigt dröjsmål",
+     "summary": "Kunden får betala returfrakten vid en godkänd reklamation.",
+     "quote": "Vid reklamation står kunden för returfrakten.",
+     "page": "/reklamation",
+     "fix": "Vid en godkänd reklamation står vi för returfrakten och betalar tillbaka utan onödigt dröjsmål.",
+     "prio": 1,
+     "sha256": "15fcce0c895852501e178ae97249100a2b2a7d2846096fd86752e8a5caf7ecc5"
+    },
+    {
+     "pid": "4a",
+     "label": "Villkor för erbjudanden",
+     "sh": "särskilda krav för erbjudanden som Trygg E-handlare lämnar vid reor. Det måste exempelvis vara tydligt hur länge ett erbjudande gäller och om det finns begränsningar för erbjudandet",
+     "summary": "Det framgår inte hur länge rean gäller.",
+     "quote": "Vårrea på frön och redskap. Passa på!",
+     "page": "/rea",
+     "fix": "Rean pågår till och med den 31 mars 2026 och gäller varor märkta med rea.",
+     "prio": 3,
+     "sha256": "4b3717feec4e2675b14936c4905ad1377b1d03fe6844585946779f9fcdb764e9"
+    }
+   ]
+  },
+  {
+   "id": "exempel-mobil",
+   "name": "Exempel Mobil",
+   "domain": "exempel-mobil.se",
+   "kind": "Mobiltillbehör",
+   "scanned": "2026-01-15 12:08",
+   "pages_read": 25,
+   "pages": [
+    {
+     "path": "/",
+     "title": "Exempel Mobil"
+    },
+    {
+     "path": "/kopvillkor",
+     "title": "Köpvillkor"
+    },
+    {
+     "path": "/retur",
+     "title": "Retur och ångerrätt"
+    },
+    {
+     "path": "/leverans",
+     "title": "Leverans"
+    },
+    {
+     "path": "/reklamation",
+     "title": "Reklamation"
+    },
+    {
+     "path": "/garanti",
+     "title": "Garanti"
+    },
+    {
+     "path": "/betalning",
+     "title": "Betalning"
+    },
+    {
+     "path": "/integritetspolicy",
+     "title": "Integritetspolicy"
+    },
+    {
+     "path": "/kontakt",
+     "title": "Kontakta oss"
+    },
+    {
+     "path": "/fragor-och-svar",
+     "title": "Frågor och svar"
+    },
+    {
+     "path": "/om-oss",
+     "title": "Om oss"
+    },
+    {
+     "path": "/rea",
+     "title": "Rea"
+    },
+    {
+     "path": "/prenumeration",
+     "title": "Prenumeration"
+    },
+    {
+     "path": "/produkt/exempelvara",
+     "title": "Exempelvara"
+    }
+   ],
+   "states": {
+    "1": "brist",
+    "2a": "kräver testköp",
+    "2b": "kräver intyg",
+    "3.1": "uppfyllt",
+    "3.2a": "uppfyllt",
+    "3.2b": "uppfyllt",
+    "3.2c": "ej tillämplig",
+    "3.3": "kräver testköp",
+    "4a": "uppfyllt",
+    "4b": "kunde inte kontrolleras",
+    "5a": "uppfyllt",
+    "5b": "uppfyllt",
+    "6.1a": "uppfyllt",
+    "6.1b": "kräver intyg",
+    "6.2": "uppfyllt",
+    "6.2b": "kräver intyg",
+    "6.3": "kräver testköp",
+    "7.1a": "uppfyllt",
+    "7.1b": "uppfyllt",
+    "7.1c": "uppfyllt",
+    "7.1d": "uppfyllt",
+    "7.1e": "brist",
+    "7.1f": "uppfyllt",
+    "7.2": "brist",
+    "8.1": "kräver intyg",
+    "8.2": "uppfyllt",
+    "8.3": "uppfyllt",
+    "9a": "brist",
+    "9b": "uppfyllt",
+    "9c": "kräver intyg",
+    "10a": "uppfyllt",
+    "10b": "ej tillämplig",
+    "10c": "uppfyllt",
+    "11a": "kräver intyg",
+    "11b": "ej tillämplig",
+    "11c": "kräver intyg",
+    "12a": "uppfyllt",
+    "12b": "uppfyllt",
+    "12c": "kräver intyg",
+    "13a": "ej tillämplig",
+    "13b": "ej tillämplig",
+    "13c": "ej tillämplig",
+    "14a": "brist",
+    "14b": "kräver intyg",
+    "14c": "kräver intyg"
+   },
+   "findings": [
+    {
+     "pid": "1",
+     "label": "Företagsuppgifter",
+     "sh": "tydlig och lättillgänglig information om bl.a. företagets fullständiga namn, organisationsnummer och kontaktuppgifter varigenom konsumenten på ett enkelt och effektivt sätt kan ta kontakt med Trygg E-handlaren och/eller framställa eventuella klagomål",
+     "summary": "Organisationsnumret står inte på webbplatsen.",
+     "quote": "Kontakta oss: kundservice@exempel-mobil.se · Laddvägen 5, 567 89 Exempelstad",
+     "page": "/kontakt",
+     "fix": "Exempel Mobil AB · org.nr 559100-1276 · Laddvägen 5, 567 89 Exempelstad · kundservice@exempel-mobil.se",
+     "prio": 2,
+     "sha256": "f0583bee25a957d0ff9995036d2bec0aa64d67a1a002a2fb7bedff2f2b502be3"
+    },
+    {
+     "pid": "7.1e",
+     "label": "Standardformulär",
+     "sh": "Trygg E-handlare ska ge formuläret till konsumenten, t.ex. genom att ladda upp formuläret på sin webbsida",
+     "summary": "Konsumentverkets standardformulär för ånger finns inte på webbplatsen.",
+     "quote": "Kontakta kundservice i chatten om du vill ångra ett köp.",
+     "page": "/retur",
+     "fix": "Vill du ångra köpet kan du mejla oss eller använda Konsumentverkets standardformulär för ånger, som du laddar ner här på sidan.",
+     "prio": 1,
+     "sha256": "d003d5bf82b9fceb30d24522779eae2905bc21f57287754282cc4dc2328135f1"
+    },
+    {
+     "pid": "7.2",
+     "label": "Ingen nekad ångerrätt",
+     "sh": "nekar inte konsumenten att utnyttja ångerrätten även om varan inte är i ursprungligt skick. Trygg E-handlare får dock ta ut ett värdeminskningsavdrag för den minskning av varans värde som uppstått till följd av konsumentens hantering av varan, förutsatt att konsumenten fått information om detta innan köpet",
+     "summary": "Villkoren kräver obruten förpackning för att kunden ska få ångra köpet.",
+     "quote": "Ångerrätten gäller bara om förpackningen är oöppnad och plomberingen hel.",
+     "page": "/retur",
+     "fix": "Du har ångerrätt även om du öppnat förpackningen. Har varan hanterats mer än som behövs för att undersöka den kan vi göra avdrag för värdeminskningen.",
+     "prio": 1,
+     "sha256": "b783c432c9157238137fed3fe52bfe8e567b39cfe3f5dafca0cfb48e647c2ff2"
+    },
+    {
+     "pid": "9a",
+     "label": "Återbetalning vid ånger",
+     "sh": "ska återbetalning normalt sett ske inom 14 dagar från den dag då företaget mottagit konsumentens ångermeddelande. I detta fall ska hela beloppet betalas tillbaka, inklusive kostnader för utfrakt, dock minus ev. returfraktkostnader (beroende på vilken information som lämnats)",
+     "summary": "Villkoren för återbetalning vid ånger följer inte Trygg E-handels krav.",
+     "quote": "Vi återbetalar köpet efter att varan har inspekterats, normalt inom 3–4 veckor.",
+     "page": "/retur",
+     "fix": "Vi betalar tillbaka hela beloppet, inklusive den ursprungliga frakten, senast 14 dagar från att vi fått ditt ångermeddelande. Vi får vänta tills varan kommit tillbaka eller du visat att den är skickad.",
+     "prio": 1,
+     "sha256": "773c32a66fc3242cb2b4ed51d69fa910cbfe62b0b615f43f4b0ab441b0490aee"
+    },
+    {
+     "pid": "14a",
+     "label": "Information om personuppgifter",
+     "sh": "Ni informerar tydligt om hur konsumentens personuppgifter behandlas",
+     "summary": "Det framgår inte vem som är personuppgiftsansvarig.",
+     "quote": "Vi värnar om din integritet och behandlar dina uppgifter varsamt.",
+     "page": "/integritetspolicy",
+     "fix": "Exempel Mobil AB, org.nr 559100-1276, är personuppgiftsansvarig för behandlingen av dina personuppgifter. Har du frågor om dina uppgifter kan du mejla integritet@exempel-mobil.se.",
+     "prio": 3,
+     "sha256": "d61b1a698a3654b024211ce15ef2657ada5f08a4d69727e7ecf28794cf4b1463"
+    }
+   ]
+  },
+  {
+   "id": "exempel-hudvard",
+   "name": "Exempel Hudvård",
+   "domain": "exempel-hudvard.se",
+   "kind": "Skönhet och hudvård",
+   "scanned": "2026-01-15 12:25",
+   "pages_read": 19,
+   "pages": [
+    {
+     "path": "/",
+     "title": "Exempel Hudvård"
+    },
+    {
+     "path": "/kopvillkor",
+     "title": "Köpvillkor"
+    },
+    {
+     "path": "/retur",
+     "title": "Retur och ångerrätt"
+    },
+    {
+     "path": "/leverans",
+     "title": "Leverans"
+    },
+    {
+     "path": "/reklamation",
+     "title": "Reklamation"
+    },
+    {
+     "path": "/garanti",
+     "title": "Garanti"
+    },
+    {
+     "path": "/betalning",
+     "title": "Betalning"
+    },
+    {
+     "path": "/integritetspolicy",
+     "title": "Integritetspolicy"
+    },
+    {
+     "path": "/kontakt",
+     "title": "Kontakta oss"
+    },
+    {
+     "path": "/fragor-och-svar",
+     "title": "Frågor och svar"
+    },
+    {
+     "path": "/om-oss",
+     "title": "Om oss"
+    },
+    {
+     "path": "/rea",
+     "title": "Rea"
+    },
+    {
+     "path": "/prenumeration",
+     "title": "Prenumeration"
+    },
+    {
+     "path": "/produkt/exempelvara",
+     "title": "Exempelvara"
+    }
+   ],
+   "states": {
+    "1": "uppfyllt",
+    "2a": "kräver testköp",
+    "2b": "kräver intyg",
+    "3.1": "uppfyllt",
+    "3.2a": "uppfyllt",
+    "3.2b": "uppfyllt",
+    "3.2c": "ej tillämplig",
+    "3.3": "kräver testköp",
+    "4a": "brist",
+    "4b": "kunde inte kontrolleras",
+    "5a": "uppfyllt",
+    "5b": "uppfyllt",
+    "6.1a": "uppfyllt",
+    "6.1b": "kräver intyg",
+    "6.2": "uppfyllt",
+    "6.2b": "kräver intyg",
+    "6.3": "kräver testköp",
+    "7.1a": "uppfyllt",
+    "7.1b": "uppfyllt",
+    "7.1c": "uppfyllt",
+    "7.1d": "brist",
+    "7.1e": "uppfyllt",
+    "7.1f": "uppfyllt",
+    "7.2": "uppfyllt",
+    "8.1": "kräver intyg",
+    "8.2": "brist",
+    "8.3": "uppfyllt",
+    "9a": "uppfyllt",
+    "9b": "uppfyllt",
+    "9c": "kräver intyg",
+    "10a": "uppfyllt",
+    "10b": "ej tillämplig",
+    "10c": "uppfyllt",
+    "11a": "kräver intyg",
+    "11b": "ej tillämplig",
+    "11c": "kräver intyg",
+    "12a": "brist",
+    "12b": "uppfyllt",
+    "12c": "kräver intyg",
+    "13a": "ej tillämplig",
+    "13b": "ej tillämplig",
+    "13c": "brist",
+    "14a": "uppfyllt",
+    "14b": "kräver intyg",
+    "14c": "kräver intyg"
+   },
+   "findings": [
+    {
+     "pid": "4a",
+     "label": "Villkor för erbjudanden",
+     "sh": "särskilda krav för erbjudanden som Trygg E-handlare lämnar vid reor. Det måste exempelvis vara tydligt hur länge ett erbjudande gäller och om det finns begränsningar för erbjudandet",
+     "summary": "Det framgår inte hur länge rean gäller.",
+     "quote": "Sommarrea: halva priset på utvalda serier.",
+     "page": "/rea",
+     "fix": "Rean pågår till och med den 31 mars 2026 och gäller varor märkta med rea.",
+     "prio": 3,
+     "sha256": "a421dd5461ce8569623e93613c2df1db0a1ad47762ee1f79594cb8c7c5e527ef"
+    },
+    {
+     "pid": "7.1d",
+     "label": "Returtid",
+     "sh": "skicka tillbaka varan … inom 14 dagar från konsumentens ångermeddelande",
+     "summary": "Det framgår inte att kunden har 14 dagar på sig att skicka tillbaka varan efter sitt ångermeddelande.",
+     "quote": "Returer måste nå vårt lager senast 14 dagar efter att paketet levererats.",
+     "page": "/retur",
+     "fix": "Efter att du har meddelat att du ångrar köpet har du 14 dagar på dig att skicka tillbaka varan.",
+     "prio": 1,
+     "sha256": "83be581138e0dde847a44f5857903a14cf13e48d8aaf78987202b6bb0f15c71e"
+    },
+    {
+     "pid": "8.2",
+     "label": "Information om reklamationsrätten",
+     "sh": "lämna information om vad reklamationsrätten innebär. Exempelvis …",
+     "summary": "Reklamationsrätten anges som två år. Den är tre år.",
+     "quote": "Du har två års reklamationsrätt på alla våra produkter.",
+     "page": "/kopvillkor",
+     "fix": "Du kan reklamera fel i tre år från att du tog emot varan. Fel som visar sig inom två år antas ha funnits vid leveransen.",
+     "prio": 2,
+     "sha256": "50f0d8fb184c58f42cc1c8ebac376ccf85aa8186a5d788b70c0c9600a3c65141"
+    },
+    {
+     "pid": "12a",
+     "label": "Betalsätt med avgift",
+     "sh": "Om ett betalningsalternativ innebär en extra kostnad … uppmärksammas konsumenten särskilt på detta",
+     "summary": "Fakturaavgiften står i villkoren men inte i kassan.",
+     "quote": "Vid betalning med faktura tillkommer en avgift på 29 kr.",
+     "page": "/betalning",
+     "fix": "Betala med faktura inom 30 dagar. Avgift 29 kr.",
+     "prio": 3,
+     "sha256": "b341418006f396e1a570ec629c44ee9e458bf41799ebfc01376a7cb55db1245e"
+    },
+    {
+     "pid": "13c",
+     "label": "Prenumeration: uppsägning efter förlängning",
+     "sh": "Vid automatisk förlängning ska konsumenten alltid ha rätt att säga upp prenumerationen till omedelbart upphörande inom 30 dagar från förlängningen (förutsatt att konsumenten inte har utnyttjat tjänsten under förlängningsperioden)",
+     "summary": "Det framgår inte att kunden kan säga upp prenumerationen efter en automatisk förlängning.",
+     "quote": "Prenumerationen löper tills vidare.",
+     "page": "/prenumeration",
+     "fix": "Kunden kan säga upp prenumerationen med omedelbar verkan inom 30 dagar efter en automatisk förlängning.",
+     "prio": 2,
+     "sha256": "c67fcc5db26a735ef3b2039ca0cf0c6eac953948eee4774e9b88165fc980bb41"
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,394 @@
+[
+ {
+  "id": "1",
+  "label": "Företagsuppgifter",
+  "sh": "tydlig och lättillgänglig information om bl.a. företagets fullständiga namn, organisationsnummer och kontaktuppgifter varigenom konsumenten på ett enkelt och effektivt sätt kan ta kontakt med Trygg E-handlaren och/eller framställa eventuella klagomål",
+  "what": "Fullständigt namn, org.nr och kontaktuppgifter, tydligt och lättillgängligt, som går att använda för kontakt och klagomål",
+  "group": 1,
+  "mode": "Regel",
+  "note": "Brist bara om sidfot, kontakt och villkor faktiskt lästs och varken namn eller org.nr finns. Saknad adress eller telefon är ingen brist (SH:s checklista §1: \"bör\"). Bara kontaktformulär → osäker"
+ },
+ {
+  "id": "2a",
+  "label": "Svar inom 48 timmar",
+  "sh": "Som utgångspunkt ska ni besvara konsumentens frågor … via e-post eller annat liknande sätt inom 48 timmar",
+  "what": "Kundservice svarar som utgångspunkt inom 48 timmar, via e-post eller liknande",
+  "group": 4,
+  "mode": "Tolkning",
+  "note": "Att en kontaktväg finns ingår i punkt 1"
+ },
+ {
+  "id": "2b",
+  "label": "Fungerande kundservice",
+  "sh": "Det måste därför finnas en väl fungerande organisation kring e-handlarens kundservice",
+  "what": "Organisation för kundservice",
+  "group": 5,
+  "mode": "Intern"
+ },
+ {
+  "id": "3.1",
+  "label": "Produktinformation",
+  "sh": "tydlig information om produkten/tjänsten som en Trygg E-handlare tillhandahåller så att konsumenten har möjlighet att ta ställning till om produkten/tjänsten motsvarar konsumentens behov",
+  "what": "Tydlig information om produkten. SH:s exempel: egenskaper, förutsättningar för användning, för digitala delar tekniska skyddsåtgärder och krav på maskin- och programvara",
+  "group": 2,
+  "mode": "Tolkning",
+  "note": "Aldrig automatisk brist. Stickprov på produktsidor visas för granskning"
+ },
+ {
+  "id": "3.2a",
+  "label": "Totalpris",
+  "sh": "möjlighet att ta ställning till det totala priset för produkten/tjänsten innan avtalet ingås. Det totala priset som visas ska inkludera moms, skatter, eventuella andra avgifter",
+  "what": "Totalpriset inklusive moms, skatter och avgifter visas innan köpet",
+  "group": 2,
+  "mode": "Regel",
+  "note": "Saknad märkning \"inkl. moms\" är ingen brist: priset räknas som inkl. moms om inget annat anges (SH FAQ). Brist: konsumentpris bara exkl. moms, eller avgift som först syns efter köpet. Frakt i kassan bedöms under 3.2b"
+ },
+ {
+  "id": "3.2b",
+  "label": "Kostnader i kassan",
+  "sh": "Konsumenten ska i kassan även kunna se tillkommande avgifter, totala leveranskostnader, fakturaavgifter samt eventuell avdragen rabatt",
+  "what": "Avgifter, leveranskostnad, fakturaavgift och rabatt syns i kassan",
+  "group": 2,
+  "mode": "Regel",
+  "note": "Avgift för outhämtat paket utan belopp i villkoren → anteckning under 6.1a, ingen egen brist (SH:s checklista §6 och §9 är vägledning)"
+ },
+ {
+  "id": "3.2c",
+  "label": "Minsta ordervärde, handpenning",
+  "sh": "går det naturligtvis bra att ha krav på minsta ordervärde för leverans eller krav på handpenning – förutsatt att konsumenten har fått information om detta tidigt i beställningsprocessen",
+  "what": "Om minsta ordervärde eller handpenning finns: informeras tidigt i beställningen",
+  "group": 2,
+  "mode": "Tolkning",
+  "note": "\"Tidigt\" saknar gräns i SH:s text → högst osäker. \"Fri frakt över X kr\" är inget minsta ordervärde"
+ },
+ {
+  "id": "3.3",
+  "label": "Orderbekräftelse",
+  "sh": "ska alltid skicka ut en bekräftelse på konsumentens beställning eller köp via e-post eller brev inom rimlig tid från köptillfället",
+  "what": "Bekräftelse via e-post eller brev inom rimlig tid",
+  "group": 4,
+  "mode": "Tolkning",
+  "note": "Kräver testköp; \"rimlig tid\" saknar gräns"
+ },
+ {
+  "id": "4a",
+  "label": "Villkor för erbjudanden",
+  "sh": "särskilda krav för erbjudanden som Trygg E-handlare lämnar vid reor. Det måste exempelvis vara tydligt hur länge ett erbjudande gäller och om det finns begränsningar för erbjudandet",
+  "what": "Vid rea: tydligt hur länge den gäller och ev. begränsningar (t.ex. undantagna märken)",
+  "group": 2,
+  "mode": "Tolkning",
+  "note": "Saknade undantag är ingen brist (det kan finnas inga)"
+ },
+ {
+  "id": "4b",
+  "label": "Reans längd",
+  "sh": "Maximalt får en rea pågå under en sammanhängande period om ca tre veckor och totalt två månader under ett år",
+  "what": "Högst ca tre veckor i följd, två månader per år",
+  "group": 3,
+  "mode": "Tolkning",
+  "note": "SH:s FAQ säger \"ett par veckor\" men enligt sammanfattning också att två månader i följd kan accepteras (ordalydelse ej kontrollerad), i strid med kravets \"ca tre veckor\". 22–60 dagar → osäker. Brist bara med daterade skanningar över ca 8 veckor i samma varugrupp. FAQ:ns villkor (ordinarie sortiment, väsentligt lägre pris) är vägledning"
+ },
+ {
+  "id": "5a",
+  "label": "Köpknappen",
+  "sh": "Om beställningen eller köpet innebär en betalningsskyldighet för konsumenten ska detta framgå av köpknappen i beställningsprocessen. Trygg E-handlare inkluderar därför något av följande ord eller uttryck på köpknappen: ”Köp”, Slutför köp”, ”Betala nu” eller annat liknande uttryck",
+  "what": "Knappen visar att beställningen kostar pengar",
+  "group": 2,
+  "mode": "Regel",
+  "note": "Bedöms på betydelse, inte exakt ordlista. Godkänt: Köp, Betala, Slutför köp och liknande. \"Beställ nu\", \"Registrera\", \"Anmäl dig nu\" uppfyller normalt inte kravet (SH FAQ) → granska med FAQ-citat. Annat (t.ex. \"Slutför beställning\") → granska. Aldrig automatisk brist utan bekräftat sista steg"
+ },
+ {
+  "id": "5b",
+  "label": "Villkor vid beställningen",
+  "sh": "I samband med beställningen kan konsumenten, på ett enkelt sätt, ta del av … allmänna villkor",
+  "what": "Allmänna villkor finns och nås enkelt i beställningen, t.ex. kryssruta med länk",
+  "group": 2,
+  "mode": "Regel",
+  "note": "Att villkoren är publicerade på sajten är bedömt. Villkor i sidfoten räknas inte som visade vid beställningen"
+ },
+ {
+  "id": "6.1a",
+  "label": "Leveransinformation",
+  "sh": "lämnar alltid tydlig information om leveransen",
+  "what": "Tydlig information om leveransen, t.ex. leveranstid eller leveransalternativ",
+  "group": 1,
+  "mode": "Regel"
+ },
+ {
+  "id": "6.1b",
+  "label": "Rutin vid förseningar",
+  "sh": "ha rutiner för att informera konsumenten om leveransförseningar",
+  "what": "Rutin för att informera om förseningar",
+  "group": 5,
+  "mode": "Intern"
+ },
+ {
+  "id": "6.2",
+  "label": "Ingen friskrivning från förseningar",
+  "sh": "kan ni inte friskriva er från leveransförseningar … oavsett de villkor som ni har med er speditör",
+  "what": "Villkor och hjälptexter friskriver inte butiken, inte heller via transportören",
+  "group": 1,
+  "mode": "Tolkning",
+  "note": "Delen om rutiner är punkt 6.2b"
+ },
+ {
+  "id": "6.2b",
+  "label": "Inga rutiner som inskränker rätten vid försening",
+  "sh": "ni får inte tillämpa rutiner som innebär att konsumentens rättigheter vid leveransförseningar inskränks",
+  "what": "Interna rutiner inskränker inte kundens rätt vid försening",
+  "group": 5,
+  "mode": "Intern"
+ },
+ {
+  "id": "6.3",
+  "label": "Bruksanvisning",
+  "sh": "Vid leverans ska konsumenten få information i fysisk eller digital form som konsumenten behöver för användning av produkten … Bruksanvisningar ska som utgångspunkt vara på svenska",
+  "what": "Information för användning vid leverans; bruksanvisning som utgångspunkt på svenska",
+  "group": 4,
+  "mode": "Tolkning"
+ },
+ {
+  "id": "7.1a",
+  "label": "Ångerrätt finns",
+  "sh": "Att det finns en ångerrätt och under vilka förutsättningar denna gäller samt om eventuella undantag",
+  "what": "Att ångerrätt finns, villkor och undantag",
+  "group": 1,
+  "mode": "Regel",
+  "note": "Ångerrätt gäller även reavaror (SH FAQ). Undantag utan stöd i distansavtalslagen, eller undantag för rea/outlet → brist. Meningar om öppet köp eller returfrakt är inga undantag. Saknad undantagslista är ingen brist om inget undantaget säljs. Oklara undantag → osäker"
+ },
+ {
+  "id": "7.1b",
+  "label": "Hur ångerrätten utövas",
+  "sh": "Hur ångerrätten utövas och kontaktuppgifter … för att skicka sitt ångermeddelande",
+  "what": "Hur man gör, och vart meddelandet skickas",
+  "group": 1,
+  "mode": "Regel"
+ },
+ {
+  "id": "7.1c",
+  "label": "Ångerfristen",
+  "sh": "Det ska framgå hur lång ångerfristen är och från vilken tidpunkt den beräknas",
+  "what": "Fristens längd och startpunkt",
+  "group": 1,
+  "mode": "Regel",
+  "note": "För tjänster och digitalt innehåll är startpunkt från avtalet korrekt. 30 dagar från köpdatum → osäker, inte brist"
+ },
+ {
+  "id": "7.1d",
+  "label": "Returtid",
+  "sh": "skicka tillbaka varan … inom 14 dagar från konsumentens ångermeddelande",
+  "what": "Informationen säger att varan ska skickas tillbaka inom 14 dagar från ångermeddelandet",
+  "group": 1,
+  "mode": "Regel",
+  "note": "Returtid räknad från mottagandet med minst 28 dagar → osäker, inte brist"
+ },
+ {
+  "id": "7.1e",
+  "label": "Standardformulär",
+  "sh": "Trygg E-handlare ska ge formuläret till konsumenten, t.ex. genom att ladda upp formuläret på sin webbsida",
+  "what": "Information om att kunden kan använda Konsumentverkets standardformulär, och formuläret finns att få, t.ex. på sajten",
+  "group": 1,
+  "mode": "Regel",
+  "note": "Saknas uppgiften om formuläret i lästa villkor → brist. Bara länk till Konsumentverket eller eget formulär → osäker (SH:s FAQ om hur formuläret ska ges kräver inloggning). Nämns utan fungerande länk → osäker om inte orderbekräftelsen granskats"
+ },
+ {
+  "id": "7.1f",
+  "label": "Returfrakt",
+  "sh": "Om konsumenten ska stå returfrakten informerar Trygg E-handlare om detta",
+  "what": "Det står om kunden betalar returfrakten",
+  "group": 1,
+  "mode": "Regel"
+ },
+ {
+  "id": "7.2",
+  "label": "Ingen nekad ångerrätt",
+  "sh": "nekar inte konsumenten att utnyttja ångerrätten även om varan inte är i ursprungligt skick. Trygg E-handlare får dock ta ut ett värdeminskningsavdrag för den minskning av varans värde som uppstått till följd av konsumentens hantering av varan, förutsatt att konsumenten fått information om detta innan köpet",
+  "what": "Retur nekas inte för varans skick. Värdeminskningsavdrag bara om kunden informerats före köpet (gäller bara butiker som tar avdrag)",
+  "group": 1,
+  "mode": "Tolkning",
+  "note": "Lagliga undantag (bruten försegling på ljud, bild, program, hygienvaror) och företagsvillkor ska inte ge brist"
+ },
+ {
+  "id": "8.1",
+  "label": "Reklamationshantering",
+  "sh": "ha en god organisation för hantering av reklamationsärenden",
+  "what": "Organisation för reklamationer",
+  "group": 5,
+  "mode": "Intern"
+ },
+ {
+  "id": "8.2",
+  "label": "Information om reklamationsrätten",
+  "sh": "lämna information om vad reklamationsrätten innebär. Exempelvis …",
+  "what": "Information om reklamationsrätten. SH:s exempel: tre år och två månader, anmälan inom skälig tid (normalt två månader), rättigheter vid fel och försening",
+  "group": 1,
+  "mode": "Tolkning",
+  "note": "Exemplen är inte tvingande var för sig. Brist bara om informationen saknas eller tydligt motsäger SH:s text (t.ex. kortare frist än tre år och två månader för varor). Tjänster: tre år enligt SH:s checklista §12. Uppmaning om snabb kontakt utan förlust av rättighet → osäker"
+ },
+ {
+  "id": "8.3",
+  "label": "Garantier",
+  "sh": "tydlig information om vad garantin eller serviceåtagandets omfattar och om ev. begränsningar … Garantin ska vara utformad på ett sätt som är mer fördelaktigt för konsumenten än vad som följer av lag",
+  "what": "Om garanti finns: omfattning, begränsningar, och den ska ge mer än lagen",
+  "group": 1,
+  "mode": "Tolkning",
+  "note": "Garanti kortare än tre år är ingen brist i sig. Brist om garantitexten ersätter eller begränsar reklamationsrätten. SH:s checklista §12 (vägledning, ej certkrav): att reklamations- och ångerrätten inte påverkas \"måste också anges i era villkor\". Tillverkargaranti på produktsidor ingår"
+ },
+ {
+  "id": "9a",
+  "label": "Återbetalning vid ånger",
+  "sh": "ska återbetalning normalt sett ske inom 14 dagar från den dag då företaget mottagit konsumentens ångermeddelande. I detta fall ska hela beloppet betalas tillbaka, inklusive kostnader för utfrakt, dock minus ev. returfraktkostnader (beroende på vilken information som lämnats)",
+  "what": "Villkoren säger inte emot: hela beloppet inklusive utfrakt, minus ev. returfrakt, normalt inom 14 dagar från meddelandet",
+  "group": 1,
+  "mode": "Tolkning",
+  "note": "SH kräver en rutin. Utifrån kan vi bara se om villkoren säger emot den. Gäller inte öppet köp, outhämtade paket eller delretur. Återbetalning bara som presentkort vid ånger → brist"
+ },
+ {
+  "id": "9b",
+  "label": "Återbetalning vid reklamation",
+  "sh": "hela beloppet, inklusive ev. fraktkostnader, återbetalas … utan onödigt dröjsmål",
+  "what": "Villkoren säger inte emot: hela beloppet inklusive frakt, utan onödigt dröjsmål",
+  "group": 1,
+  "mode": "Tolkning",
+  "note": "SH kräver en rutin. Utifrån kan vi bara se om villkoren säger emot den. Villkor som uttryckligen låter kunden betala returfrakt vid godkänd reklamation → brist (SH:s checklista §12). Gäller inte ånger, ej godkänd reklamation eller garanti. Allmänt \"kunden står för returfrakt\" → osäker"
+ },
+ {
+  "id": "9c",
+  "label": "Rutiner för återbetalning",
+  "sh": "ha rutiner för att betala tillbaka … rutiner som säkerställer att annan ersättning … utbetalas",
+  "what": "Rutiner för återbetalning och annan ersättning",
+  "group": 5,
+  "mode": "Intern"
+ },
+ {
+  "id": "10a",
+  "label": "Information om ARN",
+  "sh": "upplyser också konsumenten om möjligheten att anmäla sitt ärende till ARN",
+  "what": "Att man kan anmäla till ARN",
+  "group": 1,
+  "mode": "Regel",
+  "note": "ARN nämnt som tvistväg räcker. Saknad webb- eller postadress → anteckning (SH:s checklista §22), ingen brist"
+ },
+ {
+  "id": "10b",
+  "label": "Information om ODR",
+  "sh": "och att det finns en onlineplattform för tvistlösning",
+  "what": "Att det finns en onlineplattform för tvistlösning",
+  "group": 1,
+  "mode": "Regel",
+  "note": "SH-krav föråldrat – EU:s ODR-plattform stängd 2025-07-20 (Konsumentverket). SH har inte ändrat kravet. Ger aldrig brist: saknad ODR-text visas som ej tillämplig, kvarvarande ODR-länk som information. Fråga SH om kravet utgår"
+ },
+ {
+  "id": "10c",
+  "label": "Följer ARN:s rekommendationer",
+  "sh": "har ni åtagit er att följa Allmänna reklamationsnämndens rekommendationer. Eventuell tvist ska lösas av antingen Allmänna reklamationsnämnden (ARN) i Sverige eller European Commission Online Dispute Resolution (EU ODR)",
+  "what": "Butiken följer ARN:s rekommendationer, och tvister löses via ARN eller EU ODR",
+  "group": 3,
+  "mode": "Regel",
+  "note": "Kan stämmas av mot listor över företag som inte följt ARN:s beslut. Källa att verifiera. ODR-delen är föråldrad, se 10b. Möjlig yttre kontroll: Råd & Röns Svarta listan (ej verifierad som metod)"
+ },
+ {
+  "id": "11a",
+  "label": "Rutiner för minderåriga",
+  "sh": "ska det finnas rutiner för hur ni ska hantera avtal med minderåriga",
+  "what": "Rutiner för avtal med minderåriga",
+  "group": 5,
+  "mode": "Intern"
+ },
+ {
+  "id": "11b",
+  "label": "Inga köpuppmaningar till barn",
+  "sh": "riktar aldrig direkta köpuppmaningar till minderåriga, t.ex. påståenden som ”Köp nu”, ”Beställ nu” eller andra liknande uttryck",
+  "what": "Marknadsföring riktad mot minderåriga innehåller inga direkta köpuppmaningar (t.ex. ”Köp nu”, ”Beställ nu”)",
+  "group": 2,
+  "mode": "Tolkning",
+  "note": "Vanliga köpknappar är inte marknadsföring mot minderåriga. Aldrig automatisk brist"
+ },
+ {
+  "id": "11c",
+  "label": "Ansvarsfull marknadsföring mot barn",
+  "sh": "särskilda rutiner för att se till att all marknadsföring som riktas mot minderåriga är ansvarsfull och följer god sed",
+  "what": "Rutiner för marknadsföring mot minderåriga",
+  "group": 5,
+  "mode": "Intern"
+ },
+ {
+  "id": "12a",
+  "label": "Betalsätt med avgift",
+  "sh": "Om ett betalningsalternativ innebär en extra kostnad … uppmärksammas konsumenten särskilt på detta",
+  "what": "Extra kostnad eller begränsning per betalsätt uppmärksammas särskilt",
+  "group": 2,
+  "mode": "Regel",
+  "note": "Gäller avgift och annan begränsning (t.ex. kreditprövning). Brist bara om avgiften bara syns i villkoren eller är inbakad utan egen rad. Egen rad i kassans sammanställning → osäker"
+ },
+ {
+  "id": "12b",
+  "label": "SSL",
+  "sh": "se till att ni har ett giltigt SSL-certifikat",
+  "what": "https med giltigt certifikat",
+  "group": 1,
+  "mode": "Regel",
+  "note": "Testa alltid https uttryckligen. Brist bara vid certifikatfel bekräftat vid två skanningar"
+ },
+ {
+  "id": "12c",
+  "label": "PCI DSS",
+  "sh": "uppfylla vissa säkerhetskrav, t.ex. PCI DSS-kraven för korthantering",
+  "what": "Korthantering enligt PCI DSS",
+  "group": 5,
+  "mode": "Intern"
+ },
+ {
+  "id": "13a",
+  "label": "Prenumeration: information",
+  "sh": "information om hur lång tid som prenumerationen löper och villkoren för att säga upp avtalet. Det måste vara extra tydligt … om prenumerationen förnyas per automatik",
+  "what": "Löptid och uppsägningsvillkor; extra tydligt om prenumerationen förnyas automatiskt",
+  "group": 1,
+  "mode": "Regel",
+  "note": "Bara butiker med prenumerationer. Kostnad per period är SH-vägledning (checklista §20), ingen brist"
+ },
+ {
+  "id": "13b",
+  "label": "Prenumeration: ingen fälla",
+  "sh": "tillämpar dock aldrig ett förfarande som innebär att ett prenumerationserbjudande, exempelvis ett gratis Prova på-erbjudande, per automatik förnyas när standardavgiften för prenumerationen är väsentligt mycket högre än avgiften för erbjudandet",
+  "what": "Ett prenumerationserbjudande förnyas inte automatiskt till ett väsentligt högre pris",
+  "group": 2,
+  "mode": "Tolkning",
+  "note": "Bara butiker med prenumerationer"
+ },
+ {
+  "id": "13c",
+  "label": "Prenumeration: uppsägning efter förlängning",
+  "sh": "Vid automatisk förlängning ska konsumenten alltid ha rätt att säga upp prenumerationen till omedelbart upphörande inom 30 dagar från förlängningen (förutsatt att konsumenten inte har utnyttjat tjänsten under förlängningsperioden)",
+  "what": "Uppsägning till omedelbart upphörande inom 30 dagar efter automatisk förlängning, om tjänsten inte använts under förlängningen",
+  "group": 1,
+  "mode": "Regel",
+  "note": "Bara butiker med prenumerationer. Tystnad i villkoren är ingen brist"
+ },
+ {
+  "id": "14a",
+  "label": "Information om personuppgifter",
+  "sh": "Ni informerar tydligt om hur konsumentens personuppgifter behandlas",
+  "what": "Tydlig information om behandlingen",
+  "group": 1,
+  "mode": "Tolkning",
+  "note": "Innehållslistan (ändamål, lagringstid m.m.) kommer från GDPR, inte SH → högst osäker. Brist bara om ingen information om personuppgifter finns trots läst sidfot och kassa. Ingen kryssruta krävs (SH FAQ)"
+ },
+ {
+  "id": "14b",
+  "label": "Rutiner för rättigheter",
+  "sh": "ni har rutiner för korrekt hantering av förfrågningar som rör utövande av konsumenternas rättigheter",
+  "what": "Rutiner för förfrågningar om personuppgifter",
+  "group": 5,
+  "mode": "Intern",
+  "note": "Utifrån ser vi bara om det står hur man begär"
+ },
+ {
+  "id": "14c",
+  "label": "Rutiner för dataskydd",
+  "sh": "har rutiner för att se till att konsumenternas personuppgifter hanteras i enlighet med tillämplig dataskyddslagstiftning",
+  "what": "Rutiner för dataskydd",
+  "group": 5,
+  "mode": "Intern"
+ }
+]

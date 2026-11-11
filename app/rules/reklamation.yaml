@@ -1,0 +1,171 @@
+# 8.2 Reklamationsrätten och 9b återbetalning vid reklamation.
+# Ett värde är ett reguljärt uttryck eller en lista med alternativ (de sätts ihop med |).
+# {NUM} betyder ett tal i siffror eller ord.
+
+REK:
+  - 'reklam'
+  - 'trans?portskad'
+  - 'skadat gods'
+  - 'skadat paket'
+  - 'skadad (vara|leverans|försändelse)'
+  - 'dold skada'
+  - 'dolda (fel|skador)'
+  - 'synlig\w* skad'
+  - 'fel på varan'
+  - 'felaktig vara'
+  - 'defekt'
+  - 'leveransskad'
+  - 'fraktskad'
+  - '\b(varan|varor|produkten|vara)\s+(\w+\s+)?(är\s+)?(felaktig|trasig)'
+  # "Om ditt paket är skadat när du tar emot det": a damaged delivery named as a state
+  - '\b(paket(et)?|försändelsen|godset|leveransen)\s+(är|var|har blivit|blivit)\s+skadad?t?\b'
+  # "Skador som inte noterats på fraktsedeln vid leverans kan inte ersättas": a damage tied to the delivery check
+  - '\bskador?\b[^.]{0,60}(fraktsedel|frakthandling|kvittens|kvitter)'
+HANDLING:
+  - '(vi|kundtjänst|kundservice)\s+(besvarar|hanterar|åtgärdar|återkommer|behandlar|svarar|återbetalar|ersätter|skickar)'
+  - 'handlägg'
+  # "senare anmälningar behandlas inte" is a loss of rights, not the shop's handling
+  - '(?<!inte )(?<!ej )\b(besvaras|hanteras|behandlas|åtgärdas)\b(?!\s+(inte|ej|inga|ingen)\b)'
+  - 'besked'
+  - 'mottagit (din )?reklamation'
+  - 'återbetal'
+  - 'ångra'
+  - 'ångerrätt'
+  - 'faktura'
+  - 'betala'
+  - 'öppet köp'
+  - 'få tillbaka (hela )?(beloppet|pengarna|köpesumman)'
+  - 'garanti'
+  - 'kompensera'
+  - 'åtgärd'
+  # the shop's own deadline: "ersätter vi dig inom 14 dagar efter att vi tagit emot den reklamerade varan"
+  - '(ersätter|återbetalar|återkommer|svarar|besvarar|hanterar|skickar|åtgärdar)\s+vi\b'
+  - 'efter att vi (har )?(mottagit|tagit emot|fått)'
+  # a deadline that binds the seller, not the consumer: "Säljaren ska sända en skriftlig bekräftelse på en reklamation
+  # inom skälig tid och senast 14 dagar efter mottagandet", "Vi ska svara på din reklamation inom 5 arbetsdagar"
+  - '\b(säljaren|butiken|företaget|handlaren|näringsidkaren|vi)\s+(ska|skall|måste|kommer att|åtar\s+(sig|oss)\s+att|är skyldiga? att|lovar att)\s+((?!kunna\b)\w+\s+){0,3}?(sända|skicka|lämna|ge|bekräfta|svara|besvara|meddela|återkomma)\b'
+  - '\bbekräftelse\s+(på|av|om)\s+(\w+\s+)?(mottagen\s+)?reklamation'
+  - '\breklamation\w*\s+(\w+\s+){0,3}(bekräftas|besvaras)\b'
+CONSEQ:
+  - 'kan (inte|ej)\s+(regleras|reklameras|göras|godkännas|ersättas)'
+  - 'förlorar'
+  - 'förfaller'
+  - 'gäller (inte|ej)'
+  - 'ogiltig'
+  - 'för att (din )?reklamation(en)? ska (vara giltig|godkännas|gälla)'
+  - 'annars'
+  - 'ej godkänn'
+  - 'inte godkänn'
+  - 'inte har möjlighet att ersätta'
+  - 'har (inte|ej) möjlighet att ersätta'
+  - 'utgår (ingen|inte|ej) (\w+ )?ersättning'
+  - 'kan (inte|ej) reklamation göras'
+  - '(kan\s+)?reklamation(en)?\s+(kan\s+|får\s+)?(inte|ej)\s+(längre\s+)?göras'
+  - '(ingen|inte|ej) rätt till ersättning'
+  - '(lämnas|ges|betalas|utgår) ingen ersättning'
+  - 'ersätts (de |den |det )?(inte|ej)'
+  - 'kan (vi )?(inte|ej) ersätta'
+  - 'bortfaller'
+  - 'avslå\w*'
+  - 'nekas'
+  - 'anses (du )?(ha )?(godkän|godt[ao]g)\w*'
+  # "(ett monterat fönster/dörr = godkänt)", "räknas varan som godkänd": the goods are deemed accepted
+  - '=\s*godkän\w*'
+  - '(räknas|betraktas)\s+(\w+\s+){0,2}som\s+(godkän|godt[ao]g)\w*'
+  # "senare anmälningar behandlas inte", "reklamationer efter denna tid godtas ej"
+  - '(behandlas|hanteras|godtas|accepteras|beaktas)\s+(inte|ej)\b'
+  # "därefter godtas inga anmälningar", "Anmälningar som kommer in senare kan inte hanteras", "kan inga reklamationer
+  # tas emot"
+  - '(behandlas|hanteras|godtas|accepteras|beaktas|tas emot)\s+(inga|ingen|inget)\b'
+  - '\b(inga|ingen)\s+(\w+\s+){0,2}(anmälningar|anmälan|reklamationer|reklamation|skadeanmälningar)\s+(\w+\s+)?(godtas|accepteras|behandlas|hanteras|tas emot)'
+  - 'kan (inte|ej)\s+(hanteras|behandlas|accepteras|godtas|tas emot)'
+  - 'kan (inga|ingen)\s+(\w+\s+){0,2}(tas emot|godtas|accepteras|behandlas|hanteras)'
+  # "Tar du emot skadat gods utan att göra en anmälan godkänner du varans befintliga skick och friskriver därmed
+  # transportbolaget (och oss) från ansvar": the damage is deemed accepted and the shop freed from it
+  - '(godkänner|godtar|accepterar)\s+(du|ni|kunden|köparen)\s+(\w+\s+){0,3}?(i\s+)?befintlig\w*\s+skick'
+  - '(godkän|godta|godtag|accepter)\w*\s+[^.]{0,40}?\bi\s+befintligt\s+skick'
+  - 'friskriver\s+[^.]{0,50}?\b(oss|butiken|säljaren)\b[^.]{0,20}\bfrån\s+(\w+\s+)?ansvar'
+LOST:
+  - '(kan|får|går)\s+(\w+\s+){0,3}(inte|ej)\s+(\w+\s+){0,2}(regleras|reklameras|ersättas|godkännas)'
+  - 'om så inte sker'
+OPTIONAL:
+  - 'gärna'
+  - 'helst'
+  - 'rekommender'
+  - '\bbör\b'
+  - 'om möjligt'
+  - 'underlättar'
+  - 'snabbare'
+CUST_PAYS_RET:
+  - '(du|kunden|köparen|ni|konsumenten)\s+(själv\s+)?(står|betalar|bekostar|svarar)\s+(själv\s+)?(alltid\s+)?(för\s+)?(kostnaden\s+för\s+)?(retur)?(frakt\w*|porto\w*)'
+  - '(står|betalar|bekostar|svarar)\s+(du|kunden|köparen|ni|konsumenten)\s+(själv\s+)?(alltid\s+)?(för\s+)?(kostnaden\s+för\s+)?(retur)?(frakt\w*|porto\w*)'
+  - 'returfrakt\w*\s+(betalas|bekostas|står)\s+(av\s+)?(dig|kunden|köparen)'
+  # "Vid godkänd reklamation får du betala returfrakten själv"
+  - '(får|måste)\s+(du|kunden|köparen|ni|konsumenten)\s+(själv\s+)?(betala|bekosta|stå för)\s+(själv\s+)?(kostnaden\s+för\s+)?(retur)?(frakt\w*|porto\w*)'
+NOT_APPROVED:
+  - '(ej|inte)\s+(blir\s+)?godkän\w*'
+  - 'godkänns (ej|inte)'
+  - 'obefogad'
+  - 'ogrundad'
+  - '(ej|inte) (är )?befogad'
+  - '(ej|inte) berättigad'
+  - 'avslag'
+  - 'avslå\w*'
+  - '(inte|ej) (är|var|finns|föreligger)\s+(något\s+)?fel'
+  - 'inget fel'
+  - 'felfri'
+  - 'om det visar sig'
+  - '(ej|inte) omfattas'
+# Skador som inte är ursprungliga fel (slitage, olyckor, felaktig hantering); att de undantas är inte fel information.
+NOT_FAULT:
+  - 'förslitning'
+  - 'slitage'
+  - 'fallskad'
+  - 'handhavande'
+  - 'skötsel'
+  - 'vårdslös'
+  - 'felaktig (användning|hantering)'
+  - 'olyck'
+# Sentences about business customers ("Vid köp genom företag har köparen 1 års reklamationsrätt"): not the consumer's right.
+B2B_SENT: '\b(köp\w*|kunder?)\s+(genom|som|via|av)\s+företag\b|\bföretagskund\w*|\bnäringsidkare|\bB2B\b|juridisk person'
+# Headings whose sentences are about transport damage, so "Skadan ska anmälas inom 7 dagar" is a reklamation deadline.
+DAMAGE_HEAD: 'trans?portskad|fraktskad|skadat gods|skadad (vara|leverans|försändelse)|dold\w* skad'
+# 8.3: commitments called "garanti" that are not a garanti on the goods (price, purchase protection from a price
+# comparison site, money-back, deposit insurance). Svensk Handel's point is about what the garanti on the goods covers.
+GAR_OTHER:
+  - 'pris-?garanti'
+  - 'l[äå]gst[ae]?[- ]?pris'
+  - 'prismatch'
+  - 'mellanskillnad'
+  - '(in)?köpgaranti'
+  - 'pricerunner|prisjämför'
+  - 'pengarna[- ]tillbaka'
+  - 'returgaranti'
+  - 'nöjd[- ]?(kund|het)?[- ]?garanti|garanterat nöjd'
+  - 'insättningsgaranti|riksgälden'
+  # "## 9. Transportgaranti / Skadade varor ersätts kostnadsfritt": the shop carries the transport risk
+  - '(transport|frakt|leverans)garanti'
+# 8.3: the terms say the garanti comes on top of the law ("Garantin påverkar inte dina rättigheter enligt
+# konsumentköplagen", "en komplettering till konsumentlagstiftningen", "reklamera … oavsett om du har garanti")
+GAR_SAFE:
+  - '(påverka[rs]?|begränsa[rs]?|inskränk\w*)\s+(\w+\s+){0,2}(inte|ej)\s+(\w+\s+){0,4}(rättighet\w*|reklamationsrätt\w*)'
+  - '(inte|ej)\s+(påverka[rs]?|begränsa[rs]?|inskränk\w*)\s+(\w+\s+){0,4}(rättighet\w*|reklamationsrätt\w*)'
+  - '(lagstadgade|lagliga|legala)\s+rättigheter\s+(\w+\s+){0,2}(påverkas|begränsas|inskränks)\s+(inte|ej)'
+  - 'utöver\s+(dina|de|era|konsumentens)\s+(\w+\s+)?rättigheter'
+  - 'komplettering till (konsument)?(lag|köplag)'
+  - 'oavsett om (du|ni|varan) (har|omfattas av) (en )?garanti'
+# 8.3: what the garanti covers ("mot tillverkningsfel", "vid fabrikations- eller materialfel", "Garantin omfattar")
+GAR_SCOPE:
+  - '(fabrikations|tillverknings|material|konstruktions|funktions)\w*'
+  - 'omfatta[rs]\b|täcker'
+  - 'rötskad|rost|genomrost'
+  - 'gäller (inte|ej) (för|vid)'
+# 8.3: what a garanti shorter than three years can give beyond reklamationsrätten (accidents, theft, an exchange or
+# service on the spot). Without any of them the shop's own short garanti is not more favourable than the law: brist
+
+GAR_EXTRA:
+  - 'olyck\w*|tappskad\w*|vattenskad\w*|oavsiktlig\w*|\bstöld\w*|stulen|förlust'
+  - 'utbytes?garanti|\bnytt? (exemplar|produkt|vara)\b[^.]{0,40}(direkt|omgående|samma dag)|hemservice|på plats|lånevara|ersättningsprodukt'
+  - 'oavsett (orsak|anledning)|även (om|vid) (felet|skadan) (beror|orsakats)'
+  # a promised property that wear would otherwise take away ("minst 70% batterihälsa")
+  - 'batterihälsa|batterikapacitet|\d+\s*%\s*(batteri|kapacitet)'

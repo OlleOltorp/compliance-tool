@@ -1,0 +1,24 @@
+# 3.2c Minsta ordervärde och 13a–c prenumerationer.
+# Ett värde är ett reguljärt uttryck eller en lista med alternativ (de sätts ihop med |).
+# {NUM} betyder ett tal i siffror eller ord.
+
+MINORDER:
+  - 'minsta ordervärde'
+  - 'lägsta ordervärde'
+  - 'minimiorder'
+  - 'minsta beställning'
+  - 'minsta order'
+  - 'handpenning'
+  - 'betalar (du )?delvis i förskott'
+  - 'minst \w+ \(?\d+\)? artiklar'
+  # "godtas endast beställningar om ett värde om minst 200 kr"
+  - '(godtas|accepteras|tar vi emot|levereras|skickas) (endast|bara) (beställningar|order)[^.]{0,40}minst \d+'
+  - 'beställningsgräns'
+SUBS:
+  - 'prenumeration'
+  - 'abonnemang'
+  - 'förnyas automatiskt'
+  - 'automatisk(t)? förnyelse'
+  - 'löper tills vidare'
+  - 'månadsvis dragning'
+  - 'återkommande betalning'

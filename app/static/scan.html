@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Webshop compliance check</title>
+<style>
+:root{--bg:#fafaf9;--card:#fff;--text:#18181b;--muted:#6b6b72;--line:#e4e4e7;--flaw:#b42318;--flaw-bg:#fef3f2;--ok:#067647;--ok-bg:#ecfdf3;--na:#6b6b72;--na-bg:#f4f4f5;--warn:#b54708;--warn-bg:#fffaeb;--accent:#18181b}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main{max-width:860px;margin:0 auto;padding:32px 16px 64px}
+h1{font-size:26px;margin:0 0 4px}
+.sub{color:var(--muted);margin:0 0 20px}
+form{display:flex;gap:8px;flex-wrap:wrap}
+input[type=text]{flex:1;min-width:220px;padding:11px 12px;font:inherit;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--text)}
+button{padding:11px 18px;font:inherit;font-weight:600;border:0;border-radius:8px;background:var(--accent);color:var(--bg);cursor:pointer}
+button:disabled{opacity:.5;cursor:default}
+.opts{display:flex;gap:18px;flex-wrap:wrap;margin:10px 0 0;color:var(--muted);font-size:14px}
+.opts label{display:flex;gap:6px;align-items:center}
+[hidden]{display:none!important}
+.ai{margin:16px 0 0;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--card);font-size:14px}
+.ai b{font-weight:600}.ai .on{color:var(--ok)}.ai .off{color:var(--muted)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:16px 0}
+#progress{font:13px/1.6 ui-monospace,Consolas,monospace;color:var(--muted);max-height:220px;overflow:auto;white-space:pre-wrap}
+.err{color:var(--flaw)}
+.counts{display:flex;gap:10px;flex-wrap:wrap;margin:6px 0 4px}
+.counts span{padding:4px 10px;border-radius:99px;font-size:13px;font-weight:600}
+.c-flaw{background:var(--flaw-bg);color:var(--flaw)}.c-ok{background:var(--ok-bg);color:var(--ok)}.c-na{background:var(--na-bg);color:var(--na)}.c-warn{background:var(--warn-bg);color:var(--warn)}
+h2{font-size:17px;margin:26px 0 8px}
+.pt{border-top:1px solid var(--line);padding:10px 0}
+.pt:first-of-type{border-top:0}
+.pt .head{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+.pid{font:600 13px ui-monospace,Consolas,monospace;color:var(--muted);min-width:42px}
+.lbl{font-weight:600}
+.tag{font-size:12px;padding:1px 8px;border-radius:99px}
+.why{margin:4px 0 0 52px;color:var(--muted);font-size:14px}
+.q{margin:6px 0 0 52px;padding:6px 10px;border-left:3px solid var(--flaw);background:var(--flaw-bg);font-size:14px}
+.q.okq{border-color:var(--ok);background:var(--ok-bg)}
+.q .src{display:block;font-size:12px;color:var(--muted);margin-top:2px;word-break:break-all}
+.q .src a{color:inherit}
+details summary{cursor:pointer;color:var(--muted);font-size:13px;margin:4px 0 0 52px}
+.foot{color:var(--muted);font-size:13px;margin-top:28px}
+.foot a,.links a{color:inherit}
+.links{font-size:14px;margin-top:6px}
+#recent li{margin:2px 0}
+@media (max-width:560px){.why,.q,details summary{margin-left:0}}
+</style>
+</head>
+<body>
+<main>
+  <h1>Webshop compliance check</h1>
+  <p class="sub">Checks a Swedish webshop against the 45 requirement points of the Trygg E-handel certification, with rules. Every possible flaw comes with the shop's own text and the page it is on. A person makes the final call.</p>
+
+  <form id="f">
+    <input id="url" type="text" placeholder="Paste a webshop URL, for example https://www.exempelbutiken.example" autocomplete="url" required aria-label="Webshop URL">
+    <button id="go" type="submit">Scan</button>
+  </form>
+  <div class="opts">
+    <label><input type="checkbox" id="checkout"> Also walk the checkout (one item in the cart with test data, never buys; adds a few minutes)</label>
+    <label id="ai-opt" hidden><input type="checkbox" id="useai" checked> Use the AI judge</label>
+  </div>
+  <div class="ai" id="ai">AI judge: …</div>
+
+  <div class="card" id="run" hidden>
+    <div id="state"><b>Scanning…</b></div>
+    <div id="progress"></div>
+  </div>
+
+  <div id="result"></div>
+
+  <div class="card" id="recent-box" hidden><b>Earlier scans</b><ul id="recent"></ul></div>
+
+  <p class="foot">The result is support for a person, not a legal decision. More detail (live view, screenshots, the requirement texts): <a href="/full">full interface</a>. Review workflow demo with invented shops: <a href="/demo">/demo</a>. How to turn on the AI judge: see README.md, "Turn on the AI judge".</p>
+</main>
+<script>
+const $ = (s) => document.querySelector(s);
+const esc = (s) => String(s == null ? "" : s).replace(/[&<>"']/g, (c) => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"}[c]));
+const api = async (path, body) => {
+  const r = await fetch(path, body === undefined ? {} : {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify(body)});
+  const data = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(data.detail || ("HTTP " + r.status));
+  return data;
+};
+
+// Group per state. A brist the rules were unsure of is still a possible flaw, marked as such.
+const GROUPS = [
+  ["flaw", "Possible flaws", "c-flaw"],
+  ["ok", "Met", "c-ok"],
+  ["notchecked", "Not checked", "c-warn"],
+  ["na", "Not applicable", "c-na"],
+];
+const NOT_CHECKED = {"kunde inte kontrolleras": "could not be checked", "kräver intyg": "only the shop's own documents can show it",
+  "kräver testköp": "needs a test purchase", "osäker": "uncertain, needs a person"};
+function groupOf(r) {
+  if (r.state === "brist") return "flaw";
+  if (r.state === "uppfyllt") return "ok";
+  if (r.state === "ej tillämplig") return "na";
+  return "notchecked";
+}
+function source(rep, e) {
+  if (e.step) return `checkout step ${esc(e.step)}`;
+  const p = typeof e.page === "number" ? (rep.pages || [])[e.page] : null;
+  const url = e.url || (p && (p.final_url || p.url)) || "";
+  if (/^https?:\/\//.test(url)) return `<a href="${esc(url)}" target="_blank" rel="noopener noreferrer">${esc(url)}</a>`;
+  return esc(url || (p && p.title) || "");
+}
+function quotes(rep, r, okq) {
+  const evs = (r.evidence || []).filter((e) => e.quote);
+  const pick = okq ? evs : (evs.filter((e) => e.role === "brist" || e.role === "motsägelse").length
+    ? evs.filter((e) => e.role === "brist" || e.role === "motsägelse") : evs);
+  return pick.slice(0, 3).map((e) => `<div class="q${okq ? " okq" : ""}">“${esc(e.quote)}”<span class="src">${source(rep, e)}</span></div>`).join("");
+}
+function item(rep, r, g) {
+  const ai = r.method === "regel + AI" ? ` <span class="tag c-na">AI</span>` : "";
+  const unsure = g === "flaw" && r.unclear && r.method !== "regel + AI" ? ` <span class="tag c-warn">unclear</span>` : "";
+  const reason = g === "notchecked" ? ` <span class="tag c-warn">${esc(NOT_CHECKED[r.state] || r.state)}</span>` : "";
+  let body = `<div class="why">${esc(r.summary || "")}</div>`;
+  if (g === "flaw") body += (r.why ? `<div class="why">${esc(r.why)}</div>` : "") + quotes(rep, r, false);
+  else if (g === "ok" && (r.evidence || []).some((e) => e.quote)) body += `<details><summary>Show the text</summary>${quotes(rep, r, true)}</details>`;
+  return `<div class="pt"><div class="head"><span class="pid">${esc(r.id)}</span><span class="lbl">${esc(r.label)}</span>${ai}${unsure}${reason}</div>${body}</div>`;
+}
+function render(rep) {
+  const res = rep.results || [];
+  const by = {flaw: [], ok: [], notchecked: [], na: []};
+  res.forEach((r) => by[groupOf(r)].push(r));
+  const counts = GROUPS.map(([k, t, c]) => `<span class="${c}">${by[k].length} ${t.toLowerCase()}</span>`).join("");
+  const co = rep.checkout ? `Checkout: ${esc(rep.checkout.reached || "")}. ` : "Checkout not walked. ";
+  $("#result").innerHTML = `<div class="card">
+      <b>${esc(rep.shop || rep.url || rep.input)}</b> <span class="sub" style="margin:0">${esc(rep.url || "")}</span>
+      <div class="counts">${counts}</div>
+      <div class="links">${(rep.pages || []).length} pages read. ${co}<a href="/full#/scan/${encodeURIComponent(rep.id)}">Full report</a></div>
+    </div>` + GROUPS.map(([k, t]) => by[k].length ? `<h2>${t} (${by[k].length})</h2><div class="card">${by[k].map((r) => item(rep, r, k)).join("")}</div>` : "").join("");
+}
+
+let timer = null;
+async function poll(id) {
+  clearTimeout(timer);
+  let rep;
+  try { rep = await api(`/api/scans/${encodeURIComponent(id)}`); }
+  catch (e) { $("#state").innerHTML = `<span class="err">${esc(e.message)}</span>`; $("#go").disabled = false; return; }
+  $("#run").hidden = false;
+  const lines = (rep.progress || []).slice(-14);
+  $("#progress").textContent = lines.join("\n");
+  if (rep.status === "running") {
+    $("#state").innerHTML = `<b>Scanning ${esc(rep.input)}…</b> This usually takes one to three minutes.`;
+    timer = setTimeout(() => poll(id), 1500);
+    return;
+  }
+  $("#go").disabled = false;
+  if (rep.status === "failed") {
+    $("#state").innerHTML = `<span class="err"><b>The scan failed.</b> ${esc(rep.error || "")}</span>`;
+    $("#result").innerHTML = "";
+    return;
+  }
+  $("#state").innerHTML = `<b>Done.</b>`;
+  render(rep);
+  loadRecent();
+}
+
+$("#f").onsubmit = async (ev) => {
+  ev.preventDefault();
+  const url = $("#url").value.trim();
+  if (!url) return;
+  $("#go").disabled = true;
+  $("#result").innerHTML = "";
+  $("#run").hidden = false;
+  $("#progress").textContent = "";
+  $("#state").innerHTML = "<b>Starting…</b>";
+  try {
+    const body = {url, checkout: $("#checkout").checked};
+    if (!$("#ai-opt").hidden && !$("#useai").checked) body.ai = false;
+    const {id} = await api("/api/scans", body);
+    history.replaceState(null, "", "#" + id);
+    poll(id);
+  } catch (e) {
+    $("#state").innerHTML = `<span class="err">${esc(e.message)}</span>`;
+    $("#go").disabled = false;
+  }
+};
+
+async function loadAi() {
+  try {
+    const s = await api("/api/ai-status");
+    $("#ai").innerHTML = s.on
+      ? `<b class="on">${esc(s.message)}</b>`
+      : !s.need_key ? `<b class="off">${esc(s.message)}</b>`
+      : `<b class="off">${esc(s.message)}</b> Put your key in a <code>.env</code> file (copy <code>.env.example</code>) and restart. See README.md, "Turn on the AI judge".`;
+    $("#ai-opt").hidden = !s.on;
+  } catch (e) { $("#ai").textContent = "AI judge: status unknown."; }
+}
+async function loadRecent() {
+  try {
+    const list = (await api("/api/scans")).filter((r) => r.status !== "running").slice(0, 6);
+    $("#recent-box").hidden = !list.length;
+    $("#recent").innerHTML = list.map((r) => `<li><a href="#${esc(r.id)}" data-id="${esc(r.id)}">${esc(r.shop || r.url || r.id)}</a> <span class="sub">${esc((r.finished || "").slice(0, 16).replace("T", " "))} · ${esc(r.status)}</span></li>`).join("");
+    $("#recent").querySelectorAll("a").forEach((a) => a.onclick = () => poll(a.dataset.id));
+  } catch (e) { /* the list is optional */ }
+}
+loadAi();
+loadRecent();
+if (location.hash.length > 1) poll(location.hash.slice(1));
+</script>
+</body>
+</html>
