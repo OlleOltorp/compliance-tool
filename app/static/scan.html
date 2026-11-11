@@ -70,7 +70,7 @@ details summary{cursor:pointer;color:var(--muted);font-size:13px;margin:4px 0 0 
 
   <div class="card" id="recent-box" hidden><b>Earlier scans</b><ul id="recent"></ul></div>
 
-  <p class="foot">The result is support for a person, not a legal decision. More detail (live view, screenshots, the requirement texts): <a href="/full">full interface</a>. Review workflow demo with invented shops: <a href="/demo">/demo</a>. How to turn on the AI judge: see README.md, "Turn on the AI judge".</p>
+  <p class="foot">The result is support for a person, not a legal decision. More detail (live view, screenshots, the requirement texts): <a href="/full">full interface</a>. Review workflow demo with invented shops: <a href="/demo">/demo</a>. How to turn on the AI judge: see README.md, "AI judge".</p>
 </main>
 <script>
 const $ = (s) => document.querySelector(s);
@@ -184,7 +184,7 @@ async function loadAi() {
     $("#ai").innerHTML = s.on
       ? `<b class="on">${esc(s.message)}</b>`
       : !s.need_key ? `<b class="off">${esc(s.message)}</b>`
-      : `<b class="off">${esc(s.message)}</b> Put your key in a <code>.env</code> file (copy <code>.env.example</code>) and restart. See README.md, "Turn on the AI judge".`;
+      : `<b class="off">${esc(s.message)}</b> Put your key in a <code>.env</code> file (copy <code>.env.example</code>) and restart. See README.md, "AI judge".`;
     $("#ai-opt").hidden = !s.on;
   } catch (e) { $("#ai").textContent = "AI judge: status unknown."; }
 }
